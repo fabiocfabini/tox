@@ -12,10 +12,10 @@ class MetaData:
         return self.stack_position[1] - self.stack_position[0] + 1
 
 @dataclass
-class Scope:
+class Stack:
     name: str 
     level: int 
-    parent: Optional[Scope] = None
+    parent: Optional[Stack] = None
 
     def __post_init__(self):
         self.Table: Dict[str, MetaData] = {}

@@ -1,6 +1,6 @@
 from tox.utils.colors import *
 from tox.utils.errors import compiler_error, syntax_error, find_column, find_column_comp
-from tox.structures._stack import Scope, MetaData
+from tox.parsing._scopes import Scope, MetaData
 from tox.parsing._expression import (
     Primary,
     Unary,

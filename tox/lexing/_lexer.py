@@ -22,7 +22,8 @@ reserved = {
     'for'   : 'FOR',
     'do'    : 'DO',
     'break' : 'BREAK',
-    'continue' : 'CONTINUE'
+    'continue' : 'CONTINUE',
+    'func' : 'FUNCTION'
 }
 
 tokens = type_tokens + special_tokens + list(reserved.values()) + op_tokens

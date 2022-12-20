@@ -28,12 +28,21 @@ from tox import (
 
 def p_prog(p):
     """
-    prog : stmts
+    prog : global_declarations stmts
     """
-    parser.if_count = 0
-    parser.loop_count = 0
-    p[0] = "start\n" + p[1] + f"POP {parser.global_count}\nstop\n"
+    p[0] = "start\n"
+    p[0] += p[2]
+    p[0] += f"POP {parser.global_count}\n"
+    p[0] += "stop\n"
     parser.global_count = 0
+    parser.loop_count = 0
+    parser.if_count = 0
+
+def p_global_declarations(p):
+    """
+    global_declarations :
+    """
+
 def p_stmts(p):
     """
     stmts : stmt stmts
@@ -193,10 +202,6 @@ def p_array_declaration(p):
     declaration : ID ':' Vtype '[' INT ']'
     """
     p[0] = p.parser.declaration_handler.handle(p, "array_declaration")
-# def p_function_declaration(p):
-#     """
-#     declaration : FUNCTION
-#     """
 
 ######################
 ##   ASSIGN STMT    ##
