@@ -1,0 +1,9 @@
+print(34 + 35, "\n")
+print(210 * 2, "\n")
+
+x: int = 34 + 35
+
+print("The value of x is: ", x, " followed by a smile :)\n")
+print("The value of x is: ")
+print(x)
+print(" followed by a smile :)\n")

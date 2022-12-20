@@ -1,0 +1,59 @@
+x: int // Declaration, Variables are 0 initialized
+
+print("Simple Odd or Even\n")
+while x < 10 {
+    if x % 2 == 0 {
+        print(x, " is even\n")
+    } else {
+        print(x, " is odd\n")
+    }
+    x = x + 1 // Assignment
+}
+
+print("\nChess Pattern\n")
+y: int 
+z: int 
+while y < 10 {
+    z = 0
+    while z < 10 {
+        if (z + y % 2) % 2 == 0 {
+            print("#")
+        } else{
+            print(" ")
+        }
+        z = z + 1
+    }
+    print("\n")
+    y = y + 1
+}
+
+print("\nCircle Pattern\n")
+radius: int = 10 // Declaration and Assignment. Not 0 initialized
+c1: int = -radius
+c2: int = -radius
+
+while c1 <= radius {
+    while c2 <= radius {
+        if c1*c1 + c2*c2 <= radius*radius {
+            print("#")
+        } else{
+            print(" ")
+        }
+        c2 = c2 + 1
+    }
+    print("\n")
+    c1 = c1 + 1
+    c2 = -radius
+}
+
+
+print("\nFibonacci Sequence\n")
+a: int
+b: int = 1
+
+print(b)
+while b < 10000 {
+    a = a + b
+    b = a - b
+    print(" -> ", a)
+}print("\n")

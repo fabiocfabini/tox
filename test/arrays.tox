@@ -1,0 +1,39 @@
+arr: &int[10]
+
+for(x: int; x < 10; x = x + 1) {
+    arr[x] = x
+}
+
+for(x: int; x < 10; x = x + 1) {
+    print(arr[x], "\n")
+}
+
+for(x:int; x<10; x = x + 1) {
+    y: &int[10]
+    for(x_:int = x; x_<10 && x > 0; x_ = x_ + 1) {
+        y[x_] = x
+    }
+
+    for(x_:int = x; x_<10; x_ = x_ + 1) {
+        print(y[x_], " ")
+    }
+    print("\n")
+}
+
+for(x: int; x < 2; x = x + 1){
+    a: &int = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+    print(x, ": ")
+    for(x: int; x < 10; x = x + 1){
+        print(a[x], " ")
+    }
+    print("\n")
+}
+
+if 1 {
+    a: &int = [0 ... 10]
+
+    for(x: int; x < 10; x = x + 1){
+        print(a[x], "\n")
+    }
+}

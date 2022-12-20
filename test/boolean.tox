@@ -1,0 +1,16 @@
+x: int = 10 == 2 * 5
+print(x, "-> 10 == 2 * 5\n")
+
+y: int = 10 == 2 * 4
+print(y, "-> 10 == 2 * 4\n")
+
+z: int = 10 != 2 * 4 + 2
+print(y, "-> 10 != 2 * 4 + 2\n")
+
+w: int = 10 != 2 * 4 + 1
+print(w, "-> 10 != 2 * 4 + 1\n")
+
+print(w < x, "-> w < x\n")
+print(w > x, "-> w > x\n")
+print(w <= x, "-> w <= x\n")
+print(w >= x, "-> w >= x\n")

@@ -1,0 +1,29 @@
+// A Pythagorean triplet is a set of three natural numbers, a < b < c, for which,
+// 
+// a2 + b2 = c2
+// For example, 32 + 42 = 9 + 16 = 25 = 52.
+// 
+// There exists exactly one Pythagorean triplet for which a + b + c = 1000.
+// Find the product abc.
+
+N: int = 12
+a_final: int
+b_final: int
+c_final: int
+
+for(a: int=1; a < N; a = a + 1){
+    for(b: int=1; b < N; b = b + 1){
+        for(c: int=1; c < N; c = c + 1){
+            if(a+b+c == N && a*a + b*b == c*c){
+                a_final = a
+                b_final = b
+                c_final = a
+                a = N
+                b = N
+                c = N
+            }
+        }
+    }
+}
+
+print(a_final*b_final*c_final, "\n")
