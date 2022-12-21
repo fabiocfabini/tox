@@ -11,6 +11,13 @@ def find_column(input, token):
     last_cr = input.rfind('\n', 0, token.lexpos) + 1
     return (token.lexpos - last_cr) + 1
 
+def find_column_comp(input, token, n):
+    """
+    Compute the column of a given token.
+    """
+    last_cr = input.rfind('\n', 0, token.lexpos(n)) + 1
+    return (token.lexpos(n) - last_cr) + 1
+
 def lex_error(p, msg: str):
     """
     Report a lex error.
@@ -37,6 +44,6 @@ def compiler_note(msg):
 
 def std_message(msg: List[str]):
     """
-    Helper function to write an operation message.
+    Helper function to print an operation message.
     """
     return "\n".join(msg) + "\n"
