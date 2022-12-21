@@ -1,9 +1,7 @@
 from typing import List
+import sys
 
-from tox import compiler_error, syntax_error, find_column, find_column_comp
-
-def std_message(msg: List[str]):
-    return "\n".join(msg) + "\n"
+from tox import compiler_error, compiler_note,  std_message
 
 
 class Print:
@@ -71,21 +69,29 @@ class Assignment:
         """
         assignment : ID '[' expression ']' ASSIGN expression
         """
-        id_meta = p.parser.current_scope.get(p[1])
+        id_meta, in_function = p.parser.current_scope.get(p[1])
         if id_meta is None:
             compiler_error(p, 1, f"Assignment to undeclared variable {p[1]}")
+            compiler_note("Called from Assignment._array_index")
+            sys.exit(1)
         if not id_meta.type.startswith("&"):
             compiler_error(p, 1, f"Variable {p[1]} is not an array")
-        return std_message(["PUSHGP", f"PUSHI {id_meta.stack_position[0]}", "PADD", f"{p[3]}PADD", f"{p[6]}STORE 0"])
+            compiler_note("Called from Assignment._array_index")
+            sys.exit(1)
+        push_op = "PUSHGP" if not in_function else "PUSHFP"
+        return std_message([push_op, f"PUSHI {id_meta.stack_position[0]}", "PADD", f"{p[3]}PADD", f"{p[6]}STORE 0"])
 
     def _expression(self, p):
         """
         assignment : ID ASSIGN expression
         """
-        id_meta = p.parser.current_scope.get(p[1])
+        id_meta, in_function = p.parser.current_scope.get(p[1])
         if id_meta is None:
             compiler_error(p, 1, f"Assignment to undeclared variable {p[1]}")
-        return std_message([f"{p[3]}STOREG {id_meta.stack_position[0]}"])
+            compiler_note("Called from Assignment._expression")
+            sys.exit(1)
+        store_op = "STOREG" if not in_function else "STOREL"
+        return std_message([f"{p[3]}{store_op} {id_meta.stack_position[0]}"])
 
 
 class Declaration:
@@ -104,9 +110,15 @@ class Declaration:
         """
         if p[1] in p.parser.current_scope.Table:
             compiler_error(p, 1, f"Variable {p[1]} is already defined")
+            compiler_note("Called from Declaration._array_declaration")
+            sys.exit()
         else:
-            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count+int(p[5])-1))
-            p.parser.global_count += int(p[5])
+            if p.parser.current_scope.level == 0:
+                p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count+int(p[5])-1))
+                p.parser.global_count += int(p[5])
+            else:
+                p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count+int(p[5])-1))
+                p.parser.frame_count += int(p[5])
             return std_message([f"PUSHN {int(p[5])}"])
 
     def _variable_declaration(self, p):
@@ -115,9 +127,15 @@ class Declaration:
         """
         if p[1] in p.parser.current_scope.Table:
             compiler_error(p, 1, f"Variable {p[1]} is already defined")
+            compiler_note("Called from Declaration._variable_declaration")
+            sys.exit(1)
         else:
-            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count))
-            p.parser.global_count += 1
+            if p.parser.current_scope.level == 0:
+                p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count))
+                p.parser.global_count += 1
+            else:
+                p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count))
+                p.parser.frame_count += 1
             return std_message(["PUSHI 0"])
 
 
@@ -139,9 +157,15 @@ class DeclarationAssignment:
         """
         if p[1] in p.parser.current_scope.Table:
             compiler_error(p, 1, f"Variable {p[1]} is already defined")
+            compiler_note("Called from DeclarationAssignment._array_literal_init")
+            sys.exit(1)
         else:
-            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count+p.parser.array_assign_items-1))
-            p.parser.global_count += p.parser.array_assign_items
+            if p.parser.current_scope.level == 0:
+                p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count+p.parser.array_assign_items-1))
+                p.parser.global_count += p.parser.array_assign_items
+            else:
+                p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count+p.parser.array_assign_items-1))
+                p.parser.frame_count += p.parser.array_assign_items
             p.parser.array_assign_items = 0
             return p[6]
 
@@ -151,12 +175,19 @@ class DeclarationAssignment:
         """
         if p[1] in p.parser.current_scope.Table:
             compiler_error(p, 1, f"Variable {p[1]} is already defined")
+            compiler_note("Called from DeclarationAssignment._array_range_init")
+            sys.exit(1)
         else:
             start = int(p[6])
             end = int(p[8])
-            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count+end-start-1))
-            p.parser.global_count += end-start
-            return std_message([f"PUSHI {i}" for i in range(start, end)])
+            if p.parser.current_scope.level == 0:
+                p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count+end-start))
+                p.parser.global_count += end-start + 1
+            else:
+                p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count+end-start))
+                p.parser.frame_count += end-start + 1
+
+            return std_message([f"PUSHI {i}" for i in range(start, end + 1)])
 
     def _variable_init(self, p):
         """
@@ -164,9 +195,16 @@ class DeclarationAssignment:
         """
         if p[1] in p.parser.current_scope.Table:
             compiler_error(p, 1, f"Redeclaration of variable {p[1]}")
+            compiler_note("Called from DeclarationAssignment._variable_init")
+            sys.exit(1)
         else:
-            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count))
-            p.parser.global_count += 1
+            if p.parser.current_scope.level == 0:
+                p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count))
+                p.parser.global_count += 1
+            else:
+                p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count))
+                p.parser.frame_count += 1
+
             return p[5]
 
     def _array_items(self, p):
@@ -344,5 +382,7 @@ class BreakContinue:
     def _continue(self, p):
         if p.parser.current_scope.name.startswith("dowhile"):
             compiler_error(p, 1, "continue statement not allowed in do while loop")
+            compiler_note("Called from BreakContinue._continue.")
+            sys.exit(1)
 
         return std_message([f"JUMP LOOP{p.parser.loop_count}START"])

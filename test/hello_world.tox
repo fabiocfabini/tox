@@ -1,2 +1,4 @@
-print("Hello, World!\n")
-print("Hello, World!\n")
+func main() {
+    print("Hello, World!\n")
+    print("Hello, World!\n")
+}

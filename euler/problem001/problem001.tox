@@ -4,10 +4,12 @@
 
 accum: int
 
-for(i: int; i < 1000; i = i + 1) {
-  if(i % 3 == 0 || i % 5 == 0) {
-    accum = accum + i
+func main() {
+  for(i: int; i < 1000; i = i + 1) {
+    if(i % 3 == 0 || i % 5 == 0) {
+      accum = accum + i
+    }
   }
-}
 
-print(accum, "\n")
+  print(accum, "\n")
+}

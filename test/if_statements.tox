@@ -1,35 +1,37 @@
-if 34 + 35 == 69 {
-    print("You're a genius!\n")
-} else {
-    print("You're not a genius!\n")
-}
-
-if 2 * 210 != 420 {
-    print("You're a genius!\n")
-} else {
-    print("You're not a genius!\n")
-}
-
-x: int = 31
-y: int = 35
-print("x = ", x, "\n") 
-print("y = ", y, "\n") 
-if x == 34 {
-    if y == 35 {
-        print("x = 34 and y = 35\n")
+func main() {
+    if 34 + 35 == 69 {
+        print("You're a genius!\n")
     } else {
-        print("x = 34 and y != 35\n")
+        print("You're not a genius!\n")
     }
-} else {
-    if y == 35 {
-        print("x != 34 and y = 35\n")
+
+    if 2 * 210 != 420 {
+        print("You're a genius!\n")
     } else {
-        print("x != 34 and y != 35\n")
+        print("You're not a genius!\n")
     }
-}
 
-z: int = 0
+    x: int = 31
+    y: int = 35
+    print("x = ", x, "\n") 
+    print("y = ", y, "\n") 
+    if x == 34 {
+        if y == 35 {
+            print("x = 34 and y = 35\n")
+        } else {
+            print("x = 34 and y != 35\n")
+        }
+    } else {
+        if y == 35 {
+            print("x != 34 and y = 35\n")
+        } else {
+            print("x != 34 and y != 35\n")
+        }
+    }
 
-if z % 2 == 0 {
-    print("z is even\n")
+    z: int = 0
+
+    if z % 2 == 0 {
+        print("z is even\n")
+    }
 }

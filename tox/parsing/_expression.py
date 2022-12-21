@@ -1,6 +1,7 @@
 from typing import List
+import sys
 
-from tox import compiler_error, syntax_error, find_column, find_column_comp
+from tox import compiler_error, compiler_note
 
 def std_message(msg: List[str]):
     return "\n".join(msg) + "\n"
@@ -24,21 +25,29 @@ class Primary:
         """
         primary : ID '[' expression ']'
         """
-        id_meta = p.parser.current_scope.get(p[1])
+        id_meta, in_function = p.parser.current_scope.get(p[1])
         if id_meta is None:
             compiler_error(p, 1, f"Variable {p[1]} not declared")
+            compiler_note("Called from Primary._indexing")
+            sys.exit(1)
         if id_meta.type != "&int":
             compiler_error(p, 1, f"Variable {p[1]} is not an array")
-        return std_message([f"PUSHGP", f"PUSHI {id_meta.stack_position[0]}", "PADD", f"{p[3]}PADD", "LOAD 0"])
+            compiler_note("Called from Primary._indexing")
+            sys.exit(1)
+        push_op = "PUSHGP" if not in_function else "PUSHFP"
+        return std_message([push_op, f"PUSHI {id_meta.stack_position[0]}", "PADD", f"{p[3]}PADD", "LOAD 0"])
 
     def _id(self, p):
         """
         primary : ID
         """
-        id_meta = p.parser.current_scope.get(p[1])
+        id_meta, in_function = p.parser.current_scope.get(p[1])
         if id_meta is None:
             compiler_error(p, 1, f"Variable {p[1]} not declared")
-        return std_message(["PUSHGP", f"LOAD {id_meta.stack_position[0]}"])
+            compiler_note("Called from Primary.id")
+            sys.exit(1)
+        push_op = "PUSHGP" if not in_function else "PUSHFP"
+        return std_message([push_op, f"LOAD {id_meta.stack_position[0]}"])
 
     def _int(self, p):
         """

@@ -1,24 +1,26 @@
-x: int = 0
+func main() {
+    x: int = 0
 
-while x < 10 {
-    if x % 2 == 0 {
-        print(x, " is even\n")
-    } else {
-        print(x, " is odd\n")
+    while x < 10 {
+        if x % 2 == 0 {
+            print(x, " is even\n")
+        } else {
+            print(x, " is odd\n")
+        }
+        x = x + 1
     }
-    x = x + 1
-}
 
-y: int = 0
-z: int = 0
-print("\n")
-while y < 10 {
-    // z = 0 Having z = 0 here results in a different output
-    while z < 10 {
-        print("#")
-        z = z + 1
-    }
+    y: int = 0
+    z: int = 0
     print("\n")
-    y = y + 1
-    z = 0
+    while y < 10 {
+        // z = 0 Having z = 0 here results in a different output
+        while z < 10 {
+            print("#")
+            z = z + 1
+        }
+        print("\n")
+        y = y + 1
+        z = 0
+    }
 }

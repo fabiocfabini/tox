@@ -4,11 +4,7 @@ import os
 import sys
 import glob
 import subprocess
-
-COLOR_RED = "\033[1;31m"
-COLOR_BLUE = "\033[1;34m"
-COLOR_GREEN = "\033[1;32m"
-RESET_COLOR = "\033[0;0m"
+from tox.utils.colors import *
 
 OptArgs = Dict[str, str]
 ReqArgs = Dict[str, bool]

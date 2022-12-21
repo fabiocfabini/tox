@@ -5,17 +5,19 @@
 is_divisible: int
 x: int
 
-while(!is_divisible){
-    x = x + 1
-    i: int = 1
-    for(; i <= 10; i = i + 1){
-        if (x % i != 0) {
-            break
+func main() {
+    while(!is_divisible){
+        x = x + 1
+        i: int = 1
+        for(; i <= 10; i = i + 1){
+            if (x % i != 0) {
+                break
+            }
+        }
+        if (i == 11){
+            is_divisible = 1
         }
     }
-    if (i == 11){
-        is_divisible = 1
-    }
-}
 
-print(x, "\n")
+    print(x, "\n")
+}

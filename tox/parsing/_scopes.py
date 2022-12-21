@@ -2,6 +2,8 @@ from __future__ import annotations
 from typing import Optional, Dict, Tuple
 from dataclasses import dataclass
 
+from tox import std_message
+
 @dataclass
 class MetaData:
     type: str
@@ -16,6 +18,7 @@ class Scope:
     name: str
     level : int
     parent: Optional[Scope] = None
+    in_function: bool = False
 
     def __post_init__(self):
         self.Table: Dict[str, MetaData] = {}
@@ -23,13 +26,13 @@ class Scope:
     def add(self, key: str, type: str, stack_position: Tuple[int, int]):
         self.Table[key] = MetaData(type, stack_position)
 
-    def get(self, key: str) -> Optional[MetaData]:
+    def get(self, key: str) -> Tuple[Optional[MetaData], bool]:
         if self.parent == None:
-            return self.Table.get(key)
+            return self.Table.get(key), self.in_function
 
         metadata = self.Table.get(key)
         if metadata is not None:
-            return metadata
+            return metadata, self.in_function
         return self.parent.get(key)
 
     def num_alloced(self) -> int:

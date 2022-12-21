@@ -4,7 +4,8 @@ from ply import yacc
 
 from tox.lexing._lexer import *
 from tox import Scope, MetaData
-from tox.utils.errors import syntax_error
+from tox import Functions, FunctionData
+from tox.utils.errors import syntax_error, compiler_error, compiler_note
 from tox import (
     Primary,
     Unary,
@@ -28,20 +29,156 @@ from tox import (
 
 def p_prog(p):
     """
-    prog : global_declarations stmts
+    prog : global_declarations function_declarations
     """
-    p[0] = "start\n"
-    p[0] += p[2]
-    p[0] += f"POP {parser.global_count}\n"
-    p[0] += "stop\n"
     parser.global_count = 0
     parser.loop_count = 0
     parser.if_count = 0
 
+    if parser.functions_handler.get("main") is None:
+        compiler_error(p, 0, "Did not find main function")
+        compiler_note("Called from p_prog.")
+        sys.exit(1)
+
+    p[0] = p[1]
+    p[0] += "start\n"
+    p[0] += f"PUSHA main\n"
+    p[0] += f"CALL\n"
+    p[0] += "stop\n"
+    p[0] += p[2]
+
+######################
+##   GLOBAL RULES   ##
+######################
+
 def p_global_declarations(p):
+    """
+    global_declarations : global_declaration global_declarations
+    """
+    p[0] = p[1] + p[2]
+
+def p_global_declarations_empty(p):
     """
     global_declarations :
     """
+    p[0] = ""
+
+def p_global_declaration(p):
+    """
+    global_declaration : declaration_assignment
+                    | declaration
+    """
+    p[0] = p[1]
+
+######################
+##   FUNCS RULES    ##
+######################
+
+def p_function_declarations(p):
+    """
+    function_declarations : function_declaration function_declarations
+    """
+    p[0] = p[1] + p[2]
+
+def p_function_declarations_empty(p):
+    """
+    function_declarations :
+    """
+    p[0] = ""
+
+def p_function_declaration(p):
+    """
+    function_declaration : function_header function_body
+    """
+    p[0] = p[1] + p[2]
+
+def p_function_header(p):
+    """
+    function_header : function_id ss '(' params ')'
+    """
+    p[0] = p[1] + p[4]
+
+def p_function_id(p):
+    """
+    function_id : FUNCTION ID
+    """
+    if parser.functions_handler.get(p[2]) is not None:
+        compiler_error(p, 2, f"Redefinition of function {p[2]}")
+        compiler_note("Called from p_function_id.")
+        sys.exit(1)
+    parser.functions_handler.add(p[2])
+    parser.current_function = parser.functions_handler.get(p[2])
+    p[0] = f"{p[2].replace('_', '')}:\n"
+
+def p_params(p):
+    """
+    params : params ',' param
+    """
+    p[0] = p[1] + p[3]
+
+def p_params_empty(p):
+    """
+    params :
+    """
+    p[0] = ""
+
+def p_single_param(p):
+    """
+    params : param
+    """
+    p[0] = p[1]
+
+def p_param(p):
+    """
+    param : ID ':' type
+    """
+    parser.current_scope.add(p[1], p[3], (parser.frame_count, parser.frame_count))
+    parser.frame_count += 1
+    parser.num_params += 1
+    p[0]  = "PUSHI 0\n"
+    p[0] += "PUSHFP\n"
+    p[0] += f"LOAD {-parser.num_params}\n"
+    p[0] += f"STOREL {parser.num_params-1}\n"
+
+def p_function_body(p):
+    """
+    function_body :  '{' stmts '}' es
+    """
+    p[0] = p[2]
+    p[0] += f"RETURN\n"
+    parser.current_function = None
+
+
+def p_function_call(p):
+    """
+    function_call : ID '(' args ')'
+    """
+    p[0] = p[3]
+    p[0] += parser.functions_handler.call(p)
+    p[0] += f"POP {parser.num_params}\n"
+    parser.num_params = 0
+
+def p_args(p):
+    """
+    args : args ',' expression
+    """
+    p[0] = p[3] + p[1]
+
+def p_args_empty(p):
+    """
+    args :
+    """
+    p[0] = ""
+
+def p_single_arg(p):
+    """
+    args : expression
+    """
+    p[0] = p[1]
+
+######################
+##    STMTS RULE    ##
+######################
 
 def p_stmts(p):
     """
@@ -65,11 +202,12 @@ def p_stmt(p):
         | do_while
         | break
         | continue
+        | function_call
     """
     p[0] = p[1]
 
 ######################
-##    SCOPE STMT    ##
+##    SCOPE RULE    ##
 ######################
 
 def p_start_scope(p):
@@ -77,15 +215,19 @@ def p_start_scope(p):
     ss :
     """
     p.parser.current_scope = Scope(
-        f"SCOPE_START_{p.parser.current_scope.level + 1}", 
-        p.parser.current_scope.level + 1, 
-        p.parser.current_scope
+        name=f"SCOPE_{p.parser.current_scope.level + 1}", 
+        level=p.parser.current_scope.level + 1, 
+        parent=p.parser.current_scope,
+        in_function=False if parser.current_function is None else True
     )
 def p_end_scope(p):
     """
     es :
     """
-    p.parser.global_count -= p.parser.current_scope.num_alloced()
+    if parser.current_function is not None:
+        p.parser.frame_count -= p.parser.current_scope.num_alloced() 
+    else:
+        p.parser.global_count -= p.parser.current_scope.num_alloced()
     p[0] = f"POP {p.parser.current_scope.num_alloced()}\n"
     p.parser.current_scope = p.parser.current_scope.parent
 
@@ -422,6 +564,7 @@ def p_primary_new(p):
 
 def p_error(p):
     syntax_error(p, f"Invalid syntax '{p.value}'")
+    sys.exit(1)
 
 parser = yacc.yacc()
 
@@ -442,8 +585,13 @@ parser.if_handler = If()
 parser.loop_handler = Loop()
 parser.loop_break_handler = BreakContinue()
 
+parser.functions_handler = Functions()
+parser.current_function = None
+parser.num_params = 0
+
 parser.current_scope: Scope = Scope(name="Global Scope", level=0, parent=None) 
 parser.global_count = 0
+parser.frame_count = 0
 parser.if_count = 0
 parser.loop_count = 0
 parser.array_assign_items = 0

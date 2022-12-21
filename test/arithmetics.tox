@@ -1,14 +1,16 @@
-x: int = 3
-print("X: ", x, "\n")
-y: int = 3
-print("Y: ", x, "\n")
+func main(){
+    x: int = 3
+    print("X: ", x, "\n")
+    y: int = 3
+    print("Y: ", x, "\n")
 
-z: int = x*x + y*y
-print("Z: ", z, "\n")
+    z: int = x*x + y*y
+    print("Z: ", z, "\n")
 
-z = z / 18
-print("Z: ", z, "\n")
+    z = z / 18
+    print("Z: ", z, "\n")
 
-print((z + 1) % 2, "\n")
+    print((z + 1) % 2, "\n")
 
-print(((1 + 2 / 2) * (10 * 2))/13 + 1, "\n")// 4.076923076923077 or 4
+    print(((1 + 2 / 2) * (10 * 2))/13 + 1, "\n")// 4.076923076923077 or 4
+}

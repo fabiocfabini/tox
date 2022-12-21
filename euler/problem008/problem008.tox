@@ -51,18 +51,20 @@ window : int = 4 // 13 gives a big result. larger than the maximum 32 bit intege
 accum  : int = 1
 max_mul: int
 
-for(i: int; i < N; i = i + 1){
-    if(i + window > N){
-        i = N + 1
-    } else {
-        for(j: int; j < window; j = j + 1){
-            accum = accum * arr[i+j]
+func main() {
+    for(i: int; i < N; i = i + 1){
+        if(i + window > N){
+            i = N + 1
+        } else {
+            for(j: int; j < window; j = j + 1){
+                accum = accum * arr[i+j]
+            }
+            if(accum > max_mul){
+                max_mul = accum
+            }
+            accum = 1
         }
-        if(accum > max_mul){
-            max_mul = accum
-        }
-        accum = 1
     }
-}
 
-print(max_mul, "\n")
+    print(max_mul, "\n")
+}

@@ -1,18 +1,20 @@
-print("Circle\n")
+func main() {
+    print("Circle\n")
 
-x: int 
-y: int
-r: int = 10
+    x: int 
+    y: int
+    r: int = 10
 
-for(r: int = 10, y: int = -r; y <= r; y = y + 1){ // The variables x, y and r are shadowed here
-    for(x: int = -r; x <= r; x = x + 1){
-        if(x*x + y*y <= r*r){
-            print("##")
-        } else {
-            print("  ")
+    for(r: int = 10, y: int = -r; y <= r; y = y + 1){ // The variables x, y and r are shadowed here
+        for(x: int = -r; x <= r; x = x + 1){
+            if(x*x + y*y <= r*r){
+                print("##")
+            } else {
+                print("  ")
+            }
         }
+        print("\n")
     }
-    print("\n")
-}
 
-print(x, y, r) // x, y and r should print 0, 0, 10
+    print(x, y, r) // x, y and r should print 0, 0, 10
+}

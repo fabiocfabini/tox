@@ -8,13 +8,15 @@ accum: int
 a: int = 1
 b: int = 2
 
-while(a < 4000000){
-    if(a % 2 == 0){
-        accum = accum + a
+func main() {
+    while(a < 4000000){
+        if(a % 2 == 0){
+            accum = accum + a
+        }
+        temp: int = a
+        a = b
+        b = temp + b
     }
-    temp: int = a
-    a = b
-    b = temp + b
-}
 
-print(accum, "\n")
+    print(accum, "\n")
+}
