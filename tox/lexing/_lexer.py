@@ -2,18 +2,20 @@ import sys
 
 from ply import lex
 
+from tox import find_column, lex_error
+
 COLOR_RED = "\033[1;31m"
 RESET_COLOR = "\033[0;0m"
 
-arithmetics_literals = "[]()+-/*%^!{}&"
-general_literals = ",:;"
+arithmetics_literals = "[]()+-/*%^!{}&"     # Literals for arithmetics
+general_literals = ",:;"                    # Literals for general use
 
 literals = arithmetics_literals + general_literals
 
-type_tokens = ['INT', 'STRING', 'TRUE', 'FALSE']
-op_tokens = ["ASSIGN", "LTE", "LT", 'EQ', "NEQ", "GT", "GTE", "RETI"]
-special_tokens = ['NEWLINE', 'COMMENT', 'MULTICOMMENTS', 'ID', 'AND', 'OR']
-reserved = {
+type_tokens = ['INT', 'STRING', 'TRUE', 'FALSE']                                    # String so far only works in literals
+op_tokens = ["ASSIGN", "LTE", "LT", 'EQ', "NEQ", "GT", "GTE", "RETI", 'AND', 'OR']  # Operators
+special_tokens = ['NEWLINE', 'COMMENT', 'MULTICOMMENTS', 'ID']                      # Special tokens
+reserved = {                                                                        # Reserved words
     'print' : 'PRINT',
     'int'   : 'TYPE_INT',
     'if'    : 'IF',
@@ -29,68 +31,64 @@ reserved = {
 
 tokens = type_tokens + special_tokens + list(reserved.values()) + op_tokens
 
-def find_column(input, token):
-    last_cr = input.rfind('\n', 0, token.lexpos) + 1
-    return (token.lexpos - last_cr) + 1
+t_EQ = r"=="            # Double equal
+t_RETI = r"\.\.\."      # '...' for ranged array declaration
+t_GTE = r">="           # Greater than or equal
+t_LTE = r"<="           # Less than or equal
+t_NEQ = r"!="           # Not equal
+t_ASSIGN = r"="         # Assign
+t_LT = r"<"             # Less than
+t_GT = r">"             # Greater than
 
-t_EQ = r"=="
-t_RETI = r"\.\.\."
-t_GTE = r">="
-t_LTE = r"<="
-t_NEQ = r"!="
-t_ASSIGN = r"="
-t_LT = r"<"
-t_GT = r">"
-
-@lex.TOKEN(r'\d+')
+@lex.TOKEN(r'\d+')      # Integer
 def t_INT(t):
     return t
 
-@lex.TOKEN(r'\|\|')
+@lex.TOKEN(r'\|\|')     # OR
 def t_OR(t):
     return t
 
-@lex.TOKEN(r'&&')
+@lex.TOKEN(r'&&')       # AND
 def t_AND(t):
     return t
 
-@lex.TOKEN(r"print")
+@lex.TOKEN(r"print")    # Print
 def t_PRINT(t):
     return t
 
-@lex.TOKEN(r"False")
+@lex.TOKEN(r"False")    # False
 def t_FALSE(t):
     return t
 
-@lex.TOKEN(r"True")
+@lex.TOKEN(r"True")     # True
 def t_TRUE(t):
     return t
 
-@lex.TOKEN(r'\"[^"]*\"')
+@lex.TOKEN(r'\"[^"]*\"')    # String
 def t_STRING(t):
     return t
 
-@lex.TOKEN(r'[a-zA-Z_][a-zA-Z0-9_]*')
+@lex.TOKEN(r'[a-zA-Z_][a-zA-Z0-9_]*')       # ID
 def t_ID(t):
-    t.type = reserved.get(t.value, 'ID')
+    t.type = reserved.get(t.value, 'ID')    # Check for reserved words
     return t
 
-@lex.TOKEN(r"//.*")
+@lex.TOKEN(r"//.*")    # Comment
 def t_COMMENT(t):
     pass
 
-@lex.TOKEN(r"/\*(.|\n)*?\*/")
+@lex.TOKEN(r"/\*(.|\n)*?\*/")   # Multiline comment
 def t_MULTICOMMENTS(t):
     t.lexer.lineno += t.value.count('\n')
 
-@lex.TOKEN(r'\n+')
+@lex.TOKEN(r'\n+')    # Newline
 def t_NEWLINE(t):
     t.lexer.lineno += len(t.value)
 
-t_ignore = ' \t'
+t_ignore = ' \t'    # Ignore spaces and tabs
 
-def t_error(t):
-    sys.stderr.write(f"{COLOR_RED}LexError:{RESET_COLOR}{t.lineno}:{find_column(t.lexer.lexdata, t)}: Illegal character {t.value[0]}\n")
+def t_error(t):    # Error handling
+    lex_error(t, "Illegal character '%s'" % t.value[0])
     sys.exit(1)
 
 lexer = lex.lex()
