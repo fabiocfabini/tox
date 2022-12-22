@@ -24,7 +24,7 @@ class Primary:
         """
         primary : ID '[' expression ']'
         """
-        id_meta, in_function = p.parser.current_scope.get(p[1]) # Get the metadata of the variable
+        id_meta, in_function, scope_name = p.parser.current_scope.get(p[1]) # Get the metadata of the variable
         if id_meta is None: # If the variable is not declared, Throw an error
             compiler_error(p, 1, f"Variable {p[1]} not declared")
             compiler_note("Called from Primary._indexing")
@@ -40,7 +40,7 @@ class Primary:
         """
         primary : ID
         """
-        id_meta, in_function = p.parser.current_scope.get(p[1]) # Get the metadata of the variable
+        id_meta, in_function, scope_name = p.parser.current_scope.get(p[1]) # Get the metadata of the variable
         if id_meta is None: # If the variable is not declared, Throw an error
             compiler_error(p, 1, f"Variable {p[1]} not declared")
             compiler_note("Called from Primary.id")

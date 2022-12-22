@@ -28,11 +28,11 @@ class Scope:
 
     def get(self, key: str) -> Tuple[Optional[MetaData], bool]:
         if self.parent == None:
-            return self.Table.get(key), self.in_function
+            return self.Table.get(key), self.in_function, self.name
 
         metadata = self.Table.get(key)
         if metadata is not None:
-            return metadata, self.in_function
+            return metadata, self.in_function, self.name
         return self.parent.get(key)
 
     def num_alloced(self) -> int:

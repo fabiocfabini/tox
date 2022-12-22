@@ -358,7 +358,7 @@ def p_assignment_expression(p):
     """
     assignment : ID ASSIGN expression
     """
-    p[0] = parser.assignment_handler.handle(p, "expression")
+    p[0] = parser.assignment_handler.handle(p, "variable")
 
 ######################
 ##    PRINT STMT    ##
