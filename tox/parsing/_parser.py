@@ -214,22 +214,12 @@ def p_start_scope(p):
     """
     ss :
     """
-    p.parser.current_scope = Scope(
-        name=f"SCOPE_{p.parser.current_scope.level + 1}", 
-        level=p.parser.current_scope.level + 1, 
-        parent=p.parser.current_scope,
-        in_function=False if parser.current_function is None else True
-    )
+    p.parser.current_scope.handle(p, "start_scope")
 def p_end_scope(p):
     """
     es :
     """
-    if parser.current_function is not None:
-        p.parser.frame_count -= p.parser.current_scope.num_alloced() 
-    else:
-        p.parser.global_count -= p.parser.current_scope.num_alloced()
-    p[0] = f"POP {p.parser.current_scope.num_alloced()}\n"
-    p.parser.current_scope = p.parser.current_scope.parent
+    p[0] = p.parser.current_scope.handle(p, "end_scope")
 
 ######################
 ##    BREAK STMT    ##
