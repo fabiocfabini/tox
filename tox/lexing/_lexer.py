@@ -14,7 +14,7 @@ literals = arithmetics_literals + general_literals
 
 type_tokens = ['INT', 'STRING', 'TRUE', 'FALSE']                                    # String so far only works in literals
 op_tokens = ["ASSIGN", "LTE", "LT", 'EQ', "NEQ", "GT", "GTE", "RETI", 'AND', 'OR']  # Operators
-special_tokens = ['NEWLINE', 'COMMENT', 'MULTICOMMENTS', 'ID']                      # Special tokens
+special_tokens = ['NEWLINE', 'COMMENT', 'MULTICOMMENTS', 'ID', 'RARROW']            # Special tokens
 reserved = {                                                                        # Reserved words
     'print' : 'PRINT',
     'int'   : 'TYPE_INT',
@@ -31,6 +31,7 @@ reserved = {                                                                    
 
 tokens = type_tokens + special_tokens + list(reserved.values()) + op_tokens
 
+t_RARROW = r"->"        # '->' for function declaration
 t_EQ = r"=="            # Double equal
 t_RETI = r"\.\.\."      # '...' for ranged array declaration
 t_GTE = r">="           # Greater than or equal
@@ -94,7 +95,7 @@ def t_error(t):    # Error handling
 lexer = lex.lex()
 
 if __name__ == "__main__":
-    lexer.input("&||&&&&...")
+    lexer.input("&||&&&&...- ><")
     while True:
         tok = lexer.token()
         if tok:

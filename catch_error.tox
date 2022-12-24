@@ -1,4 +1,4 @@
-func drawCircle(r: int){
+func drawCircle(r: int) {
     for(y:int = -r; y <=r; y = y + 1){
         for(x:int = -r; x <=r; x = x + 1){
             if(x*x + y*y <= r*r){
@@ -9,8 +9,12 @@ func drawCircle(r: int){
         }
         print("\n")
     }
+
+    return
 }
 
-func main() {
-    drawCircle(10)
+func main(){
+    drawCircle(5)
+
+    return
 }

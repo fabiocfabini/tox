@@ -68,14 +68,14 @@ class Scope:
             name=f"SCOPE_{p.parser.current_scope.level + 1}", 
             level=p.parser.current_scope.level + 1, 
             parent=p.parser.current_scope,
-            in_function=False if p.parser.current_function is None else True
+            in_function=False if p.parser.functions_handler.current_function is None else True
         )
 
     def _end_scope(self, p):
         """
         es :
         """
-        if p.parser.current_function is not None:
+        if p.parser.functions_handler.current_function is not None:
             p.parser.frame_count -= p.parser.current_scope.num_alloced() 
         else:
             p.parser.global_count -= p.parser.current_scope.num_alloced()

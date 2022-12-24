@@ -1,6 +1,6 @@
-// The prime factors of 13195 are 5, 7, 13 and 29.
-//
-// What is the largest prime factor of the number 131951?
+// The sum of the primes below 10 is 2 + 3 + 5 + 7 = 17.
+// 
+// Find the sum of all the primes below two million.
 
 func isPrime(x: int) -> int {
     if x == 1 {
@@ -27,14 +27,14 @@ func isPrime(x: int) -> int {
 }
 
 func main() {
-    N: int = 131951
-    r: int = -1
-    for(i: int = 2; i < N; i = i + 1) {
-        if N % i == 0 {
-            if isPrime(i) {
-                r = i
-            }
+    sum: int = 0
+    i: int = 1
+    while i < 10000 {
+        if isPrime(i) {
+            sum = sum + i
         }
+        i = i + 1
     }
-    print(r, "\n")
+
+    print(sum, "\n")
 }

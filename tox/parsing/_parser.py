@@ -92,14 +92,20 @@ def p_function_declaration(p):
     p[0] = p[1] + p[2]
 def p_function_header(p):
     """
-    function_header : FUNCTION ID ss '(' params ')'
+    function_header : function_id ss '(' params ')' out_type
     """
-    p[0] = parser.functions_handler.handle(p, 'function_header')
+    p[0] = parser.functions_handler.handle(p, 'header')
+def p_function_id(p):
+    """
+    function_id : FUNCTION ID
+    """
+    p[0] = parser.functions_handler.handle(p, 'id')
 def p_function_body(p):
+
     """
-    function_body :  '{' stmts '}' es
+    function_body : '{' stmts '}' es
     """
-    p[0] = parser.functions_handler.handle(p, 'function_body')
+    p[0] = parser.functions_handler.handle(p, 'body')
 def p_function_call(p):
     """
     function_call : ID '(' args ')'
@@ -126,6 +132,13 @@ def p_param(p):
     param : ID ':' type
     """
     p[0] = parser.functions_handler.handle(p, 'parameter')
+
+def p_out_type(p):
+    """
+    out_type : RARROW type
+            | 
+    """
+    p[0] = parser.functions_handler.handle(p, 'out_type')
 
 def p_args(p):
     """
@@ -171,6 +184,7 @@ def p_stmt(p):
         | break
         | continue
         | function_call
+        | return
     """
     p[0] = p[1]
 
@@ -188,6 +202,17 @@ def p_end_scope(p):
     es :
     """
     p[0] = p.parser.current_scope.handle(p, "end_scope")
+
+######################
+##   RETURN STMT    ##
+######################
+
+def p_return(p):
+    """
+    return : RETURN expression
+            | RETURN
+    """
+    p[0] = parser.functions_handler.handle(p, 'return')
 
 ######################
 ##    BREAK STMT    ##
@@ -514,6 +539,11 @@ def p_primary_false(p):
     primary : FALSE
     """
     p[0] = parser.primary_handler.handle(p, "false")
+def p_primary_function(p):
+    """
+    primary : function_call
+    """
+    p[0] = p[1]
 def p_primary_new(p):
     """
     primary : '(' expression ')'

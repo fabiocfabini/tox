@@ -1,6 +1,6 @@
-// The prime factors of 13195 are 5, 7, 13 and 29.
-//
-// What is the largest prime factor of the number 131951?
+// By listing the first six prime numbers: 2, 3, 5, 7, 11, and 13, we can see that the 6th prime is 13.
+// 
+// What is the 10 001st prime number?
 
 func isPrime(x: int) -> int {
     if x == 1 {
@@ -27,14 +27,18 @@ func isPrime(x: int) -> int {
 }
 
 func main() {
-    N: int = 131951
-    r: int = -1
-    for(i: int = 2; i < N; i = i + 1) {
-        if N % i == 0 {
-            if isPrime(i) {
-                r = i
-            }
+    i: int
+    n: int
+    r: int
+    N: int = 1001
+
+    while i < N {
+        if isPrime(n) {
+            r = n
+            i = i + 1
         }
+        n = n + 1
     }
+
     print(r, "\n")
 }
