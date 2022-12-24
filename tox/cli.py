@@ -128,11 +128,12 @@ def test_execute(opt_args: OptArgs):
             echo_cmd("rm test/*_com.out")
             echo_cmd("rm test/*.vms")
         print(COLOR_GREEN + "-"*80 + RESET_COLOR)
-        print(f"{COLOR_GREEN}Passed: {num_tests}.{RESET_COLOR}", end=" ")
-        print(f"{COLOR_RED}Failed: {len(failed_tests)}.{RESET_COLOR}")
         for failed_test, error_msg in failed_tests:
             print(f"{COLOR_RED}Failed: {failed_test}.{RESET_COLOR}")
             print(f"{COLOR_RED}{error_msg}{RESET_COLOR}")
+        print(COLOR_GREEN + "-"*80 + RESET_COLOR)
+        print(f"{COLOR_GREEN}Passed: {num_tests}.{RESET_COLOR}", end=" ")
+        print(f"{COLOR_RED}Failed: {len(failed_tests)}.{RESET_COLOR}")
 
 def euler_execute(opt_args: OptArgs):
     input_files = glob.glob("euler/problem*/*.tox")
@@ -161,11 +162,12 @@ def euler_execute(opt_args: OptArgs):
         echo_cmd("rm euler/problem*/*.out")
         echo_cmd("rm euler/problem*/*.vms")
     print(COLOR_GREEN + "-"*80 + RESET_COLOR)
-    print(f"{COLOR_GREEN}Passed: {num_tests}.{RESET_COLOR}", end=" ")
-    print(f"{COLOR_RED}Failed: {len(failed_tests)}.{RESET_COLOR}")
     for failed_test, error_msg in failed_tests:
         print(f"{COLOR_RED}Failed: {failed_test}.{RESET_COLOR}")
         print(f"{COLOR_RED}{error_msg}{RESET_COLOR}")
+    print(COLOR_GREEN + "-"*80 + RESET_COLOR)
+    print(f"{COLOR_GREEN}Passed: {num_tests}{RESET_COLOR}", end=" ")
+    print(f"{COLOR_RED}Failed: {len(failed_tests)}.{RESET_COLOR}")
 
 def execute(opt_args: OptArgs, req_args: ReqArgs):
     if req_args["com"]: com_execute(opt_args)

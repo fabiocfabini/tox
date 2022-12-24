@@ -85,96 +85,64 @@ def p_function_declarations_empty(p):
     function_declarations :
     """
     p[0] = ""
-
 def p_function_declaration(p):
     """
     function_declaration : function_header function_body
     """
     p[0] = p[1] + p[2]
-
 def p_function_header(p):
     """
-    function_header : function_id ss '(' params ')'
+    function_header : FUNCTION ID ss '(' params ')'
     """
-    p[0] = p[1] + p[4]
-
-def p_function_id(p):
+    p[0] = parser.functions_handler.handle(p, 'function_header')
+def p_function_body(p):
     """
-    function_id : FUNCTION ID
+    function_body :  '{' stmts '}' es
     """
-    if parser.functions_handler.get(p[2]) is not None:
-        compiler_error(p, 2, f"Redefinition of function {p[2]}")
-        compiler_note("Called from p_function_id.")
-        sys.exit(1)
-    parser.functions_handler.add(p[2])
-    parser.current_function = parser.functions_handler.get(p[2])
-    p[0] = f"{p[2].replace('_', '')}:\n"
+    p[0] = parser.functions_handler.handle(p, 'function_body')
+def p_function_call(p):
+    """
+    function_call : ID '(' args ')'
+    """
+    p[0] = parser.functions_handler.handle(p, 'call')
 
 def p_params(p):
     """
     params : params ',' param
     """
     p[0] = p[1] + p[3]
-
 def p_params_empty(p):
     """
     params :
     """
     p[0] = ""
-
 def p_single_param(p):
     """
     params : param
     """
     p[0] = p[1]
-
 def p_param(p):
     """
     param : ID ':' type
     """
-    parser.current_scope.add(p[1], p[3], (parser.frame_count, parser.frame_count))
-    parser.frame_count += 1
-    parser.num_params += 1
-    p[0]  = "PUSHI 0\n"
-    p[0] += "PUSHFP\n"
-    p[0] += f"LOAD {-parser.num_params}\n"
-    p[0] += f"STOREL {parser.num_params-1}\n"
-
-def p_function_body(p):
-    """
-    function_body :  '{' stmts '}' es
-    """
-    p[0] = p[2]
-    p[0] += f"RETURN\n"
-    parser.current_function = None
-
-
-def p_function_call(p):
-    """
-    function_call : ID '(' args ')'
-    """
-    p[0] = p[3]
-    p[0] += parser.functions_handler.call(p)
-    p[0] += f"POP {parser.num_params}\n"
-    parser.num_params = 0
+    p[0] = parser.functions_handler.handle(p, 'parameter')
 
 def p_args(p):
     """
     args : args ',' expression
     """
     p[0] = p[3] + p[1]
-
 def p_args_empty(p):
     """
     args :
     """
     p[0] = ""
-
 def p_single_arg(p):
     """
     args : expression
     """
-    p[0] = p[1]
+    p[0] = parser.functions_handler.handle(p, 'argument')
+
 
 ######################
 ##    STMTS RULE    ##
@@ -579,9 +547,10 @@ parser.functions_handler = Functions()
 parser.current_function = None
 parser.num_params = 0
 
-parser.current_scope: Scope = Scope(name="Global Scope", level=0, parent=None) 
-parser.global_count = 0
 parser.frame_count = 0
+parser.global_count = 0
+parser.current_scope: Scope = Scope(name="Global Scope", level=0, parent=None) 
+
 parser.if_count = 0
 parser.loop_count = 0
 parser.array_assign_items = 0
