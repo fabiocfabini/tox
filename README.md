@@ -42,11 +42,11 @@ This is a multiline comment
 
 ### **Data Types**
 
-- ```int```: 32-bit integer; 
-- ```&int```: Array of 32-bit integers;
+Has of now, the language supports the following data types:
 
-**Note**: So far the only data type supported by the programming language is ```int```. ```float``` and ```string``` should be added in the future.
-
+- ```int```: 32 bit integer;
+- ```&int```: array of 32 bit integers;
+- ```string```: Unmutable strings;
 
 ### **Arithmetics**
 
