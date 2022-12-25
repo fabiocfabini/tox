@@ -112,7 +112,7 @@ a[0]
 
 The control flow of the language is similar to the control flow of C. These include:
 
-- ```if``` and ```if else``` statements; #TODO: Add ```if else if``` statements
+- ```if``` and ```if else``` statements;
 
 ```c
 if expression {
@@ -158,7 +158,7 @@ for(i: int = 0; i < 10; i = i + 1) {
 To declare a function start with the key word ```func``` followed by the function name, the function parameters and the function return type. For example:
 
 ```c
-func sum(a: int, b: int): int {
+func sum(a: int, b: int) -> int {
     return a + b
 }
 ```
