@@ -545,16 +545,6 @@ def p_primary_id(p):
     primary : ID
     """
     p[0] = parser.primary_handler.handle(p, "id")
-def p_primary_true(p):
-    """
-    primary : TRUE
-    """
-    p[0] = parser.primary_handler.handle(p, "true")
-def p_primary_false(p):
-    """
-    primary : FALSE
-    """
-    p[0] = parser.primary_handler.handle(p, "false")
 def p_primary_function(p):
     """
     primary : function_call

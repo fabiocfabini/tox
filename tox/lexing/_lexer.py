@@ -12,7 +12,7 @@ general_literals = ",:;"                    # Literals for general use
 
 literals = arithmetics_literals + general_literals
 
-type_tokens = ['INT', 'STRING', 'TRUE', 'FALSE']                                    # String so far only works in literals
+type_tokens = ['INT', 'STRING']                                    # String so far only works in literals
 op_tokens = ["ASSIGN", "LTE", "LT", 'EQ', "NEQ", "GT", "GTE", "RETI", 'AND', 'OR']  # Operators
 special_tokens = ['NEWLINE', 'COMMENT', 'MULTICOMMENTS', 'ID', 'RARROW']            # Special tokens
 reserved = {                                                                        # Reserved words
@@ -56,14 +56,6 @@ def t_AND(t):
 
 @lex.TOKEN(r"print")    # Print
 def t_PRINT(t):
-    return t
-
-@lex.TOKEN(r"False")    # False
-def t_FALSE(t):
-    return t
-
-@lex.TOKEN(r"True")     # True
-def t_TRUE(t):
     return t
 
 @lex.TOKEN(r'\"[^"]*\"')    # String

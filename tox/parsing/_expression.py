@@ -13,8 +13,6 @@ class Primary:
             "id": self._id,
             "int": self._int,
             "string": self._string,
-            "true": self._true,
-            "false": self._false,
             "new": self._new
         }
 
@@ -70,20 +68,6 @@ class Primary:
         """
         p.parser.type_checker.push("string")
         return std_message([f"PUSHS {p[1]}"]) # Return the message
-
-    def _true(self, p) -> str: # Handles pushing a true value
-        """
-        primary : TRUE
-        """
-        p.parser.type_checker.push("int")
-        return std_message(["PUSHI 1"]) # Return the message
-
-    def _false(self, p) -> str: # Handles pushing a false value
-        """
-        primary : TRUE
-        """
-        p.parser.type_checker.push("int")
-        return std_message(["PUSHI 0"]) # Return the message
 
     def _new(self, p) -> str: # Handles a grouped expression
         """
