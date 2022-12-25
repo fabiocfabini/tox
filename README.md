@@ -52,9 +52,10 @@ Has of now, the language supports the following data types:
 
 Basic arithmetics are supported by the language. These include:
 
-- the ```+```, ```-```, ```*```, ```/```, ```-``` operators;
+- the ```+```, ```-```, ```*```, ```/``` operators;
 - the ```==```, ```!=```, ```<```, ```>```, ```<=```, ```>=``` operators;
 - the ```&&```, ```||``` operators;
+- the ```!``` operator;
 
 
 ### **Variables**
