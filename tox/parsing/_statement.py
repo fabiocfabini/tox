@@ -251,8 +251,8 @@ class If:
         out = p[2]                                              # Push condition to the stack
         out += std_message([f"JZ ENDLABEL{current_if_count}"])  # Jump to the end label if the expression is false
         out += p[5]                                             # Push the statements
-        out += std_message([f"ENDLABEL{current_if_count}:"])    # Add the end label
         out += p[7]                                             # Get out of if scope
+        out += std_message([f"ENDLABEL{current_if_count}:"])    # Add the end label
         p.parser.if_count += 1                                  # Increment the if count
 
         return out
@@ -265,12 +265,12 @@ class If:
         out = p[2]                                                  # Push condition to the stack 
         out += std_message([f"JZ ELSELABEL{current_if_count}"])     # Jump to the else label if the expression is false
         out += p[5]                                                 # Push the statements
-        out += std_message([f"JUMP ENDIFLABEL{current_if_count}"])  # Jump to the end if label
         out += p[7]                                                 # Get out of if scope
+        out += std_message([f"JUMP ENDIFLABEL{current_if_count}"])  # Jump to the end if label
         out += std_message([f"ELSELABEL{current_if_count}:"])       # Add the else label
         out += p[11]                                                # Push the statements
-        out += std_message([f"ENDIFLABEL{current_if_count}:"])      # Add the end if label
         out += p[13]                                                # Get out of else scope
+        out += std_message([f"ENDIFLABEL{current_if_count}:"])      # Add the end if label
         p.parser.if_count += 1                                      # Increment the if count
 
         return out
