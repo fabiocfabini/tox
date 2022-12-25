@@ -8,7 +8,8 @@ setup(
     description='Tox: a ply programming language',
     packages=find_packages(),
     install_requires=[
-        'ply'
+        'ply',
+        'tqdm'
     ],
     entry_points={
         'console_scripts': [
