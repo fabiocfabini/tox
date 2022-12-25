@@ -352,26 +352,16 @@ def p_print(p):
     print : PRINT '(' multiple_prints ')'
     """
     p[0] = parser.print_handler.handle(p, "print")
-def p_print_expressions(p):
+def p_print_multiple(p):
     """
     multiple_prints : multiple_prints ',' expression
     """
-    p[0] = parser.print_handler.handle(p, "expressions")
-def p_print_strings(p):
-    """
-    multiple_prints : multiple_prints ',' STRING
-    """
-    p[0] = parser.print_handler.handle(p, "strings")
-def p_print_string(p):
-    """
-    multiple_prints : STRING
-    """
-    p[0] = parser.print_handler.handle(p, "string")
-def p_print_expression(p):
+    p[0] = parser.print_handler.handle(p, "multiple")
+def p_print_single(p):
     """
     multiple_prints : expression
     """
-    p[0] = parser.print_handler.handle(p, "expression")
+    p[0] = parser.print_handler.handle(p, "single")
 def p_print_empty(p):
     """
     multiple_prints : 
@@ -385,6 +375,7 @@ def p_print_empty(p):
 def p_type(p):
     """
     type : TYPE_INT
+        | TYPE_STRING
     """
     p[0] = p[1]
 def p_vtype(p):
@@ -524,6 +515,11 @@ def p_primary_int(p):
     primary : INT
     """
     p[0] = parser.primary_handler.handle(p, "int")
+def p_primary_string(p):
+    """
+    primary : STRING
+    """
+    p[0] = parser.primary_handler.handle(p, "string")
 def p_primary_id(p):
     """
     primary : ID
@@ -584,6 +580,7 @@ parser.current_scope: Scope = Scope(name="Global Scope", level=0, parent=None)
 parser.if_count = 0
 parser.loop_count = 0
 parser.array_assign_items = 0
+parser.type_stack = []
 
 if __name__ == "__main__":
     for line in sys.stdin:

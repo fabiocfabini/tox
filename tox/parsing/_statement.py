@@ -10,8 +10,8 @@ class Print:
     def __init__(self):
         self.productions = {    # All the productions that this class handles
             "print": self._print,
-            "expressions": self._expressions,
-            "strings": self._strings,
+            "multiple": self._multiple,
+            "single": self._single,
             "expression": self._expression,
             "string": self._string,
             "empty": self._empty,
@@ -25,6 +25,26 @@ class Print:
         print : PRINT '(' multiple_prints ')'
         """
         return p[3] # Whatever the multiple_prints production returns
+
+    def _multiple(self, p) -> str: # printing many things
+        """
+        multiple_prints : multiple_prints ',' expression
+        """
+        top = p.parser.type_stack.pop() # Get the top of the stack
+        if top == "string": # If the top is a string, print it
+            return p[1] + p[3] + std_message(["WRITES"])
+        elif top == "int": # If the top is an expression, print it
+            return p[1] + p[3] + std_message(["WRITEI"])
+
+    def _single(self, p) -> str: # printing a single thing
+        """
+        multiple_prints : expression
+        """
+        top = p.parser.type_stack.pop()
+        if top == "string": # If the top is a string, print it
+            return p[1] + std_message(["WRITES"])
+        elif top == "int": # If the top is an expression, print it
+            return p[1] + std_message(["WRITEI"])
 
     def _expressions(self, p) -> str: # printing many things and an expression
         """

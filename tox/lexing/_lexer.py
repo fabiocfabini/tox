@@ -18,6 +18,7 @@ special_tokens = ['NEWLINE', 'COMMENT', 'MULTICOMMENTS', 'ID', 'RARROW']        
 reserved = {                                                                        # Reserved words
     'print' : 'PRINT',
     'int'   : 'TYPE_INT',
+    'string'   : 'TYPE_STRING',
     'if'    : 'IF',
     'else'  : 'ELSE',
     'while' : 'WHILE',

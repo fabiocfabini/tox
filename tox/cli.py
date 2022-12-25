@@ -22,7 +22,7 @@ def print_help():
     print(f"  {COLOR_GREEN}input{RESET_COLOR}  The input file. Must be a '.tox' file.")
     print()
     print(f"{COLOR_BLUE}EXECUTION MODES{RESET_COLOR}:")
-    print(f"  {COLOR_GREEN}run{RESET_COLOR}    Runs the program. Compiles it to EWVM in case it does not find the compiled file.")
+    print(f"  {COLOR_GREEN}run{RESET_COLOR}    Compiles and runs the program.")
     print(f"  {COLOR_GREEN}build{RESET_COLOR}  Compile the program to EWVM.")
     print(f"  {COLOR_GREEN}euler{RESET_COLOR}  Check the solutions of the Euler problems.")
     print(f"  {COLOR_GREEN}test{RESET_COLOR}   Compile and simulate the test programs. Compare the outputs with the expected outputs.")
@@ -35,7 +35,7 @@ def print_help():
     print(f"  {COLOR_GREEN}-v{RESET_COLOR}, {COLOR_GREEN}--verbose{RESET_COLOR}"        +" "*11 +   "Show verbose output.")
 
 def error(msg: str, verbose: bool = False):
-    if verbose: print(f"{COLOR_RED}[ERROR]{RESET_COLOR}", msg)
+    print(f"{COLOR_RED}[ERROR]{RESET_COLOR}", msg)
     sys.exit(1)
 
 def echo_cmd(cmd: str, verbose: bool = False) -> Tuple[bool, str]:
@@ -66,7 +66,7 @@ def prepare_cmd_args() -> Tuple[OptArgs, ReqArgs]:
             input_file = arg
             continue
         if arg not in recognized_args:
-            if sys.argv.index("-o") == sys.argv.index(arg) - 1:
+            if "-o" in sys.argv and sys.argv.index("-o") == sys.argv.index(arg) - 1:
                 continue
             error(f"Unrecognized argument: {arg}. Use -h or --help to see the help message.")
 
@@ -98,8 +98,7 @@ def run_execute(req_args: ReqArgs, opt_args: OptArgs):
     if not req_args["input"]: error("No input file specified.")
     if not opt_args["-o"]:
         opt_args["-o"] = os.path.splitext(req_args['input'])[0] + ".vms"
-    if not os.path.exists(opt_args["-o"]):
-        build_execute(req_args, opt_args)
+    build_execute(req_args, opt_args)
     info_cmd(f"Running {opt_args['-o']}", verbose=opt_args["-v"])
     ret = echo_cmd(f"vms {opt_args['-o']}", verbose=opt_args["-v"])
     if not ret[0]:
