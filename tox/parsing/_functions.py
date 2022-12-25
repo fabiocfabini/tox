@@ -69,12 +69,13 @@ class Functions:
         function_body : '{' stmts '}' es
         """
         out = p[2]
+        assert len(p.parser.current_loops) == 0, f"Loops not closed: {p.pparser.current_loops[-1]}"
         p.parser.functions_handler.current_function = None
         return out
 
     def _parameter(self, p):  # Adds a parameter to the function
         """
-        param : ID ':' type
+        param : ID '>' type
         """
         p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count))
         p.parser.functions_handler.current_function.input_types.append(p[3])
@@ -103,9 +104,18 @@ class Functions:
         """
         if self.get(p[1]) is None:  # If the function doesn't exist, report an error
             compiler_error(p, 1, f"Function {p[1]} not declared")
-            compiler_note(f"Error on Function '{p.parser.current_function.name}'")
+            compiler_note(f"Error on Function '{p.parser.functions_handler.current_function.name}'")
             compiler_note("Called from Functions._call")
             sys.exit(1)
+        if self.get(p[1]).input_types != p.parser.type_checker.stack[-len(self.get(p[1]).input_types):]:
+            compiler_error(p, 1, f"Function {p[1]} expects {self.get(p[1]).input_types} but got {p.parser.type_checker.stack[-len(self.get(p[1]).input_types):]}")
+            compiler_note("Called from Functions._call")
+            sys.exit(1)
+        for _ in self.get(p[1]).input_types:
+            p.parser.type_checker.pop()
+        if self.get(p[1]).output_type is not None:
+            p.parser.type_checker.push(self.get(p[1]).output_type)
+
         if self.get(p[1]).output_type is not None:
             out = std_message(["PUSHI -69"])
         out += p[3] + std_message([f"PUSHA {self.get(p[1]).name}", "CALL", f"POP {len(self.get(p[1]).input_types)}"])    # If the function exists, return the assembly code
@@ -117,7 +127,21 @@ class Functions:
                 | RETURN
         """
         if len(p) == 3:
+            expr = p.parser.type_checker.pop()
+            if expr != p.parser.functions_handler.current_function.output_type:
+                compiler_error(p, 1, f"Return type '{expr}' doesn't match function output type '{p.parser.functions_handler.current_function.output_type}'")
+                compiler_note(f"Error on Function '{p.parser.functions_handler.current_function.name}'")
+                compiler_note("Called from Functions._return")
+                sys.exit(1)
+
             return p[2] + std_message([
                 f"STOREL {-len(p.parser.functions_handler.current_function.input_types)-1}",
                 "RETURN"])
+
+        if p.parser.functions_handler.current_function.output_type is not None:
+            compiler_error(p, 1, f"Return type '{p.parser.functions_handler.current_function.output_type}' doesn't match function output type None")
+            compiler_note(f"Error on Function '{p.parser.functions_handler.current_function.name}'")
+            compiler_note("Called from Functions._return")
+            sys.exit(1)
+
         return std_message(["RETURN"])

@@ -5,6 +5,7 @@ from ply import yacc
 from tox.lexing._lexer import *
 from tox import Scope, MetaData
 from tox import Functions, FunctionData
+from tox import TypeCheck
 from tox.utils.errors import syntax_error, compiler_error, compiler_note
 from tox import (
     Primary,
@@ -34,6 +35,9 @@ def p_prog(p):
     parser.global_count = 0
     parser.loop_count = 0
     parser.if_count = 0
+    if not parser.type_checker.is_empty():
+        compiler_note(f"Leftover types in type checker. {p.parser.type_checker}")
+        sys.exit(1)
 
     if parser.functions_handler.get("main") is None:
         compiler_error(p, 0, "Did not find main function")
@@ -235,7 +239,7 @@ def p_continue(p):
 
 def p_for(p):
     """
-    for : FOR ss '(' for_inits ';' expression ';' for_updates ')' ss '{' stmts  '}' es es
+    for : loop_for ss '(' for_inits ';' expression ';' for_updates ')' ss '{' stmts  '}' es es
     """
     p[0] = parser.loop_handler.handle(p, "for")
 def p_for_inits(p):
@@ -266,13 +270,13 @@ def p_for_update(p):
 
 def p_do_while(p):
     """
-    do_while : DO ss '{' stmts '}' es WHILE '(' expression ')'
+    do_while : loop_do ss '{' stmts '}' es WHILE '(' expression ')'
     """
     p[0] = parser.loop_handler.handle(p, "do_while")
 
 def p_while(p):
     """
-    while : WHILE expression ss '{' stmts '}' es
+    while : loop_while expression ss '{' stmts '}' es
     """
     p[0] = parser.loop_handler.handle(p, "while")
 
@@ -286,6 +290,22 @@ def p_if_else(p):
     if : IF expression ss '{' stmts '}' es ELSE ss '{' stmts '}' es
     """
     p[0] = parser.if_handler.handle(p, "if_else")
+# This functions append the loop type to the loop list of the current stack frame
+def p_loop_for(p):
+    """
+    loop_for : FOR
+    """
+    parser.current_loops.append("FOR")
+def p_loop_do(p):
+    """
+    loop_do : DO
+    """
+    parser.current_loops.append("DO")
+def p_loop_while(p):
+    """
+    loop_while : WHILE
+    """
+    parser.current_loops.append("WHILE")
 
 ######################
 ##    INIT STMT     ##
@@ -577,10 +597,12 @@ parser.frame_count = 0
 parser.global_count = 0
 parser.current_scope: Scope = Scope(name="Global Scope", level=0, parent=None) 
 
+parser.type_checker = TypeCheck()
+
 parser.if_count = 0
 parser.loop_count = 0
 parser.array_assign_items = 0
-parser.type_stack = []
+parser.current_loops = [] # This is needed for break and continue statements to be checked
 
 if __name__ == "__main__":
     for line in sys.stdin:

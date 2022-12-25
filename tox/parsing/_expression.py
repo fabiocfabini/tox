@@ -25,16 +25,22 @@ class Primary:
         """
         primary : ID '[' expression ']'
         """
-        id_meta, in_function, scope_name = p.parser.current_scope.get(p[1]) # Get the metadata of the variable
+        idx = p.parser.type_checker.pop()
+        id_meta, in_function, _ = p.parser.current_scope.get(p[1]) # Get the metadata of the variable
         if id_meta is None: # If the variable is not declared, Throw an error
             compiler_error(p, 1, f"Variable {p[1]} not declared")
             compiler_note("Called from Primary._indexing")
             sys.exit(1)
-        if id_meta.type != "&int":  # If the variable is not an array, Throw an error
-            compiler_error(p, 1, f"Variable {p[1]} is not an array")
+        if idx != "int": # If the index is not an integer, Throw an error
+            compiler_error(p, 1, f"Index must be an integer, not {idx}")
             compiler_note("Called from Primary._indexing")
             sys.exit(1)
-        p.parser.type_stack.append("int")
+        if not id_meta.type.startswith("&"):
+            compiler_error(p, 1, f"Can't index to non array variable")
+            compiler_note("Called from Assignment._array_index")
+            sys.exit(1)
+
+        p.parser.type_checker.push("int")
         push_op = "PUSHGP" if not in_function else "PUSHFP" # If the variable is in a function, push the frame pointer else push the global pointer
         return std_message([push_op, f"PUSHI {id_meta.stack_position[0]}", "PADD", f"{p[3]}PADD", "LOAD 0"]) # Return the message
 
@@ -42,12 +48,12 @@ class Primary:
         """
         primary : ID
         """
-        id_meta, in_function, scope_name = p.parser.current_scope.get(p[1]) # Get the metadata of the variable
+        id_meta, in_function, _ = p.parser.current_scope.get(p[1]) # Get the metadata of the variable
         if id_meta is None: # If the variable is not declared, Throw an error
             compiler_error(p, 1, f"Variable {p[1]} not declared")
             compiler_note("Called from Primary.id")
             sys.exit(1)
-        p.parser.type_stack.append(id_meta.type)
+        p.parser.type_checker.push(id_meta.type)
         push_op = "PUSHGP" if not in_function else "PUSHFP" # If the variable is in a function, push the frame pointer else push the global pointer
         return std_message([push_op, f"LOAD {id_meta.stack_position[0]}"])  # Return the message
 
@@ -55,28 +61,28 @@ class Primary:
         """
         primary : INT
         """
-        p.parser.type_stack.append("int")
+        p.parser.type_checker.push("int")
         return std_message([f"PUSHI {p[1]}"]) # Return the message
 
     def _string(self, p) -> str: # Handles pushing an integer
         """
         primary : STRING
         """
-        p.parser.type_stack.append("string")
+        p.parser.type_checker.push("string")
         return std_message([f"PUSHS {p[1]}"]) # Return the message
 
     def _true(self, p) -> str: # Handles pushing a true value
         """
         primary : TRUE
         """
-        p.parser.type_stack.append("int")
+        p.parser.type_checker.push("int")
         return std_message(["PUSHI 1"]) # Return the message
 
     def _false(self, p) -> str: # Handles pushing a false value
         """
         primary : TRUE
         """
-        p.parser.type_stack.append("int")
+        p.parser.type_checker.push("int")
         return std_message(["PUSHI 0"]) # Return the message
 
     def _new(self, p) -> str: # Handles a grouped expression
@@ -104,24 +110,14 @@ class Unary:
         """
         unary : '!' unary
         """
-        top = p.parser.type_stack.pop()
-        if top != "int":
-            compiler_error(p, 2, f"Cannot apply not to {top}")
-            compiler_note("Called from Unary._not")
-            sys.exit(1)
-        p.parser.type_stack.append("int")
+        p.parser.type_checker.handle(p, "not")
         return std_message([f"{p[2]}", "NOT"]) # Return the message
 
     def _neg(self, p) -> str: # Handles a negation operation
         """
         unary : '-' unary
         """
-        top = p.parser.type_stack.pop()
-        if top != "int":
-            compiler_error(p, 2, f"Cannot apply negation to {top}")
-            compiler_note("Called from Unary._neg")
-            sys.exit(1)
-        p.parser.type_stack.append("int")
+        p.parser.type_checker.handle(p, "neg")
         return std_message([f"{p[2]}PUSHI -1", "MUL"]) # Return the message
 
     def _primary(self, p) -> str: # Handles a primary expression
@@ -150,39 +146,21 @@ class Factor:
         """
         factor : unary '*' factor
         """
-        first = p.parser.type_stack.pop()
-        second = p.parser.type_stack.pop()
-        if first != "int" or second != "int":
-            compiler_error(p, 2, f"Cannot multiply {first} and {second}")
-            compiler_note("Called from Factor._mul")
-            sys.exit(1)
-        p.parser.type_stack.append("int")
+        p.parser.type_checker.handle(p, "mul")
         return std_message([f"{p[1]}{p[3]}MUL"]) # Return the message
 
     def _div(self, p) -> str: # Handles a division operation
         """
         factor : unary '/' factor
         """
-        first = p.parser.type_stack.pop()
-        second = p.parser.type_stack.pop()
-        if first != "int" or second != "int":
-            compiler_error(p, 2, f"Cannot divide {first} and {second}")
-            compiler_note("Called from Factor._div")
-            sys.exit(1)
-        p.parser.type_stack.append("int")
+        p.parser.type_checker.handle(p, "div")
         return std_message([f"{p[1]}{p[3]}DIV"]) # Return the message
 
     def _mod(self, p) -> str: # Handles a modulo operation
         """
         factor : unary '%' factor
         """
-        first = p.parser.type_stack.pop()
-        second = p.parser.type_stack.pop()
-        if first != "int" or second != "int":
-            compiler_error(p, 2, f"Cannot modulo {first} and {second}")
-            compiler_note("Called from Factor._mod")
-            sys.exit(1)
-        p.parser.type_stack.append("int")
+        p.parser.type_checker.handle(p, "mod")
         return std_message([f"{p[1]}{p[3]}MOD"]) # Return the message
 
     def _unary(self, p) -> str: # Handles a unary expression
@@ -210,26 +188,14 @@ class Term:
         """
         term : factor '+' term
         """
-        first = p.parser.type_stack.pop()
-        second = p.parser.type_stack.pop()
-        if first != "int" or second != "int":
-            compiler_error(p, 2, f"Cannot add {first} and {second}")
-            compiler_note("Called from Term._add")
-            sys.exit(1)
-        p.parser.type_stack.append("int")
+        p.parser.type_checker.handle(p, "add")
         return std_message([f"{p[1]}{p[3]}ADD"])    # Return the message
 
     def _sub(self, p) -> str: # Handles a subtraction operation
         """
         term : factor '-' term
         """
-        first = p.parser.type_stack.pop()
-        second = p.parser.type_stack.pop()
-        if first != "int" or second != "int":
-            compiler_error(p, 2, f"Cannot subtract {first} and {second}")
-            compiler_note("Called from Term._sub")
-            sys.exit(1)
-        p.parser.type_stack.append("int")
+        p.parser.type_checker.handle(p, "sub")
         return std_message([f"{p[1]}{p[3]}SUB"])   # Return the message
 
     def _factor(self, p) -> str: # Handles a factor expression
@@ -259,52 +225,28 @@ class Comparison:
         """
         comparison : term '<' comparison
         """
-        first = p.parser.type_stack.pop()
-        second = p.parser.type_stack.pop()
-        if first != "int" or second != "int":
-            compiler_error(p, 2, f"Cannot compare {first} and {second}")
-            compiler_note("Called from Comparison._lt")
-            sys.exit(1)
-        p.parser.type_stack.append("int")
+        p.parser.type_checker.handle(p, "lt")
         return std_message([f"{p[1]}{p[3]}INF"]) # Return the message
 
     def _gt(self, p) -> str: # Handles a greater than operation
         """
         comparison : term '>' comparison
         """
-        first = p.parser.type_stack.pop()
-        second = p.parser.type_stack.pop()
-        if first != "int" or second != "int":
-            compiler_error(p, 2, f"Cannot compare {first} and {second}")
-            compiler_note("Called from Comparison._gt")
-            sys.exit(1)
-        p.parser.type_stack.append("int")
+        p.parser.type_checker.handle(p, "gt")
         return std_message([f"{p[1]}{p[3]}SUP"]) # Return the message
 
     def _lte(self, p) -> str: # Handles a less than or equal to operation
         """
         comparison : term '<=' comparison
         """
-        first = p.parser.type_stack.pop()
-        second = p.parser.type_stack.pop()
-        if first != "int" or second != "int":
-            compiler_error(p, 2, f"Cannot compare {first} and {second}")
-            compiler_note("Called from Comparison._lte")
-            sys.exit(1)
-        p.parser.type_stack.append("int")
+        p.parser.type_checker.handle(p, "lte")
         return std_message([f"{p[1]}{p[3]}INFEQ"]) # Return the message
 
     def _gte(self, p) -> str: # Handles a greater than or equal to operation
         """
         comparison : term '>=' comparison
         """
-        first = p.parser.type_stack.pop()
-        second = p.parser.type_stack.pop()
-        if first != "int" or second != "int":
-            compiler_error(p, 2, f"Cannot compare {first} and {second}")
-            compiler_note("Called from Comparison._gte")
-            sys.exit(1)
-        p.parser.type_stack.append("int")
+        p.parser.type_checker.handle(p, "gte")
         return std_message([f"{p[1]}{p[3]}SUPEQ"]) # Return the message
 
     def _term(self, p) -> str: # Handles a term expression
@@ -332,26 +274,14 @@ class Condition:
         """
         condition : comparison EQ condition
         """
-        first = p.parser.type_stack.pop()
-        second = p.parser.type_stack.pop()
-        if first != "int" or second != "int":
-            compiler_error(p, 2, f"Cannot compare {first} and {second}")
-            compiler_note("Called from Condition._eq")
-            sys.exit(1)
-        p.parser.type_stack.append("int")
+        p.parser.type_checker.handle(p, "eq")
         return std_message([f"{p[1]}{p[3]}EQUAL"]) # Return the message
 
     def _neq(self, p) -> str: # Handles a not equal to operation
         """
         condition : comparison NEQ condition
         """
-        first = p.parser.type_stack.pop()
-        second = p.parser.type_stack.pop()
-        if first != "int" or second != "int":
-            compiler_error(p, 2, f"Cannot compare {first} and {second}")
-            compiler_note("Called from Condition._neq")
-            sys.exit(1)
-        p.parser.type_stack.append("int")
+        p.parser.type_checker.handle(p, "neq")
         return std_message([f"{p[1]}{p[3]}EQUAL", "NOT"]) # Return the message
 
     def _comparison(self, p) -> str: # Handles a comparison expression
@@ -378,13 +308,7 @@ class SubExpression:
         """
         subexpression : subexpression AND condition
         """
-        first = p.parser.type_stack.pop()
-        second = p.parser.type_stack.pop()
-        if first != "int" or second != "int":
-            compiler_error(p, 2, f"Cannot compare {first} and {second}")
-            compiler_note("Called from SubExpression._and")
-            sys.exit(1)
-        p.parser.type_stack.append("int")
+        p.parser.type_checker.handle(p, "and")
         return std_message([f"{p[1]}{p[3]}AND"])    # Return the message
 
     def _condition(self, p) -> str: # Handles a condition expression
@@ -410,13 +334,7 @@ class Expression:
         """
         expression : expression OR subexpression
         """
-        first = p.parser.type_stack.pop()
-        second = p.parser.type_stack.pop()
-        if first != "int" or second != "int":
-            compiler_error(p, 2, f"Cannot compare {first} and {second}")
-            compiler_note("Called from Expression._or")
-            sys.exit(1)
-        p.parser.type_stack.append("int")
+        p.parser.type_checker.handle(p, "or")
         return std_message([f"{p[1]}{p[3]}OR"]) # Return the message
 
     def _subexpression(self, p) -> str: # Handles a subexpression expression
