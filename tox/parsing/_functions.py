@@ -49,6 +49,7 @@ class Functions:
         """
         function_header : function_id ss '(' params ')' out_type
         """
+        p.parser.num_params = 0
         return p[1] + p[4]
 
     def _id(self, p):  # Adds the ID of a function
@@ -107,8 +108,7 @@ class Functions:
             sys.exit(1)
         if self.get(p[1]).output_type is not None:
             out = std_message(["PUSHI -69"])
-        out += p[3] + std_message([f"PUSHA {self.get(p[1]).name}", "CALL", f"POP {p.parser.num_params}"])    # If the function exists, return the assembly code
-        p.parser.num_params = 0
+        out += p[3] + std_message([f"PUSHA {self.get(p[1]).name}", "CALL", f"POP {len(self.get(p[1]).input_types)}"])    # If the function exists, return the assembly code
         return out
 
     def _return(self, p):
