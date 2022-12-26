@@ -1,8 +1,8 @@
 # Todo's List
 
-- [x] Add support for the 'if-else-if' statement
-- [ ] Add support for array arguments, assignment, nD arrays
-- [ ] Extend string operations (CONCAT)
-- [ ] Add floats to the language
-- [ ] Add support for Macros
-- [ ] Add support for Structures
+1. [x] Add support for the 'if-else-if' statement
+2. [ ] Add support for array arguments, assignment, nD arrays
+3. [ ] Extend string operations (CONCAT)
+4. [ ] Add floats to the language
+5. [ ] Add support for Macros
+6. [ ] Add support for Structures

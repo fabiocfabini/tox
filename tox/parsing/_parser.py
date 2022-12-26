@@ -36,7 +36,7 @@ def p_prog(p):
     parser.loop_count = 0
     parser.if_count = 0
     if not parser.type_checker.is_empty():
-        compiler_note(f"Leftover types in type checker. {p.parser.type_checker}")
+        compiler_error(f"Leftover types in type checker. {p.parser.type_checker}")
         sys.exit(1)
 
     if parser.functions_handler.get("main") is None:
@@ -134,6 +134,7 @@ def p_single_param(p):
 def p_param(p):
     """
     param : ID ':' type
+        | ID ':' Vtype
     """
     p[0] = parser.functions_handler.handle(p, 'parameter')
 
@@ -279,17 +280,6 @@ def p_while(p):
     while : loop_while expression ss '{' stmts '}' es
     """
     p[0] = parser.loop_handler.handle(p, "while")
-
-# def p_if(p):
-#     """
-#     if : IF expression ss '{' stmts '}' es
-#     """
-#     p[0] = parser.if_handler.handle(p, "if")
-# def p_if_else(p):
-#     """
-#     if : IF expression ss '{' stmts '}' es ELSE ss '{' stmts '}' es
-#     """
-#     p[0] = parser.if_handler.handle(p, "if_else")
 def p_if(p):
     """
     if : IF expression ss '{' stmts '}' es else_if
@@ -335,6 +325,11 @@ def p_variable_init(p):
     declaration_assignment : ID ':' type ASSIGN expression
     """
     p[0] = parser.declaration_assignment_handler.handle(p, "variable_init")
+def p_array_init_from_expression(p):
+    """
+    declaration_assignment : ID ':' Vtype ASSIGN expression
+    """
+    p[0] = parser.declaration_assignment_handler.handle(p, "array_init_from_expression")
 def p_array_literal_init(p):
     """
     declaration_assignment : ID ':' Vtype ASSIGN '[' arrayitems ']'
@@ -599,7 +594,6 @@ parser.loop_handler = Loop()
 parser.loop_break_handler = BreakContinue()
 
 parser.functions_handler = Functions()
-parser.current_function = None
 parser.num_params = 0
 
 parser.frame_count = 0

@@ -45,6 +45,10 @@ class Print:
             push_op = std_message(["WRITES"])
         elif top == "int": # If the top is an expression, print it
             push_op = std_message(["WRITEI"])
+        elif top == "&int":
+            compiler_error(p, 1, f"Can't print array. Not implemented yet.")
+            compiler_note("Called from Print._single")
+            sys.exit(1)
         return p[1] + push_op # Whatever the expression production returns + the print operation
 
     def _empty(self, p) -> str: # printing nothing
@@ -92,7 +96,7 @@ class Assignment:
             sys.exit(1)
 
         push_op = "PUSHGP" if not in_function else "PUSHFP" # Get the correct push operation
-        return std_message([push_op, f"PUSHI {id_meta.stack_position[0]}", "PADD", f"{p[3]}PADD", f"{p[6]}STORE 0"])
+        return std_message([push_op, f"LOAD {id_meta.stack_position[0]}", f"{p[3]}PADD", f"{p[6]}STORE 0"])
 
     def _variable(self, p) -> str: # Assigning to a variable
         """
@@ -104,13 +108,9 @@ class Assignment:
             compiler_error(p, 1, f"Assignment to undeclared variable {p[1]}")
             compiler_note("Called from Assignment._expression")
             sys.exit(1)
-        if id_meta.type.startswith("&"): # If the variable doesn't exist, report an error
-            compiler_error(p, 1, f"Can't directly assign value to array. Try indexing.")
-            compiler_note("Called from Assignment._expression")
-            sys.exit(1)
-        if id_meta.type != expr: # If the variable doesn't exist, report an error
+        if id_meta.type != expr: # If the types don't match, report an error
             compiler_error(p, 1, f"Assignment of '{expr}' to variable of type '{id_meta.type}'")
-            compiler_note("Called from Assignment._expression")
+            compiler_note("Called from Assignment._variable")
             sys.exit(1)
         
         store_op = "STOREG" if not in_function else "STOREL"    # Get the correct store operation
@@ -141,12 +141,14 @@ class Declaration:
             sys.exit()
         else:
             if p.parser.current_scope.level == 0:   # If the variable is declared in the global scope, add it to the global scope
-                p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count+int(p[5])-1))
-                p.parser.global_count += int(p[5])
+                push_op = std_message(["PUSHGP", f"PUSHI {p.parser.global_count+1}", "PADD"]) # Get the correct push operation
+                p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count+int(p[5])-1 + 1))
+                p.parser.global_count += int(p[5]) + 1
             else:   # If the variable is declared in a function scope, add it to the function scope
-                p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count+int(p[5])-1))
-                p.parser.frame_count += int(p[5])
-            return std_message([f"PUSHN {int(p[5])}"])
+                push_op = std_message(["PUSHFP", f"PUSHI {p.parser.frame_count+1}", "PADD"]) # Get the correct push operation
+                p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count+int(p[5])-1 + 1))
+                p.parser.frame_count += int(p[5]) + 1
+            return push_op + std_message([f"PUSHN {int(p[5])}"]) # Push the address of the first element of the array and push the number of elements
 
     def _variable_declaration(self, p):
         """
@@ -172,6 +174,7 @@ class DeclarationAssignment:
     """
     def __init__(self):
         self.productions = {    # All the productions that this class handles
+            "array_init_from_expression": self._array_init_from_expression,
             "array_literal_init": self._array_literal_init,
             "array_range_init": self._array_range_init,
             "variable_init": self._variable_init,
@@ -180,6 +183,29 @@ class DeclarationAssignment:
 
     def handle(self, p, production) -> str:
         return self.productions[production](p)
+
+    def _array_init_from_expression(self, p) -> str: # Declaring and initializing an array with an expression
+        """
+        declaration_assignment : ID ':' Vtype ASSIGN expression
+        """
+        expr = p.parser.type_checker.pop()
+        if p[1] in p.parser.current_scope.Table:    # If the variable already exists in the current scope table, report an error
+            compiler_error(p, 1, f"Variable {p[1]} is already defined")
+            compiler_note("Called from DeclarationAssignment._array_init_from_expression")
+            sys.exit(1)
+        if expr != p[3]:
+            compiler_error(p, 5, f"Initialization of array of type '{p[3]}' with expression of type '{expr}'")
+            compiler_note("Called from DeclarationAssignment._array_init_from_expression")
+            sys.exit(1)
+
+        if p.parser.current_scope.level == 0:
+            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count))
+            p.parser.global_count += 1
+        else:
+            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count))
+            p.parser.frame_count += 1
+
+        return p[5]
 
     def _array_literal_init(self, p) -> str: # Declaring and initializing an array with a literal
         """
@@ -197,13 +223,15 @@ class DeclarationAssignment:
                 sys.exit(1)
 
         if p.parser.current_scope.level == 0:   # If the variable is declared in the global scope, add it to the global scope
-            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count+p.parser.array_assign_items-1))
-            p.parser.global_count += p.parser.array_assign_items
+            push_op = std_message(["PUSHGP", f"PUSHI {p.parser.global_count+1}", "PADD"]) # Get the correct push operation
+            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count+p.parser.array_assign_items-1 + 1))
+            p.parser.global_count += p.parser.array_assign_items + 1
         else:   # If the variable is declared in a function scope, add it to the function scope
-            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count+p.parser.array_assign_items-1))
-            p.parser.frame_count += p.parser.array_assign_items
+            push_op = std_message(["PUSHFP", f"PUSHI {p.parser.frame_count+1}", "PADD"]) # Get the correct push operation
+            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count+p.parser.array_assign_items-1 + 1))
+            p.parser.frame_count += p.parser.array_assign_items + 1
         p.parser.array_assign_items = 0 # Reset the array assign items counter
-        return p[6]
+        return push_op + p[6]
 
     def _array_range_init(self, p) -> str: # Declaring and initializing an array with a range
         """
@@ -221,13 +249,15 @@ class DeclarationAssignment:
         start = int(p[6])
         end = int(p[8])
         if p.parser.current_scope.level == 0:   # If the variable is declared in the global scope, add it to the global scope
-            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count+end-start))
-            p.parser.global_count += end-start + 1
+            push_op = std_message(["PUSHGP", f"PUSHI {p.parser.global_count+1}", "PADD"]) # Get the correct push operation
+            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count+end-start + 1))
+            p.parser.global_count += end-start + 1 + 1
         else:   # If the variable is declared in a function scope, add it to the function scope
-            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count+end-start))
-            p.parser.frame_count += end-start + 1
+            push_op = std_message(["PUSHFP", f"PUSHI {p.parser.frame_count+1}", "PADD"]) # Get the correct push operation
+            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count+end-start + 1))
+            p.parser.frame_count += end-start + 1 + 1
 
-            return std_message([f"PUSHI {i}" for i in range(start, end + 1)])
+            return push_op + std_message([f"PUSHI {i}" for i in range(start, end + 1)])
 
     def _variable_init(self, p) -> str:     # Declaring and initializing a variable
         """
@@ -378,6 +408,7 @@ class Loop:
         out += p[2]                                                         # Condition
         out += std_message([f"JZ LOOP{current_while_count}END"])            # End of the while loop
         out += p[5]                                                         # Perform the statements
+        out += std_message([f"NEXTLOOP{current_while_count}:"])
         out += p[7]                                                         # Close the scope
         out += std_message([f"JUMP LOOP{current_while_count}START"])        # Jump to start of the while loop
         out += std_message([f"LOOP{current_while_count}END:"])              # End of the while loop
@@ -399,6 +430,7 @@ class Loop:
         current_do_while_count = p.parser.loop_count
         out = std_message([f"LOOP{current_do_while_count}START:"])          # Start of the do while loop
         out += p[4]                                                         # Perform the statements
+        out += std_message([f"NEXTLOOP{current_do_while_count}:"])          # Next loop label (continue statement jumps here)
         out += p[6]                                                         # Close the scope
         out += p[9]                                                         # Condition
         out += std_message([f"JZ LOOP{current_do_while_count}END"])         # Jump to end of do while loop if condition is false
@@ -425,6 +457,7 @@ class Loop:
         out += p[6]                                             # Condition
         out += std_message([f"JZ LOOP{current_for}END"])        # Jump to end of for loop if condition is false
         out += p[12]                                            # Execute the for loop
+        out += std_message([f"NEXTLOOP{current_for}:"])         # Next loop label (continue statements jump here)
         out += p[8]                                             # Perform the for_updates
         out += p[14]                                            # Close the for_inner scope             
         out += std_message([f"JUMP LOOP{current_for}START"])    # Jump back to the start of the for loop
@@ -505,4 +538,4 @@ class BreakContinue:
             compiler_note("Called from BreakContinue._break.")
             sys.exit(1)
 
-        return std_message([f"JUMP LOOP{p.parser.loop_count}START"])
+        return std_message([f"JUMP NEXTLOOP{p.parser.loop_count}"])

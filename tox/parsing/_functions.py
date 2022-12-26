@@ -75,7 +75,8 @@ class Functions:
 
     def _parameter(self, p):  # Adds a parameter to the function
         """
-        param : ID '>' type
+        param : ID ':' type
+            | ID ':' Vtype
         """
         p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count))
         p.parser.functions_handler.current_function.input_types.append(p[3])
@@ -116,6 +117,7 @@ class Functions:
         if self.get(p[1]).output_type is not None:
             p.parser.type_checker.push(self.get(p[1]).output_type)
 
+        out = ""
         if self.get(p[1]).output_type is not None:
             out = std_message(["PUSHI -69"])
         out += p[3] + std_message([f"PUSHA {self.get(p[1]).name}", "CALL", f"POP {len(self.get(p[1]).input_types)}"])    # If the function exists, return the assembly code

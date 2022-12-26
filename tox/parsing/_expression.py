@@ -37,10 +37,10 @@ class Primary:
             compiler_error(p, 1, f"Can't index to non array variable")
             compiler_note("Called from Assignment._array_index")
             sys.exit(1)
+        p.parser.type_checker.push(id_meta.type[1:])
 
-        p.parser.type_checker.push("int")
         push_op = "PUSHGP" if not in_function else "PUSHFP" # If the variable is in a function, push the frame pointer else push the global pointer
-        return std_message([push_op, f"PUSHI {id_meta.stack_position[0]}", "PADD", f"{p[3]}PADD", "LOAD 0"]) # Return the message
+        return std_message([push_op, f"LOAD {id_meta.stack_position[0]}", f"{p[3]}PADD", "LOAD 0"]) # Return the message
 
     def _id(self, p) -> str: # Handles pushing the value of a variable
         """
@@ -52,6 +52,7 @@ class Primary:
             compiler_note("Called from Primary.id")
             sys.exit(1)
         p.parser.type_checker.push(id_meta.type)
+        
         push_op = "PUSHGP" if not in_function else "PUSHFP" # If the variable is in a function, push the frame pointer else push the global pointer
         return std_message([push_op, f"LOAD {id_meta.stack_position[0]}"])  # Return the message
 
