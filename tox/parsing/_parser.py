@@ -280,17 +280,36 @@ def p_while(p):
     """
     p[0] = parser.loop_handler.handle(p, "while")
 
+# def p_if(p):
+#     """
+#     if : IF expression ss '{' stmts '}' es
+#     """
+#     p[0] = parser.if_handler.handle(p, "if")
+# def p_if_else(p):
+#     """
+#     if : IF expression ss '{' stmts '}' es ELSE ss '{' stmts '}' es
+#     """
+#     p[0] = parser.if_handler.handle(p, "if_else")
 def p_if(p):
     """
-    if : IF expression ss '{' stmts '}' es
+    if : IF expression ss '{' stmts '}' es else_if
     """
     p[0] = parser.if_handler.handle(p, "if")
-def p_if_else(p):
+def p_else_if(p):
     """
-    if : IF expression ss '{' stmts '}' es ELSE ss '{' stmts '}' es
+    else_if : ELSE IF expression ss '{' stmts '}' es else_if
+            | else
     """
-    p[0] = parser.if_handler.handle(p, "if_else")
-# This functions append the loop type to the loop list of the current stack frame
+    p[0] = parser.if_handler.handle(p, "else_if")
+def p_else(p):
+    """
+    else : ELSE ss '{' stmts '}' es
+        |
+    """
+    p[0] = parser.if_handler.handle(p, "else")
+
+
+# This functions append the loop type to the loop list
 def p_loop_for(p):
     """
     loop_for : FOR
@@ -590,6 +609,7 @@ parser.current_scope: Scope = Scope(name="Global Scope", level=0, parent=None)
 parser.type_checker = TypeCheck()
 
 parser.if_count = 0
+parser.rel_if_count = 0
 parser.loop_count = 0
 parser.array_assign_items = 0
 parser.current_loops = [] # This is needed for break and continue statements to be checked

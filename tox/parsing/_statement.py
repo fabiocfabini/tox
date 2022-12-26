@@ -271,7 +271,8 @@ class If:
     def __init__(self):
         self.productions = {    # All the productions that this class handles
             "if": self._if,
-            "if_else": self._if_else,
+            "else_if": self._else_if,
+            "else": self._else,
         }
 
     def handle(self, p, production) -> str:
@@ -279,7 +280,7 @@ class If:
 
     def _if(self, p) -> str:
         """
-        if : IF expression ss '{' stmts '}' es
+        if : IF expression ss '{' stmts '}' es else_if
         """
         expr = p.parser.type_checker.pop()
         if expr != 'int': #NOTE: Later we could add support for bools
@@ -287,37 +288,59 @@ class If:
             compiler_note("Called from If._if")
             sys.exit(1)
 
-        current_if_count = p.parser.if_count                    # Get the current if count
-        out = p[2]                                              # Push condition to the stack
-        out += std_message([f"JZ ENDLABEL{current_if_count}"])  # Jump to the end label if the expression is false
-        out += p[5]                                             # Push the statements
-        out += p[7]                                             # Get out of if scope
-        out += std_message([f"ENDLABEL{current_if_count}:"])    # Add the end label
-        p.parser.if_count += 1                                  # Increment the if count
+        current_if_count = p.parser.if_count                        # Get the current if count
+        out = p[2]                                                  # Push condition to the stack
+        out += std_message([f"JZ IFLABEL{current_if_count}END"])    # Jump to the end label if the expression is false
+        out += p[5]                                                 # Push the statements
+        out += p[7]                                                 # Get out of if scope
+        out += std_message([f"JUMP FINISHIF{p.parser.rel_if_count}"])  # Skip the else if statements
+        out += std_message([f"IFLABEL{current_if_count}END:"])      # Add the end label
+        out += p[8]                                                 # Push the else if statements
+        p.parser.if_count += 1                                      # Increment the if count
 
         return out
 
-    def _if_else(self, p) -> str:
+    def _else_if(self, p) -> str:
         """
-        if : IF expression ss '{' stmts '}' es ELSE ss '{' stmts '}' es
+        else_if : ELSE IF expression ss '{' stmts '}' es else_if
+                | else
         """
+        if len(p) == 2:
+            return p[1] # There is no else if
+
         expr = p.parser.type_checker.pop()
         if expr != 'int':
-            compiler_error(p, 1, f"Condition type must be 'int', not '{expr}'")
+            compiler_error(p, 2, f"Condition type must be 'int', not '{expr}'")
             compiler_note("Called from If._if_else")
             sys.exit(1)
 
-        current_if_count = p.parser.if_count                        # Get the current if count
-        out = p[2]                                                  # Push condition to the stack 
-        out += std_message([f"JZ ELSELABEL{current_if_count}"])     # Jump to the else label if the expression is false
-        out += p[5]                                                 # Push the statements
-        out += p[7]                                                 # Get out of if scope
-        out += std_message([f"JUMP ENDIFLABEL{current_if_count}"])  # Jump to the end if label
-        out += std_message([f"ELSELABEL{current_if_count}:"])       # Add the else label
-        out += p[11]                                                # Push the statements
-        out += p[13]                                                # Get out of else scope
-        out += std_message([f"ENDIFLABEL{current_if_count}:"])      # Add the end if label
-        p.parser.if_count += 1                                      # Increment the if count
+        current_if_count = p.parser.if_count                                # Get the current if count
+        out = p[3]                                                          # Push condition to the stack
+        out += std_message([f"JZ ELSEIFLABEL{current_if_count}END"])        # Jump to the end of this else if if the expression is false
+        out += p[6]                                                         # Push the statements
+        out += p[8]                                                         # Get out of else if scope
+        out += std_message([f"JUMP FINISHIF{p.parser.rel_if_count}"])       # Skip the else if statements
+        out += std_message([f"ELSEIFLABEL{current_if_count}END:"])          # Add the end else if label
+        out += p[9]                                                         # Push the else if statements
+        p.parser.if_count += 1                                              # Increment the if count
+
+
+        return out
+
+    def _else(self, p) -> str:
+        """
+        else : ELSE ss '{' stmts '}' es
+            |
+        """
+        p.parser.rel_if_count += 1                  # Increment the relative if count
+        if len(p) == 1: return std_message([f"FINISHIF{p.parser.rel_if_count}:"])    # If there is no else, return an empty string
+
+        current_if_count = p.parser.if_count                            # Get the current if count
+        out = p[4]                                                      # Push the statements
+        out += p[6]                                                     # Get out of else scope
+        out += std_message([f"ELSELABEL{current_if_count}END:"])        # Add the end if label
+        out += std_message([f"FINISHIF{p.parser.rel_if_count}:"])       # Add the finish if label
+        p.parser.if_count += 1                                          # Increment the if count
 
         return out
 
