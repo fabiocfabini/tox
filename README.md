@@ -13,8 +13,11 @@ Installing through pip:
 ```console
 git clone https://github.com/fabiocfabini/tox.git
 cd tox
+make install
 pip install -r requirements.txt 
 ```
+
+**Note**: Only works on linux.
 
 ## **Quick Start**
 
