@@ -1,3 +1,20 @@
+v: &int[10]
+
+func sm(x: int, v: &int) {
+    v[1-1] = x + 1
+    v[2-1] = x + 2
+    v[3-1] = x + 3
+    v[4-1] = x + 4
+    v[5-1] = x + 5
+    v[6-1] = x + 6
+    v[7-1] = x + 7
+    v[8-1] = x + 8
+    v[9-1] = x + 9
+    v[10-1] = x + 10
+
+    return
+}
+
 func main(){
     arr: &int[10]
 
@@ -45,4 +62,10 @@ func main(){
         }
         print(a[q], "\n")
     }
+
+    sm(0,v)
+    for(i: int; i < 10; i = i + 1){
+        print(v[i], " ")
+    }
+    print("\n")
 }
