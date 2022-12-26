@@ -132,7 +132,7 @@ def test_execute(req_args: ReqArgs, opt_args: OptArgs):
             req_args["input"] = input_file
             opt_args["-o"] = output_file
             echo_cmd(f"tox build {input_file} -o {output_file}", verbose=opt_args['-v'])
-            echo_cmd(f"vms {output_file} > {os.path.splitext(output_file)[0]}_com_expected.out", verbose=opt_args['-v'])
+            echo_cmd(f"vms {output_file} > {os.path.splitext(output_file)[0]}.ans", verbose=opt_args['-v'])
     else:
         for input_file, output_file in iterable:
             if opt_args['-v']: print(COLOR_GREEN + "-"*80 + RESET_COLOR)
@@ -146,13 +146,13 @@ def test_execute(req_args: ReqArgs, opt_args: OptArgs):
                 num_tests -= 1
                 failed_tests.append((input_file, ret[1]))
                 continue
-            ret = echo_cmd(f"diff {os.path.splitext(output_file)[0]}_com_expected.out {os.path.splitext(output_file)[0]}_com.out", verbose=opt_args['-v'])
+            ret = echo_cmd(f"diff {os.path.splitext(output_file)[0]}.ans {os.path.splitext(output_file)[0]}_com.out", verbose=opt_args['-v'])
             if not ret[0]:
                 num_tests -= 1
                 failed_tests.append((input_file, ret[1]))
         if opt_args['-clc']:
             if opt_args['-v']: print(COLOR_GREEN + "-"*80 + RESET_COLOR)
-            echo_cmd("rm test/*_com.out", verbose=opt_args['-v'])
+            echo_cmd("rm test/*.out", verbose=opt_args['-v'])
             echo_cmd("rm test/*.vms", verbose=opt_args['-v'])
         if opt_args['-v']: print(COLOR_GREEN + "-"*80 + RESET_COLOR)
         for failed_test, error_msg in failed_tests:
