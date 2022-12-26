@@ -60,13 +60,13 @@ Basic arithmetics are supported by the language. These include:
 
 ### **Variables**
 
-To declare a variable, simply type the variable name followed ```:``` and the variable type. For example:
+To declare a variable, simply type the variable name followed by ```:``` and the variable type. For example:
 
 ```c
 a: int
 ```
 
-Variables declared in this way are initialized with the value ```0```. To declare a variable and initialize it with a value, simply type the variable name followed ```:``` and the variable type followed by ```=``` and the value. For example:
+Variables declared in this way are initialized with the value ```0```. To declare a variable and initialize it with a value, simply type the variable name followed by ```:``` and the variable type followed by ```=``` and the value. For example:
 
 ```c
 a: int = 10
