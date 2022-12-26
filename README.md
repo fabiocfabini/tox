@@ -14,7 +14,7 @@ Installing through pip:
 git clone https://github.com/fabiocfabini/tox.git
 cd tox
 make install
-pip install -r requirements.txt 
+pip install -e .
 ```
 
 **Note**: Only works on linux.
@@ -60,6 +60,7 @@ Basic arithmetics are supported by the language. These include:
 - the ```&&```, ```||``` operators;
 - the ```!``` operator;
 
+**Note** Pointer arithmetics is not supported yet. [todo#3](todo.md)
 
 ### **Variables**
 
@@ -116,7 +117,7 @@ a[0]
 
 The control flow of the language is similar to the control flow of C. These include:
 
-- ```if``` and ```if else``` statements;
+- ```if```, ```if else``` and ```if else if``` statements;
 
 ```c
 if expression {
@@ -126,6 +127,16 @@ if expression {
 // or
 
 if expression {
+    // code
+} else {
+    // code
+}
+
+// or
+
+if expression {
+    // code
+} else if expression {
     // code
 } else {
     // code
