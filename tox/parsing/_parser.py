@@ -398,7 +398,7 @@ def p_print_single(p):
     p[0] = parser.print_handler.handle(p, "single")
 def p_print_empty(p):
     """
-    multiple_prints : 
+    multiple_prints :
     """
     p[0] = parser.print_handler.handle(p, "empty")
 
@@ -415,6 +415,7 @@ def p_type(p):
 def p_vtype(p):
     """
     Vtype : '&' TYPE_INT
+        | '&' TYPE_STRING
     """
     p[0] = p[1] + p[2]
 
