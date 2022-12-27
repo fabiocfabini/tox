@@ -1,0 +1,41 @@
+N: int = 13
+v: &float = [6f, 1f, 2f, 6f, 3f, 6f, 2f, 7f, 4f, 7f, 2f, 1f, 1f]
+
+func partition(v: &float, n: int) -> int {
+    pivot: float = v[0]
+    i: int = 0
+    j: int = n - 1
+    while(i < j) {
+        while(i < j && v[j] >= pivot) {
+            j = j - 1
+        }
+        v[i] = v[j]
+        while(i < j && v[i] <= pivot) {
+            i = i + 1
+        }
+        v[j] = v[i]
+    }
+    v[i] = pivot
+    return i
+}
+
+func quick_sort(v: &float, n: int) {
+    if(n <= 1) {
+        return
+    }
+    i: int = partition(v, n)
+    quick_sort(v, i)
+    quick_sort(v + i + 1, n - i - 1)
+}
+
+func main() {
+    for(i: int; i < N; i = i + 1) {
+        print(v[i], " ")
+    }
+    print("\n")
+    quick_sort(v, N)
+    for(i: int; i < N; i = i + 1) {
+        print(v[i], " ")
+    }
+    print("\n")
+}

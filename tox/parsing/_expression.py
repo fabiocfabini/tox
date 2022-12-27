@@ -12,6 +12,7 @@ class Primary:
             "indexing": self._indexing,
             "id": self._id,
             "int": self._int,
+            "float": self._float,
             "string": self._string,
             "new": self._new
         }
@@ -62,6 +63,13 @@ class Primary:
         """
         p.parser.type_checker.push("int")
         return std_message([f"PUSHI {p[1]}"]) # Return the message
+
+    def _float(self, p) -> str: # Handles pushing an integer
+        """
+        primary : FLOAT
+        """
+        p.parser.type_checker.push("float")
+        return std_message([f"PUSHF {p[1]}"]) # Return the message
 
     def _string(self, p) -> str: # Handles pushing an integer
         """

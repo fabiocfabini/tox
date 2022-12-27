@@ -9,13 +9,14 @@ general_literals = ",:;"                    # Literals for general use
 
 literals = arithmetics_literals + general_literals
 
-type_tokens = ['INT', 'STRING']                                                     # String so far only works in literals
+type_tokens = ['INT', 'STRING', 'FLOAT']                                            # String so far only works in literals
 op_tokens = ["ASSIGN", "LTE", "LT", 'EQ', "NEQ", "GT", "GTE", "RETI", 'AND', 'OR']  # Operators
 special_tokens = ['NEWLINE', 'COMMENT', 'MULTICOMMENTS', 'ID', 'RARROW']            # Special tokens
 reserved = {                                                                        # Reserved words
     'print' : 'PRINT',
     'int'   : 'TYPE_INT',
     'string': 'TYPE_STRING',
+    'float' : 'TYPE_FLOAT',
     'if'    : 'IF',
     'else'  : 'ELSE',
     'while' : 'WHILE',
@@ -38,6 +39,14 @@ t_NEQ = r"!="           # Not equal
 t_ASSIGN = r"="         # Assign
 t_LT = r"<"             # Less than
 t_GT = r">"             # Greater than
+
+@lex.TOKEN(r'\d+f | \d+\.\d+(f)?') # Float
+def t_FLOAT(t):
+    if t.value[-1] == 'f':
+        t.value = t.value[:-1]
+    if '.' not in t.value:
+        t.value += '.0'
+    return t
 
 @lex.TOKEN(r'\d+')      # Integer
 def t_INT(t):
@@ -85,7 +94,11 @@ def t_error(t):    # Error handling
 lexer = lex.lex()
 
 if __name__ == "__main__":
-    lexer.input("&||&&&&...- ><")
+    lexer.input("""func main() {
+    f: int = 1
+
+    print("OK\n")
+}""")
     while True:
         tok = lexer.token()
         if tok:

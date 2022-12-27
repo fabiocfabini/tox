@@ -49,6 +49,8 @@ class Print:
             push_op = std_message(["WRITES"])
         elif top == "int": # If the top is an expression, print it
             push_op = std_message(["WRITEI"])
+        elif top == "float": # If the top is an expression, print it
+            push_op = std_message(["WRITEF"])
         elif top.startswith("&"):
             compiler_error(p, 1, f"Can't print array. Not implemented yet.")
             compiler_note("Called from Print._single")

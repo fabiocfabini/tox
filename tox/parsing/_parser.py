@@ -410,12 +410,14 @@ def p_type(p):
     """
     type : TYPE_INT
         | TYPE_STRING
+        | TYPE_FLOAT
     """
     p[0] = p[1]
 def p_vtype(p):
     """
     Vtype : '&' TYPE_INT
         | '&' TYPE_STRING
+        | '&' TYPE_FLOAT
     """
     p[0] = p[1] + p[2]
 
@@ -550,6 +552,11 @@ def p_primary_int(p):
     primary : INT
     """
     p[0] = parser.primary_handler.handle(p, "int")
+def p_primary_float(p):
+    """
+    primary : FLOAT
+    """
+    p[0] = parser.primary_handler.handle(p, "float")
 def p_primary_string(p):
     """
     primary : STRING
