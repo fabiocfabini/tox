@@ -10,6 +10,7 @@ class Primary:
     def __init__(self):
         self.productions = {    #   Maps production names to their respective functions
             "indexing": self._indexing,
+            "ref": self._ref,
             "id": self._id,
             "int": self._int,
             "float": self._float,
@@ -42,6 +43,24 @@ class Primary:
 
         push_op = "PUSHGP" if not in_function else "PUSHFP" # If the variable is in a function, push the frame pointer else push the global pointer
         return std_message([push_op, f"LOAD {id_meta.stack_position[0]}", f"{p[3]}PADD", "LOAD 0"]) # Return the message
+
+    def _ref(self, p) -> str: # Handles getting the address of a variable
+        """
+        primary : '&' ID 
+        """
+        id_meta, in_function, _ = p.parser.current_scope.get(p[2])
+        if id_meta is None: # If the variable is not declared, Throw an error
+            compiler_error(p, 2, f"Variable {p[2]} not declared")
+            compiler_note("Called from Primary._ref")
+            sys.exit(1)
+        if id_meta.type.startswith("&"):
+            compiler_error(p, 1, f"Pointer to pointer not supported")
+            compiler_note("Called from Primary._ref")
+            sys.exit(1)
+        p.parser.type_checker.push(f"&{id_meta.type}")
+
+        push_op = "PUSHGP" if not in_function else "PUSHFP" # If the variable is in a function, push the frame pointer else push the global pointer
+        return std_message([push_op, f"PUSHI {id_meta.stack_position[0]}", "PADD"]) # Return the message
 
     def _id(self, p) -> str: # Handles pushing the value of a variable
         """

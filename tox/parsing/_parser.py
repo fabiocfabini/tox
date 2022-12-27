@@ -337,7 +337,7 @@ def p_array_literal_init(p):
     p[0] = parser.declaration_assignment_handler.handle(p, "array_literal_init")
 def p_array_range_init(p):
     """
-    declaration_assignment : ID ':' Vtype ASSIGN '[' INT RETI INT ']'
+    declaration_assignment : ID ':' Vtype ASSIGN '['  INT  RETI   INT ']'
     """
     p[0] = parser.declaration_assignment_handler.handle(p, "array_range_init")
 def p_array_items(p):
@@ -356,6 +356,11 @@ def p_variable_declaration(p):
     declaration : ID ':' type
     """
     p[0] = p.parser.declaration_handler.handle(p, "variable_declaration")
+def p_pointer_declaration(p):
+    """
+    declaration : ID ':' Vtype
+    """
+    p[0] = p.parser.declaration_handler.handle(p, "pointer_declaration")
 def p_array_declaration(p):
     """
     declaration : ID ':' Vtype '[' INT ']'
@@ -547,6 +552,11 @@ def p_primary_indexing(p):
     primary : ID '[' expression ']'
     """
     p[0] = parser.primary_handler.handle(p, "indexing")
+def p_primary_ref(p):
+    """
+    primary : '&' ID 
+    """
+    p[0] = parser.primary_handler.handle(p, "ref")
 def p_primary_int(p):
     """
     primary : INT

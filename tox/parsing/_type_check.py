@@ -11,19 +11,19 @@ class TypeCheck:
 
     def __post_init__(self):
         self.productions = {
-            "add":  self._add,
-            "sub":  self._sub,
+            "not":  self._not,
+            "neg": self._neg,
             "mul":  self._mul,
             "div":  self._div,
             "mod":  self._mod,
-            "not":  self._not,
-            "neg": self._neg,
-            "eq":   self._eq,
-            "neq":   self._neq,
+            "add":  self._add,
+            "sub":  self._sub,
             "lt":   self._lt,
             "lte":   self._lte,
             "gt":   self._gt,
             "gte":   self._gte,
+            "eq":   self._eq,
+            "neq":   self._neq,
             "and":  self._and,
             "or":   self._or,
         }

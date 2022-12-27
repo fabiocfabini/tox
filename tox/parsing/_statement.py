@@ -33,6 +33,8 @@ class Print:
             push_op = std_message(["WRITES"])
         elif top == "int": # If the top is an expression, print it
             push_op = std_message(["WRITEI"])
+        elif top == "float": # If the top is an expression, print it
+            push_op = std_message(["WRITEF"])
         elif top.startswith("&"):
             compiler_error(p, 2, f"Can't print array. Not implemented yet.")
             compiler_note("Called from Print._single")
@@ -131,6 +133,7 @@ class Declaration:
         self.productions = {    # All the productions that this class handles
             "array_declaration": self._array_declaration,
             "variable_declaration": self._variable_declaration,
+            "pointer_declaration": self._pointer_declaration,
         }
 
     def handle(self, p, production) -> str:
@@ -144,16 +147,51 @@ class Declaration:
             compiler_error(p, 1, f"Variable {p[1]} is already defined")
             compiler_note("Called from Declaration._array_declaration")
             sys.exit()
-        else:
-            if p.parser.current_scope.level == 0:   # If the variable is declared in the global scope, add it to the global scope
-                push_op = std_message(["PUSHGP", f"PUSHI {p.parser.global_count+1}", "PADD"]) # Get the correct push operation
-                p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count+int(p[5])-1 + 1))
-                p.parser.global_count += int(p[5]) + 1
-            else:   # If the variable is declared in a function scope, add it to the function scope
-                push_op = std_message(["PUSHFP", f"PUSHI {p.parser.frame_count+1}", "PADD"]) # Get the correct push operation
-                p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count+int(p[5])-1 + 1))
-                p.parser.frame_count += int(p[5]) + 1
+
+        if p.parser.current_scope.level == 0:   # If the variable is declared in the global scope, add it to the global scope
+            push_op = std_message(["PUSHGP", f"PUSHI {p.parser.global_count+1}", "PADD"]) # Get the correct push operation
+            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count+int(p[5])-1 + 1))
+            p.parser.global_count += int(p[5]) + 1
+        else:   # If the variable is declared in a function scope, add it to the function scope
+            push_op = std_message(["PUSHFP", f"PUSHI {p.parser.frame_count+1}", "PADD"]) # Get the correct push operation
+            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count+int(p[5])-1 + 1))
+            p.parser.frame_count += int(p[5]) + 1
+
+        if p[3] == '&int':
             return push_op + std_message([f"PUSHN {int(p[5])}"]) # Push the address of the first element of the array and push the number of elements
+        elif p[3] == '&float':
+            return push_op + std_message([f"PUSHF 0.0" for i in range(int(p[5]))]) # Push the address of the first element of the array and push the number of elements
+        elif p[3] == '&string':
+            compiler_error(p, 1, f"Can't simply declare array of type string. Use string array constructor instead")
+            compiler_note("Called from Declaration._array_declaration")
+            sys.exit(1)
+
+    def _pointer_declaration(self, p):
+        """
+        declaration : ID ':' Vtype
+        """
+        if p[1] in p.parser.current_scope.Table:
+            compiler_error(p, 1, f"Pointer {p[1]} is already defined")
+            compiler_note("Called from Declaration._pointer_declaration")
+            sys.exit(1)
+
+        if p.parser.current_scope.level == 0:   # If the variable is declared in the global scope, add it to the global scope
+            push_op = std_message(["PUSHGP", f"PUSHI {p.parser.global_count+1}", "PADD"]) # Get the correct push operation
+            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count + 1))
+            p.parser.global_count += 1 + 1
+        else:   # If the variable is declared in a function scope, add it to the function scope
+            push_op = std_message(["PUSHFP", f"PUSHI {p.parser.frame_count+1}", "PADD"]) # Get the correct push operation
+            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count + 1))
+            p.parser.frame_count += 1 + 1
+
+        if p[3] == '&int':
+            return push_op + std_message(["PUSHI 0"])
+        elif p[3] == '&float':
+            return push_op + std_message(["PUSHF 0.0"])
+        elif p[3] == '&string':
+            compiler_error(p, 1, "Cannot simply declare a '&string' pointer. Use array constructor instead")
+            compiler_note("Called from Declaration._variable_declaration")
+            sys.exit(1)
 
     def _variable_declaration(self, p):
         """
@@ -163,14 +201,22 @@ class Declaration:
             compiler_error(p, 1, f"Variable {p[1]} is already defined")
             compiler_note("Called from Declaration._variable_declaration")
             sys.exit(1)
-        else:
-            if p.parser.current_scope.level == 0:   # If the variable is declared in the global scope, add it to the global scope
-                p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count))
-                p.parser.global_count += 1
-            else:   # If the variable is declared in a function scope, add it to the function scope
-                p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count))
-                p.parser.frame_count += 1
+
+        if p.parser.current_scope.level == 0:   # If the variable is declared in the global scope, add it to the global scope
+            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count))
+            p.parser.global_count += 1
+        else:   # If the variable is declared in a function scope, add it to the function scope
+            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count))
+            p.parser.frame_count += 1
+
+        if p[3] == 'int':
             return std_message(["PUSHI 0"])
+        elif p[3] == 'float':
+            return std_message(["PUSHF 0.0"])
+        elif p[3] == 'string':
+            compiler_error(p, 1, "Cannot simply declare a 'string' variable. Use the string literal instead.")
+            compiler_note("Called from Declaration._variable_declaration")
+            sys.exit(1)
 
 
 class DeclarationAssignment:
@@ -238,9 +284,9 @@ class DeclarationAssignment:
         p.parser.array_assign_items = 0 # Reset the array assign items counter
         return push_op + p[6]
 
-    def _array_range_init(self, p) -> str: # Declaring and initializing an array with a range
+    def _array_range_init(self, p) -> str: # Declaring and initializing an array with a range TODO: turn int into expression if possible
         """
-        declaration_assignment : ID ':' Vtype ASSIGN '[' INT RETI INT ']'
+        declaration_assignment : ID ':' Vtype ASSIGN '['   INT RETI   INT ']'
         """
         if p[1] in p.parser.current_scope.Table:    # If the variable already exists in the current scope table, report an error
             compiler_error(p, 1, f"Variable {p[1]} is already defined")
