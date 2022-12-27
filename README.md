@@ -47,9 +47,9 @@ This is a multiline comment
 
 Has of now, the language supports the following data types:
 
-- ```int```: 32 bit integer;
-- ```&int```: array of 32 bit integers;
-- ```string```: Unmutable strings;
+- ```int```, ```float```, ```string```: These are the basic data types of the language;
+- ```&int```, ```&float```, ```&string```: These are the pointer data types of the language;
+- vec```<int>```, vec```<float>```, vec```<string>```: These are the vector data types of the language;
 
 ### **Arithmetics**
 
@@ -93,19 +93,19 @@ In tox arrays are declared in 3 different ways:
 - Declaring an array of a specific size. This will initialize the array with the value ```0```;
 
 ```c
-a: &int[10]
+a: vec<int>[10]
 ```
 
 - Declaring an array through a list of values;
 
 ```c
-a: &int = [10, 20, 30, 40, 50]
+a: vec<int> = [10, 20, 30, 40, 50]
 ```
 
 - Declaring an array with the ```...``` operator;
 
 ```c
-a: &int = [1 ... 10]
+a: vec<int> = [1 ... 10]
 ```
 
 This will initialize the array with the values ```1, 2, 3, 4, 5, 6, 7, 8, 9, 10```.
