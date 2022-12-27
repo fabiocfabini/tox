@@ -95,15 +95,13 @@ class Unary:
         """
         unary : '!' unary
         """
-        p.parser.type_checker.handle(p, "not")
-        return std_message([f"{p[2]}", "NOT"]) # Return the message
+        return p.parser.type_checker.handle(p, "not")
 
     def _neg(self, p) -> str: # Handles a negation operation
         """
         unary : '-' unary
         """
-        p.parser.type_checker.handle(p, "neg")
-        return std_message([f"{p[2]}PUSHI -1", "MUL"]) # Return the message
+        return p.parser.type_checker.handle(p, "neg")
 
     def _primary(self, p) -> str: # Handles a primary expression
         """
@@ -129,24 +127,21 @@ class Factor:
 
     def _mul(self, p) -> str: # Handles a multiplication operation
         """
-        factor : unary '*' factor
+        factor : factor '*' unary
         """
-        p.parser.type_checker.handle(p, "mul")
-        return std_message([f"{p[1]}{p[3]}MUL"]) # Return the message
+        return p.parser.type_checker.handle(p, "mul")
 
     def _div(self, p) -> str: # Handles a division operation
         """
-        factor : unary '/' factor
+        factor : factor '/' unary
         """
-        p.parser.type_checker.handle(p, "div")
-        return std_message([f"{p[1]}{p[3]}DIV"]) # Return the message
+        return p.parser.type_checker.handle(p, "div")
 
     def _mod(self, p) -> str: # Handles a modulo operation
         """
-        factor : unary '%' factor
+        factor : factor '%' unary
         """
-        p.parser.type_checker.handle(p, "mod")
-        return std_message([f"{p[1]}{p[3]}MOD"]) # Return the message
+        return p.parser.type_checker.handle(p, "mod")
 
     def _unary(self, p) -> str: # Handles a unary expression
         """
@@ -171,17 +166,15 @@ class Term:
 
     def _add(self, p) -> str: # Handles an addition operation
         """
-        term : factor '+' term
+        term : term '+' factor
         """
-        p.parser.type_checker.handle(p, "add")
-        return std_message([f"{p[1]}{p[3]}ADD"])    # Return the message
+        return p.parser.type_checker.handle(p, "add")
 
     def _sub(self, p) -> str: # Handles a subtraction operation
         """
-        term : factor '-' term
+        term : term '-' factor
         """
-        p.parser.type_checker.handle(p, "sub")
-        return std_message([f"{p[1]}{p[3]}SUB"])   # Return the message
+        return p.parser.type_checker.handle(p, "sub")
 
     def _factor(self, p) -> str: # Handles a factor expression
         """
@@ -208,31 +201,27 @@ class Comparison:
 
     def _lt(self, p) -> str: # Handles a less than operation
         """
-        comparison : term '<' comparison
+        comparison : comparison '<' term
         """
-        p.parser.type_checker.handle(p, "lt")
-        return std_message([f"{p[1]}{p[3]}INF"]) # Return the message
+        return p.parser.type_checker.handle(p, "lt")
 
     def _gt(self, p) -> str: # Handles a greater than operation
         """
-        comparison : term '>' comparison
+        comparison : comparison '>' term
         """
-        p.parser.type_checker.handle(p, "gt")
-        return std_message([f"{p[1]}{p[3]}SUP"]) # Return the message
+        return p.parser.type_checker.handle(p, "gt")
 
     def _lte(self, p) -> str: # Handles a less than or equal to operation
         """
-        comparison : term '<=' comparison
+        comparison : comparison '<=' term
         """
-        p.parser.type_checker.handle(p, "lte")
-        return std_message([f"{p[1]}{p[3]}INFEQ"]) # Return the message
+        return p.parser.type_checker.handle(p, "lte")
 
     def _gte(self, p) -> str: # Handles a greater than or equal to operation
         """
-        comparison : term '>=' comparison
+        comparison : comparison '>=' term
         """
-        p.parser.type_checker.handle(p, "gte")
-        return std_message([f"{p[1]}{p[3]}SUPEQ"]) # Return the message
+        return p.parser.type_checker.handle(p, "gte")
 
     def _term(self, p) -> str: # Handles a term expression
         """
@@ -257,17 +246,15 @@ class Condition:
 
     def _eq(self, p) -> str: # Handles an equal to operation
         """
-        condition : comparison EQ condition
+        condition : condition EQ comparison
         """
-        p.parser.type_checker.handle(p, "eq")
-        return std_message([f"{p[1]}{p[3]}EQUAL"]) # Return the message
+        return p.parser.type_checker.handle(p, "eq")
 
     def _neq(self, p) -> str: # Handles a not equal to operation
         """
-        condition : comparison NEQ condition
+        condition : condition NEQ comparison
         """
-        p.parser.type_checker.handle(p, "neq")
-        return std_message([f"{p[1]}{p[3]}EQUAL", "NOT"]) # Return the message
+        return p.parser.type_checker.handle(p, "neq")
 
     def _comparison(self, p) -> str: # Handles a comparison expression
         """
@@ -293,8 +280,7 @@ class SubExpression:
         """
         subexpression : subexpression AND condition
         """
-        p.parser.type_checker.handle(p, "and")
-        return std_message([f"{p[1]}{p[3]}AND"])    # Return the message
+        return p.parser.type_checker.handle(p, "and")
 
     def _condition(self, p) -> str: # Handles a condition expression
         """
@@ -319,8 +305,7 @@ class Expression:
         """
         expression : expression OR subexpression
         """
-        p.parser.type_checker.handle(p, "or")
-        return std_message([f"{p[1]}{p[3]}OR"]) # Return the message
+        return p.parser.type_checker.handle(p, "or")
 
     def _subexpression(self, p) -> str: # Handles a subexpression expression
         """

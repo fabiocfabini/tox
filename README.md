@@ -60,7 +60,11 @@ Basic arithmetics are supported by the language. These include:
 - the ```&&```, ```||``` operators;
 - the ```!``` operator;
 
-**Note** Pointer arithmetics is not supported yet. [todo#3](todo.md)
+Tox also supports pointer arithmetics. The following operations are supported:
+
+- ```+``` adds an integer to a pointer;
+- ```-``` subtracts an integer from a pointer and returns the difference between two pointers;
+- ```>```, ```<```, ```>=```, ```<=``` compares two pointers;
 
 ### **Variables**
 

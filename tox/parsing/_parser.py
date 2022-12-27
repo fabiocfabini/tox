@@ -435,7 +435,7 @@ def p_expression_subexpression(p):
 
 def p_subexpression_and(p):
     """
-    subexpression : condition AND subexpression
+    subexpression : subexpression AND condition
     """
     p[0] = parser.subexpression_handler.handle(p, "and")
 def p_subexpression_condition(p):
@@ -446,12 +446,12 @@ def p_subexpression_condition(p):
 
 def p_condition_eq(p):
     """
-    condition : comparison EQ condition
+    condition : condition EQ comparison
     """
     p[0] = parser.condition_handler.handle(p, "eq")
 def p_condition_neq(p):
     """
-    condition : comparison NEQ condition
+    condition : condition NEQ comparison
     """
     p[0] = parser.condition_handler.handle(p, "neq")
 def p_condition_comparison(p):
@@ -462,22 +462,22 @@ def p_condition_comparison(p):
 
 def p_comparison_lt(p):
     """
-    comparison : term LT comparison
+    comparison : comparison LT term
     """
     p[0] = parser.comparison_handler.handle(p, "lt")
 def p_comparison_gt(p):
     """
-    comparison : term GT comparison
+    comparison : comparison GT term
     """
     p[0] = parser.comparison_handler.handle(p, "gt")
 def p_comparison_lte(p):
     """
-    comparison : term LTE comparison
+    comparison : comparison LTE term
     """
     p[0] = parser.comparison_handler.handle(p, "lte")
 def p_comparison_gte(p):
     """
-    comparison : term GTE comparison
+    comparison : comparison GTE term
     """
     p[0] = parser.comparison_handler.handle(p, "gte")
 def p_comparison_term(p):
@@ -488,12 +488,12 @@ def p_comparison_term(p):
 
 def p_term_sub(p):
     """
-    term : factor '-' term
+    term : term '-' factor
     """
     p[0] = parser.term_handler.handle(p, "sub")
 def p_term_add(p):
     """
-    term : factor '+' term
+    term : term '+' factor
     """
     p[0] = parser.term_handler.handle(p, "add")
 def p_term_factor(p):
@@ -504,17 +504,17 @@ def p_term_factor(p):
 
 def p_factor_mul(p):
     """
-    factor : unary '*' factor
+    factor : factor '*' unary
     """
     p[0] = parser.factor_handler.handle(p, "mul")
 def p_factor_div(p):
     """
-    factor : unary '/' factor
+    factor : factor '/' unary
     """
     p[0] = parser.factor_handler.handle(p, "div")
 def p_factor_mod(p):
     """
-    factor : unary '%' factor
+    factor : factor '%' unary
     """
     p[0] = parser.factor_handler.handle(p, "mod")
 def p_factor_unary(p):

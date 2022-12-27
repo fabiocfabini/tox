@@ -1,0 +1,32 @@
+Add: pointer + int
+2
+2
+Sub: pointer - int
+1
+1
+Sub: pointer - pointer
+1
+Compare: pointer < pointer
+1
+2
+3
+4
+5
+Compare: pointer > pointer
+5
+4
+3
+2
+1
+Compare: pointer <= pointer
+1
+2
+3
+4
+5
+Compare: pointer => pointer
+5
+4
+3
+2
+1
