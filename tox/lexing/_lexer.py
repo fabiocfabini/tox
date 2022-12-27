@@ -17,6 +17,7 @@ reserved = {                                                                    
     'int'   : 'TYPE_INT',
     'string': 'TYPE_STRING',
     'float' : 'TYPE_FLOAT',
+    'vec'   : 'TYPE_VEC',
     'if'    : 'IF',
     'else'  : 'ELSE',
     'while' : 'WHILE',

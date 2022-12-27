@@ -31,29 +31,37 @@ class Primary:
             compiler_error(p, 1, f"Variable {p[1]} not declared")
             compiler_note("Called from Primary._indexing")
             sys.exit(1)
+        if not id_meta.type.startswith("vec") and not id_meta.type.startswith("&"):
+            compiler_error(p, 1, f"Can't index into variable of type '{id_meta.type}'")
+            compiler_note("Called from Assignment._array_index")
+            sys.exit(1)
+        if not id_meta.p_init:
+            compiler_error(p, 1, f"Indexing into non initialized pointer '{p[1]}'")
+            compiler_note("Called from Primary._indexing")
+            sys.exit(1)
         if idx != "int": # If the index is not an integer, Throw an error
             compiler_error(p, 1, f"Index must be an integer, not {idx}")
             compiler_note("Called from Primary._indexing")
             sys.exit(1)
-        if not id_meta.type.startswith("&"):
-            compiler_error(p, 1, f"Can't index to non array variable {p[1]}. Did you mean to use the '&' operator?")
-            compiler_note("Called from Assignment._array_index")
-            sys.exit(1)
-        p.parser.type_checker.push(id_meta.type[1:])
 
         push_op = "PUSHGP" if not in_function else "PUSHFP" # If the variable is in a function, push the frame pointer else push the global pointer
-        return std_message([push_op, f"LOAD {id_meta.stack_position[0]}", f"{p[3]}PADD", "LOAD 0"]) # Return the message
+        if id_meta.type.startswith("vec"):
+            p.parser.type_checker.push(id_meta.type[4:-1])
+            return std_message([push_op, f"PUSHI {id_meta.stack_position[0]}", "PADD", f"{p[3]}PADD", f"LOAD 0"])
+        elif id_meta.type.startswith("&"):
+            p.parser.type_checker.push(id_meta.type[1:])
+            return std_message([push_op, f"LOAD {id_meta.stack_position[0]}", f"{p[3]}PADD", "LOAD 0"]) # Return the message
 
     def _ref(self, p) -> str: # Handles getting the address of a variable
         """
-        primary : '&' ID 
+        primary : '&' ID
         """
         id_meta, in_function, _ = p.parser.current_scope.get(p[2])
         if id_meta is None: # If the variable is not declared, Throw an error
             compiler_error(p, 2, f"Variable {p[2]} not declared")
             compiler_note("Called from Primary._ref")
             sys.exit(1)
-        if id_meta.type.startswith("&"):
+        if id_meta.type.startswith("&") or id_meta.type.startswith("vec"):
             compiler_error(p, 1, f"Pointer to pointer not supported")
             compiler_note("Called from Primary._ref")
             sys.exit(1)
@@ -71,10 +79,14 @@ class Primary:
             compiler_error(p, 1, f"Variable {p[1]} not declared")
             compiler_note("Called from Primary.id")
             sys.exit(1)
-        p.parser.type_checker.push(id_meta.type)
-        
+
         push_op = "PUSHGP" if not in_function else "PUSHFP" # If the variable is in a function, push the frame pointer else push the global pointer
-        return std_message([push_op, f"LOAD {id_meta.stack_position[0]}"])  # Return the message
+        if id_meta.type.startswith("vec"):
+            p.parser.type_checker.push(f"&{id_meta.type[4:-1]}")
+            return std_message([push_op, f"PUSHI {id_meta.stack_position[0]}", "PADD"])
+        else:
+            p.parser.type_checker.push(id_meta.type)
+            return std_message([push_op, f"LOAD {id_meta.stack_position[0]}"])  # Return the message
 
     def _int(self, p) -> str: # Handles pushing an integer
         """

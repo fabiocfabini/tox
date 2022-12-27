@@ -1,5 +1,5 @@
 func main() {
-    v: &float = [1.1243, 3.141592, 3f, 4f]
+    v: vec<float> = [1.1243, 3.141592, 3f, 4f]
 
     for(i: int = 0; i < 4; i = i + 1) {
         print(v[i], "\n")

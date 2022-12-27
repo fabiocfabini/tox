@@ -12,6 +12,7 @@ class MetaData:
     """
     type: str
     stack_position: Tuple[int, int]
+    p_init: bool
 
     @property
     def size_in_cells(self) -> int:
@@ -41,8 +42,8 @@ class Scope:
         return self.productions[production](p)
 
 
-    def add(self, key: str, type: str, stack_position: Tuple[int, int]): # Adds a variable to the scope
-        self.Table[key] = MetaData(type, stack_position)
+    def add(self, key: str, type: str, stack_position: Tuple[int, int], p_init: bool): # Adds a variable to the scope
+        self.Table[key] = MetaData(type, stack_position, p_init)
 
     def get(self, key: str) -> Tuple[Optional[MetaData], bool]:
         """

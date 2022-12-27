@@ -134,7 +134,7 @@ def p_single_param(p):
 def p_param(p):
     """
     param : ID ':' type
-        | ID ':' Vtype
+        | ID ':' Ptype
     """
     p[0] = parser.functions_handler.handle(p, 'parameter')
 
@@ -325,11 +325,11 @@ def p_variable_init(p):
     declaration_assignment : ID ':' type ASSIGN expression
     """
     p[0] = parser.declaration_assignment_handler.handle(p, "variable_init")
-def p_array_init_from_expression(p):
+def p_pointer_init(p):
     """
-    declaration_assignment : ID ':' Vtype ASSIGN expression
+    declaration_assignment : ID ':' Ptype ASSIGN expression
     """
-    p[0] = parser.declaration_assignment_handler.handle(p, "array_init_from_expression")
+    p[0] = parser.declaration_assignment_handler.handle(p, "pointer_init")
 def p_array_literal_init(p):
     """
     declaration_assignment : ID ':' Vtype ASSIGN '[' arrayitems ']'
@@ -358,7 +358,7 @@ def p_variable_declaration(p):
     p[0] = p.parser.declaration_handler.handle(p, "variable_declaration")
 def p_pointer_declaration(p):
     """
-    declaration : ID ':' Vtype
+    declaration : ID ':' Ptype
     """
     p[0] = p.parser.declaration_handler.handle(p, "pointer_declaration")
 def p_array_declaration(p):
@@ -371,11 +371,11 @@ def p_array_declaration(p):
 ##   ASSIGN STMT    ##
 ######################
 
-def p_assignment_array_indexing(p):
+def p_assignment_indexing(p):
     """
     assignment : ID '[' expression ']' ASSIGN expression
     """
-    p[0] = parser.assignment_handler.handle(p, "array_indexing")
+    p[0] = parser.assignment_handler.handle(p, "indexing")
 def p_assignment_expression(p):
     """
     assignment : ID ASSIGN expression
@@ -420,7 +420,12 @@ def p_type(p):
     p[0] = p[1]
 def p_vtype(p):
     """
-    Vtype : '&' TYPE_INT
+    Vtype : TYPE_VEC LT type GT
+    """
+    p[0] = p[1] + p[2] + p[3] + p[4]
+def p_ptype(p):
+    """
+    Ptype : '&' TYPE_INT
         | '&' TYPE_STRING
         | '&' TYPE_FLOAT
     """

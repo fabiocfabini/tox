@@ -120,6 +120,7 @@ class TypeCheck:
         """
         right_operand = self.stack.pop()
         left_operand = self.stack.pop()
+        assert not left_operand.startswith("vec"), "vector type cannot appear in this stage"
         if right_operand == left_operand == "int":
             self.stack.append("int")
             return p[1] + p[3] + std_message(["ADD"])
@@ -142,6 +143,7 @@ class TypeCheck:
         """
         right_operand = self.stack.pop()
         left_operand = self.stack.pop()
+        assert not left_operand.startswith("vec"), "vector type cannot appear in this stage"
         if (right_operand, left_operand) in [("int", "int"), ("&int", "&int")]:
             self.stack.append("int")
             return p[1] + p[3] + std_message(["SUB"])
@@ -161,6 +163,7 @@ class TypeCheck:
         """
         right_operand = self.stack.pop()
         left_operand = self.stack.pop()
+        assert not left_operand.startswith("vec"), "vector type cannot appear in this stage"
         if right_operand == left_operand and left_operand not in ("string", "float"):
             self.stack.append("int")
             return p[1] + p[3] + std_message(["INF"])
@@ -177,6 +180,7 @@ class TypeCheck:
         """
         right_operand = self.stack.pop()
         left_operand = self.stack.pop()
+        assert not left_operand.startswith("vec"), "vector type cannot appear in this stage"
         if right_operand == left_operand and left_operand not in ("string", "float"):
             self.stack.append("int")
             return p[1] + p[3] + std_message(["SUP"])
@@ -193,6 +197,7 @@ class TypeCheck:
         """
         right_operand = self.stack.pop()
         left_operand = self.stack.pop()
+        assert not left_operand.startswith("vec"), "vector type cannot appear in this stage"
         if right_operand == left_operand and left_operand not in ("string", "float"):
             self.stack.append("int")
             return p[1] + p[3] + std_message(["INFEQ"])
@@ -209,6 +214,7 @@ class TypeCheck:
         """
         right_operand = self.stack.pop()
         left_operand = self.stack.pop()
+        assert not left_operand.startswith("vec"), "vector type cannot appear in this stage"
         if right_operand == left_operand and left_operand not in ("string", "float"):
             self.stack.append("int")
             return p[1] + p[3] + std_message(["SUPEQ"])
@@ -225,7 +231,8 @@ class TypeCheck:
         """
         right_operand = self.stack.pop()
         left_operand = self.stack.pop()
-        if right_operand == left_operand:
+        assert not left_operand.startswith("vec"), "vector type cannot appear in this stage"
+        if right_operand == left_operand and left_operand != "string":
             self.stack.append("int")
             return p[1] + p[3] + std_message(["EQUAL"])
         else:
@@ -238,7 +245,8 @@ class TypeCheck:
         """
         right_operand = self.stack.pop()
         left_operand = self.stack.pop()
-        if right_operand == left_operand:
+        assert not left_operand.startswith("vec"), "vector type cannot appear in this stage"
+        if right_operand == left_operand and left_operand != "string":
             self.stack.append("int")
             return p[1] + p[3] + std_message(["EQUAL", "NOT"])
         else:
@@ -251,6 +259,7 @@ class TypeCheck:
         """
         right_operand = self.stack.pop()
         left_operand = self.stack.pop()
+        assert not left_operand.startswith("vec"), "vector type cannot appear in this stage"
         if right_operand == left_operand == "int":
             self.stack.append("int")
             return p[1] + p[3] + std_message(["AND"])
@@ -261,6 +270,7 @@ class TypeCheck:
     def _or(self, p):
         right_operand = self.stack.pop()
         left_operand = self.stack.pop()
+        assert not left_operand.startswith("vec"), "vector type cannot appear in this stage"
         if right_operand == left_operand == "int":
             self.stack.append("int")
             return p[1] + p[3] + std_message(["OR"])

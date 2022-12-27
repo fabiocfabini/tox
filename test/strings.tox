@@ -16,7 +16,4 @@ func main() {
 
     s4: string = say_hello("World")
     print(s4)
-
-    print("Comparing strings only compares the pointers!\n")
-    print(s3 == s3, "\n")
 }

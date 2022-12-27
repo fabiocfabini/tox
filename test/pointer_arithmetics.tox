@@ -1,6 +1,6 @@
 func main() {
     print("Add: pointer + int\n")
-    v: &int = [1 ... 5]
+    v: vec<int> = [1 ... 5]
     a: &int = v + 1
 
     print(v[1], "\n")

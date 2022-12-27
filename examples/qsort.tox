@@ -1,5 +1,5 @@
 N: int = 13
-v: &float = [6f, 1f, 2f, 6f, 3f, 6f, 2f, 7f, 4f, 7f, 2f, 1f, 1f]
+v: vec<float> = [6f, 1f, 2f, 6f, 3f, 6f, 2f, 7f, 4f, 7f, 2f, 1f, 1f]
 
 func partition(v: &float, n: int) -> int {
     pivot: float = v[0]

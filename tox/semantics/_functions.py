@@ -84,7 +84,7 @@ class Functions:
         param : ID ':' type
             | ID ':' Vtype
         """
-        p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count))
+        p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count), True)
         p.parser.functions_handler.current_function.input_types.append(p[3])
         p.parser.frame_count += 1
         p.parser.num_params += 1

@@ -1,4 +1,4 @@
-v: &int[10]
+v: vec<int>[10]
 
 func sm(x: int, v: &int) {
     v[1-1] = x + 1
@@ -16,7 +16,7 @@ func sm(x: int, v: &int) {
 }
 
 func main(){
-    arr: &int[10]
+    arr: vec<int>[10]
 
     for(x: int; x < 10; x = x + 1) {
         arr[x] = x
@@ -27,7 +27,7 @@ func main(){
     }
 
     for(x:int; x<10; x = x + 1) {
-        y: &int[10]
+        y: vec<int>[10]
         for(x_:int = x; x_<10 && x > 0; x_ = x_ + 1) {
             y[x_] = x
         }
@@ -39,7 +39,7 @@ func main(){
     }
 
     for(x: int; x < 2; x = x + 1){
-        a: &int = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        a: vec<int> = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
         print(x, ": ")
         for(x: int; x < 10; x = x + 1){
@@ -49,18 +49,18 @@ func main(){
     }
 
     print("First a\n")
-    a: &int = [5 ... 15]
+    a: vec<int> = [5 ... 15]
     for(q: int; q < 10; q = q + 1){
         print(a[q], "\n")
     }
 
     print("a is now arr\n")
-    a = arr
+    p: &int = arr
     for(q: int; q < 10; q = q + 1){
         if q == 5 {
             continue
         }
-        print(a[q], "\n")
+        print(p[q], "\n")
     }
 
     sm(0,v)

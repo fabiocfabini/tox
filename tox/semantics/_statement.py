@@ -72,14 +72,14 @@ class Assignment:
     """
     def __init__(self):
         self.productions = {    # All the productions that this class handles
-            "array_indexing": self._array_index,
+            "indexing": self._indexing,
             "variable": self._variable,
         }
 
     def handle(self, p, production) -> str:
         return self.productions[production](p)
 
-    def _array_index(self, p) -> str: # Assigning to an array index
+    def _indexing(self, p) -> str: # Assigning to an array index
         """
         assignment : ID '[' expression ']' ASSIGN expression
         """
@@ -90,21 +90,24 @@ class Assignment:
             compiler_error(p, 1, f"Assignment to undeclared variable {p[1]}")
             compiler_note("Called from Assignment._array_index")
             sys.exit(1)
-        if not id_meta.type.startswith("&"):
-            compiler_error(p, 1, f"Can't index to non array variable")
+        if not id_meta.type.startswith("vec") and not id_meta.type.startswith("&"):
+            compiler_error(p, 1, f"Indexing not allowed on variable of type '{id_meta.type}'")
             compiler_note("Called from Assignment._array_index")
             sys.exit(1)
         if index != 'int':
-            compiler_error(p, 2, f"Can't index array with non integer value {p[3]}")
+            compiler_error(p, 2, f"Indexing with non-integer type '{index}'")
             compiler_note("Called from Assignment._array_index")
             sys.exit(1)
-        if id_meta.type[1:] != expr: # If the variable isn't an array, report an error
-            compiler_error(p, 5, f"Assignment of '{expr}' to array of type '{id_meta.type}'")
+        if id_meta.type[1:] != expr and id_meta.type[4:-1] != expr:
+            compiler_error(p, 5, f"Assignment of '{expr}' to variable of type '{id_meta.type}'")
             compiler_note("Called from Assignment._array_index")
             sys.exit(1)
 
         push_op = "PUSHGP" if not in_function else "PUSHFP" # Get the correct push operation
-        return std_message([push_op, f"LOAD {id_meta.stack_position[0]}", f"{p[3]}PADD", f"{p[6]}STORE 0"])
+        if id_meta.type.startswith("vec"):
+            return std_message([push_op, f"PUSHI {id_meta.stack_position[0]}", "PADD", f"{p[3]}PADD", f"{p[6]}STORE 0"])
+        elif id_meta.type.startswith("&"):
+            return std_message([push_op, f"LOAD {id_meta.stack_position[0]}", f"{p[3]}PADD", f"{p[6]}STORE 0"])
 
     def _variable(self, p) -> str: # Assigning to a variable
         """
@@ -116,7 +119,13 @@ class Assignment:
             compiler_error(p, 1, f"Assignment to undeclared variable {p[1]}")
             compiler_note("Called from Assignment._expression")
             sys.exit(1)
-        if id_meta.type != expr: # If the types don't match, report an error
+        if id_meta.type.startswith("vec"):
+            compiler_error(p, 1, f"Assignment to array not allowed. Use indexing instead.")
+            compiler_note("Called from Assignment._expression")
+            sys.exit(1)
+        if id_meta.type.startswith("&") and expr.startswith("vec") and id_meta.type[1:] == expr[4:-1]:
+            pass # If ID is of type &T and expr is of type vec<T>, then it's fine
+        elif id_meta.type != expr: # If the types don't match, report an error
             compiler_error(p, 1, f"Assignment of '{expr}' to variable of type '{id_meta.type}'")
             compiler_note("Called from Assignment._variable")
             sys.exit(1)
@@ -141,57 +150,55 @@ class Declaration:
 
     def _array_declaration(self, p) -> str: # Declaring 0 initialized array of size INT
         """
-        declaration : ID ':' Vtype '[' INT ']' 
+        declaration : ID ':' Vtype '[' INT ']'
         """
         if p[1] in p.parser.current_scope.Table:
             compiler_error(p, 1, f"Variable {p[1]} is already defined")
             compiler_note("Called from Declaration._array_declaration")
             sys.exit()
 
+        p[3] = p[3].replace(" ", "") # Remove the spaces from the type
         if p.parser.current_scope.level == 0:   # If the variable is declared in the global scope, add it to the global scope
-            push_op = std_message(["PUSHGP", f"PUSHI {p.parser.global_count+1}", "PADD"]) # Get the correct push operation
-            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count+int(p[5])-1 + 1))
-            p.parser.global_count += int(p[5]) + 1
+            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count+int(p[5])-1), True)
+            p.parser.global_count += int(p[5])
         else:   # If the variable is declared in a function scope, add it to the function scope
-            push_op = std_message(["PUSHFP", f"PUSHI {p.parser.frame_count+1}", "PADD"]) # Get the correct push operation
-            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count+int(p[5])-1 + 1))
-            p.parser.frame_count += int(p[5]) + 1
+            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count+int(p[5])-1), True)
+            p.parser.frame_count += int(p[5])
 
-        if p[3] == '&int':
-            return push_op + std_message([f"PUSHN {int(p[5])}"]) # Push the address of the first element of the array and push the number of elements
-        elif p[3] == '&float':
-            return push_op + std_message([f"PUSHF 0.0" for i in range(int(p[5]))]) # Push the address of the first element of the array and push the number of elements
-        elif p[3] == '&string':
-            compiler_error(p, 1, f"Can't simply declare array of type string. Use string array constructor instead")
-            compiler_note("Called from Declaration._array_declaration")
-            sys.exit(1)
+        if p[3] == 'vec<int>':
+            return std_message([f"PUSHN {int(p[5])}"])
+        elif p[3] == 'vec<float>':
+            return std_message([f"PUSHF 0.0" for i in range(int(p[5]))])
+        elif p[3] == 'vec<string>':
+            return std_message([f"PUSHS ''" for i in range(int(p[5]))])
+        assert False, "Invalid type in Declaration._array_declaration"
 
     def _pointer_declaration(self, p):
         """
-        declaration : ID ':' Vtype
+        declaration : ID ':' Ptype
         """
         if p[1] in p.parser.current_scope.Table:
-            compiler_error(p, 1, f"Pointer {p[1]} is already defined")
+            compiler_error(p, 1, f"Variable {p[1]} is already defined")
             compiler_note("Called from Declaration._pointer_declaration")
             sys.exit(1)
 
+        p[3] = p[3].replace(" ", "") # Remove the spaces from the type
         if p.parser.current_scope.level == 0:   # If the variable is declared in the global scope, add it to the global scope
-            push_op = std_message(["PUSHGP", f"PUSHI {p.parser.global_count+1}", "PADD"]) # Get the correct push operation
-            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count + 1))
-            p.parser.global_count += 1 + 1
+            push_op = std_message(["PUSHGP", f"PUSHI {p.parser.global_count}", "PADD"]) # Get the correct push operation
+            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count), False)
+            p.parser.global_count += 1
         else:   # If the variable is declared in a function scope, add it to the function scope
-            push_op = std_message(["PUSHFP", f"PUSHI {p.parser.frame_count+1}", "PADD"]) # Get the correct push operation
-            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count + 1))
-            p.parser.frame_count += 1 + 1
+            push_op = std_message(["PUSHFP", f"PUSHI {p.parser.frame_count}", "PADD"]) # Get the correct push operation
+            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count), False)
+            p.parser.frame_count += 1
 
+        # Uninitialized pointers point to themselves
         if p[3] == '&int':
-            return push_op + std_message(["PUSHI 0"])
+            return push_op
         elif p[3] == '&float':
-            return push_op + std_message(["PUSHF 0.0"])
+            return push_op
         elif p[3] == '&string':
-            compiler_error(p, 1, "Cannot simply declare a '&string' pointer. Use array constructor instead")
-            compiler_note("Called from Declaration._variable_declaration")
-            sys.exit(1)
+            return push_op
 
     def _variable_declaration(self, p):
         """
@@ -202,11 +209,12 @@ class Declaration:
             compiler_note("Called from Declaration._variable_declaration")
             sys.exit(1)
 
+        p[3] = p[3].replace(" ", "") # Remove the spaces from the type
         if p.parser.current_scope.level == 0:   # If the variable is declared in the global scope, add it to the global scope
-            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count))
+            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count), False)
             p.parser.global_count += 1
         else:   # If the variable is declared in a function scope, add it to the function scope
-            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count))
+            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count), False)
             p.parser.frame_count += 1
 
         if p[3] == 'int':
@@ -214,9 +222,7 @@ class Declaration:
         elif p[3] == 'float':
             return std_message(["PUSHF 0.0"])
         elif p[3] == 'string':
-            compiler_error(p, 1, "Cannot simply declare a 'string' variable. Use the string literal instead.")
-            compiler_note("Called from Declaration._variable_declaration")
-            sys.exit(1)
+            return std_message(["PUSHS ''"])
 
 
 class DeclarationAssignment:
@@ -225,38 +231,15 @@ class DeclarationAssignment:
     """
     def __init__(self):
         self.productions = {    # All the productions that this class handles
-            "array_init_from_expression": self._array_init_from_expression,
             "array_literal_init": self._array_literal_init,
             "array_range_init": self._array_range_init,
+            "pointer_init": self._pointer_init,
             "variable_init": self._variable_init,
             "array_items": self._array_items,
         }
 
     def handle(self, p, production) -> str:
         return self.productions[production](p)
-
-    def _array_init_from_expression(self, p) -> str: # Declaring and initializing an array with an expression
-        """
-        declaration_assignment : ID ':' Vtype ASSIGN expression
-        """
-        expr = p.parser.type_checker.pop()
-        if p[1] in p.parser.current_scope.Table:    # If the variable already exists in the current scope table, report an error
-            compiler_error(p, 1, f"Variable {p[1]} is already defined")
-            compiler_note("Called from DeclarationAssignment._array_init_from_expression")
-            sys.exit(1)
-        if expr != p[3]:
-            compiler_error(p, 5, f"Initialization of array of type '{p[3]}' with expression of type '{expr}'")
-            compiler_note("Called from DeclarationAssignment._array_init_from_expression")
-            sys.exit(1)
-
-        if p.parser.current_scope.level == 0:
-            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count))
-            p.parser.global_count += 1
-        else:
-            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count))
-            p.parser.frame_count += 1
-
-        return p[5]
 
     def _array_literal_init(self, p) -> str: # Declaring and initializing an array with a literal
         """
@@ -268,47 +251,69 @@ class DeclarationAssignment:
             sys.exit(1)
         for i in range(p.parser.array_assign_items):
             item = p.parser.type_checker.pop()
-            if item != p[3][1:]:
+            if item != p[3][4:-1]:
                 compiler_error(p, 5, f"Initialization of array of type '{p[3]}' with item of type '{item}'. Look at item {p.parser.array_assign_items-i}")
                 compiler_note("Called from DeclarationAssignment._array_literal_init")
                 sys.exit(1)
 
+        p[3] = p[3].replace(" ", "") # Remove the spaces from the type
         if p.parser.current_scope.level == 0:   # If the variable is declared in the global scope, add it to the global scope
-            push_op = std_message(["PUSHGP", f"PUSHI {p.parser.global_count+1}", "PADD"]) # Get the correct push operation
-            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count+p.parser.array_assign_items-1 + 1))
-            p.parser.global_count += p.parser.array_assign_items + 1
+            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count+p.parser.array_assign_items-1), True)
+            p.parser.global_count += p.parser.array_assign_items
         else:   # If the variable is declared in a function scope, add it to the function scope
-            push_op = std_message(["PUSHFP", f"PUSHI {p.parser.frame_count+1}", "PADD"]) # Get the correct push operation
-            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count+p.parser.array_assign_items-1 + 1))
-            p.parser.frame_count += p.parser.array_assign_items + 1
+            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count+p.parser.array_assign_items-1), True)
+            p.parser.frame_count += p.parser.array_assign_items
         p.parser.array_assign_items = 0 # Reset the array assign items counter
-        return push_op + p[6]
+        return p[6]
 
     def _array_range_init(self, p) -> str: # Declaring and initializing an array with a range TODO: turn int into expression if possible
         """
-        declaration_assignment : ID ':' Vtype ASSIGN '['   INT RETI   INT ']'
+        declaration_assignment : ID ':' Ptype ASSIGN '['   INT RETI   INT ']'
         """
         if p[1] in p.parser.current_scope.Table:    # If the variable already exists in the current scope table, report an error
             compiler_error(p, 1, f"Variable {p[1]} is already defined")
             compiler_note("Called from DeclarationAssignment._array_range_init")
             sys.exit(1)
-        if p[3] != '&int':    # If the variable is not an integer array, report an error
-            compiler_error(p, 1, f"Array of type {p[3]} cannot be initialized with a range")
+        if p[3] != 'vec<int>':    # If the variable is not an integer array, report an error
+            compiler_error(p, 1, f"Array of type '{p[3]}' cannot be initialized with a range")
             compiler_note("Called from DeclarationAssignment._array_range_init")
             sys.exit(1)
 
         start = int(p[6])
         end = int(p[8])
+        p[3] = p[3].replace(" ", "") # Remove the spaces from the type
         if p.parser.current_scope.level == 0:   # If the variable is declared in the global scope, add it to the global scope
-            push_op = std_message(["PUSHGP", f"PUSHI {p.parser.global_count+1}", "PADD"]) # Get the correct push operation
-            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count+end-start + 1))
-            p.parser.global_count += end-start + 1 + 1
+            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count+end-start), True)
+            p.parser.global_count += end-start + 1
         else:   # If the variable is declared in a function scope, add it to the function scope
-            push_op = std_message(["PUSHFP", f"PUSHI {p.parser.frame_count+1}", "PADD"]) # Get the correct push operation
-            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count+end-start + 1))
-            p.parser.frame_count += end-start + 1 + 1
+            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count+end-start), True)
+            p.parser.frame_count += end-start + 1
 
-            return push_op + std_message([f"PUSHI {i}" for i in range(start, end + 1)])
+            return std_message([f"PUSHI {i}" for i in range(start, end + 1)])
+
+    def _pointer_init(self, p) -> str: # Declaring and initializing a pointer
+        """
+        declaration_assignment : ID ':' Ptype ASSIGN expression
+        """
+        expr = p.parser.type_checker.pop()
+        if p[1] in p.parser.current_scope.Table:    # If the variable already exists in the current scope table, report an error
+            compiler_error(p, 1, f"Variable {p[1]} is already defined")
+            compiler_note("Called from DeclarationAssignment._pointer_init")
+            sys.exit(1)
+        if not expr.startswith("vec") and expr != p[3]: # Cam only assign vectors and pointers to pointer
+            compiler_error(p, 5, f"Initialization of pointer of type '{p[3]}' with expression of type '{expr}'")
+            compiler_note("Called from DeclarationAssignment._pointer_init")
+            sys.exit(1)
+
+        p[3] = p[3].replace(" ", "") # Remove the spaces from the type
+        if p.parser.current_scope.level == 0:
+            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count), True)
+            p.parser.global_count += 1
+        else:
+            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count), True)
+            p.parser.frame_count += 1
+
+        return p[5]
 
     def _variable_init(self, p) -> str:     # Declaring and initializing a variable
         """
@@ -324,15 +329,15 @@ class DeclarationAssignment:
             compiler_note("Called from DeclarationAssignment._variable_init")
             sys.exit(1)
 
-        else:
-            if p.parser.current_scope.level == 0:   # If the variable is declared in the global scope, add it to the global scope
-                p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count))
-                p.parser.global_count += 1  # Increment the global count
-            else:   # If the variable is declared in a function scope, add it to the function scope
-                p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count))
-                p.parser.frame_count += 1   # Increment the frame count
+        p[3] = p[3].replace(" ", "") # Remove the spaces from the type
+        if p.parser.current_scope.level == 0:   # If the variable is declared in the global scope, add it to the global scope
+            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count), False)
+            p.parser.global_count += 1  # Increment the global count
+        else:   # If the variable is declared in a function scope, add it to the function scope
+            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count), False)
+            p.parser.frame_count += 1   # Increment the frame count
 
-            return p[5]
+        return p[5]
 
     def _array_items(self, p) -> str:  # Handles the array items
         """
