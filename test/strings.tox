@@ -1,6 +1,10 @@
+func say_hello(name: string) -> string{
+    return "Hello " + name + "!\n"
+}
+
 func main() {
     s1: string = "Hello"
-    s2: string = "World\n"
+    s2: string = "World!\n"
 
     print(s1)
     print(" ")
@@ -9,4 +13,10 @@ func main() {
     s3: string = s1 + " " + s2
 
     print(s3)
+
+    s4: string = say_hello("World")
+    print(s4)
+
+    print("Comparing strings only compares the pointers!\n")
+    print(s3 == s3, "\n")
 }
