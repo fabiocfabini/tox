@@ -138,7 +138,7 @@ class Declaration:
         """
         declaration : ID ':' Vtype '[' INT ']' 
         """
-        if p[1] not in p.parser.current_scope.Table:
+        if p[1] in p.parser.current_scope.Table:
             compiler_error(p, 1, f"Variable {p[1]} is already defined")
             compiler_note("Called from Declaration._array_declaration")
             sys.exit()
