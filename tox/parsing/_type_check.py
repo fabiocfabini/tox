@@ -76,7 +76,7 @@ class TypeCheck:
             self.stack.append("int")
             return p[1] + p[3] + std_message(["MUL"])
         else:
-            compiler_error(p, 2, f"Operation 'mul' not supported for types {right_operand} and {left_operand}")
+            compiler_error(p, 2, f"Operation 'mul' not supported for types '{left_operand}' and '{right_operand}'")
             sys.exit(1)
 
     def _div(self, p):
@@ -89,7 +89,7 @@ class TypeCheck:
             self.stack.append("int")
             return p[1] + p[3] + std_message(["DIV"])
         else:
-            compiler_error(p, 2, f"Operation 'div' not supported for types {right_operand} and {left_operand}")
+            compiler_error(p, 2, f"Operation 'div' not supported for types '{left_operand}' and '{right_operand}'")
             sys.exit(1)
 
     def _mod(self, p):
@@ -102,7 +102,7 @@ class TypeCheck:
             self.stack.append("int")
             return p[1] + p[3] + std_message(["MOD"])
         else:
-            compiler_error(p, 2, f"Operation 'mod' not supported for types {right_operand} and {left_operand}")
+            compiler_error(p, 2, f"Operation 'mod' not supported for types '{left_operand}' and '{right_operand}'")
             sys.exit(1)
 
     def _add(self, p):
@@ -117,8 +117,11 @@ class TypeCheck:
         elif left_operand.startswith("&") and right_operand == "int":
             self.stack.append(left_operand)
             return p[1] + p[3] + std_message(["PADD"])
+        elif right_operand == left_operand == "string":
+            self.stack.append("string")
+            return p[3] + p[1] + std_message(["CONCAT"])
         else:
-            compiler_error(p, 2, f"Operation 'add' not supported for types {left_operand} and {right_operand}")
+            compiler_error(p, 2, f"Operation 'add' not supported for types '{left_operand}' and '{right_operand}'")
             sys.exit(1)
 
     def _sub(self, p):
@@ -134,7 +137,7 @@ class TypeCheck:
             self.stack.append(left_operand)
             return p[1] + p[3] + std_message(["PUSHI -1", "MUL", "PADD"])
         else:
-            compiler_error(p, 2, f"Operation 'sub' not supported for types {right_operand} and {left_operand}")
+            compiler_error(p, 2, f"Operation 'sub' not supported for types '{left_operand}' and '{right_operand}'")
             sys.exit(1)
 
     def _lt(self, p):
@@ -147,7 +150,7 @@ class TypeCheck:
             self.stack.append("int")
             return p[1] + p[3] + std_message(["INF"])
         else:
-            compiler_error(p, 2, f"Operation 'lt' not supported for types {right_operand} and {left_operand}")
+            compiler_error(p, 2, f"Operation 'lt' not supported for types '{left_operand}' and '{right_operand}'")
             sys.exit(1)
 
     def _gt(self, p):
@@ -160,7 +163,7 @@ class TypeCheck:
             self.stack.append("int")
             return p[1] + p[3] + std_message(["SUP"])
         else:
-            compiler_error(p, 2, f"Operation 'gt' not supported for types {right_operand} and {left_operand}")
+            compiler_error(p, 2, f"Operation 'gt' not supported for types '{left_operand}' and '{right_operand}'")
             sys.exit(1)
 
     def _lte(self, p):
@@ -173,7 +176,7 @@ class TypeCheck:
             self.stack.append("int")
             return p[1] + p[3] + std_message(["INFEQ"])
         else:
-            compiler_error(p, 2, f"Operation 'lte' not supported for types {right_operand} and {left_operand}")
+            compiler_error(p, 2, f"Operation 'lte' not supported for types '{left_operand}' and '{right_operand}'")
             sys.exit(1)
 
     def _gte(self, p):
@@ -186,7 +189,7 @@ class TypeCheck:
             self.stack.append("int")
             return p[1] + p[3] + std_message(["SUPEQ"])
         else:
-            compiler_error(p, 2, f"Operation 'gte' not supported for types {right_operand} and {left_operand}")
+            compiler_error(p, 2, f"Operation 'gte' not supported for types '{left_operand}' and '{right_operand}'")
             sys.exit(1)
 
     def _eq(self, p):
@@ -199,7 +202,7 @@ class TypeCheck:
             self.stack.append("int")
             return p[1] + p[3] + std_message(["EQUAL"])
         else:
-            compiler_error(p, 2, f"Operation 'eq' not supported for types {right_operand} and {left_operand}")
+            compiler_error(p, 2, f"Operation 'eq' not supported for types '{left_operand}' and '{right_operand}'")
             sys.exit(1)
 
     def _neq(self, p):
@@ -212,7 +215,7 @@ class TypeCheck:
             self.stack.append("int")
             return p[1] + p[3] + std_message(["EQUAL", "NOT"])
         else:
-            compiler_error(p, 2, f"Operation 'neq' not supported for types {right_operand} and {left_operand}")
+            compiler_error(p, 2, f"Operation 'neq' not supported for types '{left_operand}' and '{right_operand}'")
             sys.exit(1)
 
     def _and(self, p):
@@ -225,7 +228,7 @@ class TypeCheck:
             self.stack.append("int")
             return p[1] + p[3] + std_message(["AND"])
         else:
-            compiler_error(p, 2, f"Operation 'and' not supported for types {right_operand} and {left_operand}")
+            compiler_error(p, 2, f"Operation 'and' not supported for types '{left_operand}' and '{right_operand}'")
             sys.exit(1)
 
     def _or(self, p):
@@ -235,5 +238,5 @@ class TypeCheck:
             self.stack.append("int")
             return p[1] + p[3] + std_message(["OR"])
         else:
-            compiler_error(p, 2, f"Operation 'or' not supported for types {right_operand} and {left_operand}")
+            compiler_error(p, 2, f"Operation 'or' not supported for types '{left_operand}' and '{right_operand}'")
             sys.exit(1)
