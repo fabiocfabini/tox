@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 
 import sys
 
-from tox import compiler_error, compiler_note, std_message
+from tox import compiler_warning, compiler_error, compiler_note, std_message
 
 @dataclass
 class FunctionData:
@@ -58,7 +58,7 @@ class Functions:
         """
         if p.parser.functions_handler.get(p[2]) is not None:
             compiler_error(p, 2, f"Redefinition of function {p[2]}")
-            compiler_note("Called from p_function_id.")
+            compiler_note("Called from Functions._id")
             sys.exit(1)
         p.parser.functions_handler.add(p[2])
         p.parser.functions_handler.current_function = p.parser.functions_handler.get(p[2])
@@ -68,8 +68,14 @@ class Functions:
         """
         function_body : '{' stmts '}' es
         """
+        if not p[2].endswith("RETURN\n"):
+            if p.parser.functions_handler.current_function.output_type is not None:
+                compiler_warning(p, 3, f"Reached end of function {p.parser.functions_handler.current_function.name} without an explicit return statement.")
+                compiler_note("Called from Functions._body")
+            else:
+                p[2] += "RETURN\n"
+
         out = p[2]
-        assert len(p.parser.current_loops) == 0, f"Loops not closed: {p.pparser.current_loops[-1]}"
         p.parser.functions_handler.current_function = None
         return out
 
@@ -120,7 +126,7 @@ class Functions:
         out = ""
         if self.get(p[1]).output_type is not None:
             out = std_message(["PUSHI -69"])
-        out += p[3] + std_message([f"PUSHA {self.get(p[1]).name}", "CALL", f"POP {len(self.get(p[1]).input_types)}"])    # If the function exists, return the assembly code
+        out += p[3] + std_message([f"PUSHA {self.get(p[1]).name.replace('_', '')}", "CALL", f"POP {len(self.get(p[1]).input_types)}"])    # If the function exists, return the assembly code
         return out
 
     def _return(self, p):
@@ -141,7 +147,7 @@ class Functions:
                 "RETURN"])
 
         if p.parser.functions_handler.current_function.output_type is not None:
-            compiler_error(p, 1, f"Return type '{p.parser.functions_handler.current_function.output_type}' doesn't match function output type None")
+            compiler_error(p, 1, f"Return type '{p.parser.functions_handler.current_function.output_type}' doesn't match function output type 'None'")
             compiler_note(f"Error on Function '{p.parser.functions_handler.current_function.name}'")
             compiler_note("Called from Functions._return")
             sys.exit(1)

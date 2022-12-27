@@ -34,7 +34,7 @@ class Primary:
             compiler_note("Called from Primary._indexing")
             sys.exit(1)
         if not id_meta.type.startswith("&"):
-            compiler_error(p, 1, f"Can't index to non array variable")
+            compiler_error(p, 1, f"Can't index to non array variable {p[1]}. Did you mean to use the '&' operator?")
             compiler_note("Called from Assignment._array_index")
             sys.exit(1)
         p.parser.type_checker.push(id_meta.type[1:])

@@ -36,6 +36,12 @@ def compiler_error(p, n: int, msg: str):
     """
     sys.stderr.write(f"{tox.COLOR_RED}Compiler Error:{tox.COLOR_YELLOW}{p.lineno(n)}:{tox.COLOR_GREEN}{find_column_comp(p.parser.input, p, n)}:{tox.RESET_COLOR} {msg}\n")
 
+def compiler_warning(p, n: int, msg: str):
+    """
+    Report a compiler warning.
+    """
+    sys.stderr.write(f"{tox.COLOR_YELLOW}Compiler Warning:{tox.COLOR_YELLOW}{p.lineno(n)}:{tox.COLOR_GREEN}{find_column_comp(p.parser.input, p, n)}:{tox.RESET_COLOR} {msg}\n")
+
 def compiler_note(msg):
     """
     Report a compiler note.

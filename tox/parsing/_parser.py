@@ -36,7 +36,7 @@ def p_prog(p):
     parser.loop_count = 0
     parser.if_count = 0
     if not parser.type_checker.is_empty():
-        compiler_error(f"Leftover types in type checker. {p.parser.type_checker}")
+        compiler_error(p, 1, f"Leftover types in type checker. {p.parser.type_checker}")
         sys.exit(1)
 
     if parser.functions_handler.get("main") is None:

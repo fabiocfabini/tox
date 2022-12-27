@@ -33,6 +33,10 @@ class Print:
             push_op = std_message(["WRITES"])
         elif top == "int": # If the top is an expression, print it
             push_op = std_message(["WRITEI"])
+        elif top == "&int":
+            compiler_error(p, 1, f"Can't print array. Not implemented yet.")
+            compiler_note("Called from Print._single")
+            sys.exit(1)
 
         return p[1] + p[3] + push_op # Whatever the multiple_prints production returns + the expression + the print operation
 
@@ -87,7 +91,7 @@ class Assignment:
             compiler_note("Called from Assignment._array_index")
             sys.exit(1)
         if index != 'int':
-            compiler_error(p, 2, f"Can't index array with non integer value")
+            compiler_error(p, 2, f"Can't index array with non integer value {p[3]}")
             compiler_note("Called from Assignment._array_index")
             sys.exit(1)
         if id_meta.type[1:] != expr: # If the variable isn't an array, report an error
@@ -112,7 +116,7 @@ class Assignment:
             compiler_error(p, 1, f"Assignment of '{expr}' to variable of type '{id_meta.type}'")
             compiler_note("Called from Assignment._variable")
             sys.exit(1)
-        
+
         store_op = "STOREG" if not in_function else "STOREL"    # Get the correct store operation
         return std_message([f"{p[3]}{store_op} {id_meta.stack_position[0]}"])
 
@@ -134,8 +138,7 @@ class Declaration:
         """
         declaration : ID ':' Vtype '[' INT ']' 
         """
-        id_meta, _, _ = p.parser.current_scope.get(p[1]) # Get the meta data of the variable
-        if id_meta is not None: # If the variable already exists, report an error
+        if p[1] not in p.parser.current_scope.Table:
             compiler_error(p, 1, f"Variable {p[1]} is already defined")
             compiler_note("Called from Declaration._array_declaration")
             sys.exit()
@@ -313,7 +316,7 @@ class If:
         if : IF expression ss '{' stmts '}' es else_if
         """
         expr = p.parser.type_checker.pop()
-        if expr != 'int': #NOTE: Later we could add support for bools
+        if expr != 'int':
             compiler_error(p, 1, f"Condition type must be 'int', not '{expr}'")
             compiler_note("Called from If._if")
             sys.exit(1)
@@ -362,13 +365,12 @@ class If:
         else : ELSE ss '{' stmts '}' es
             |
         """
-        p.parser.rel_if_count += 1                  # Increment the relative if count
+        p.parser.rel_if_count += 1                                      # Increment the relative if count
         if len(p) == 1: return std_message([f"FINISHIF{p.parser.rel_if_count}:"])    # If there is no else, return an empty string
 
         current_if_count = p.parser.if_count                            # Get the current if count
         out = p[4]                                                      # Push the statements
         out += p[6]                                                     # Get out of else scope
-        out += std_message([f"ELSELABEL{current_if_count}END:"])        # Add the end if label
         out += std_message([f"FINISHIF{p.parser.rel_if_count}:"])       # Add the finish if label
         p.parser.if_count += 1                                          # Increment the if count
 
@@ -395,7 +397,7 @@ class Loop:
 
     def _while(self, p) -> str:
         """
-        while : WHILE expression ss '{' stmts '}' es
+        while : loop_while expression ss '{' stmts '}' es
         """
         expr = p.parser.type_checker.pop()
         if expr != 'int':
@@ -419,7 +421,7 @@ class Loop:
 
     def _do_while(self, p) -> str:
         """
-        do_while : DO ss '{' stmts '}' es WHILE '(' expression ')'
+        do_while : loop_do ss '{' stmts '}' es WHILE '(' expression ')'
         """
         expr = p.parser.type_checker.pop()
         if expr != 'int':
@@ -443,7 +445,7 @@ class Loop:
 
     def _for(self, p) -> str:
         """
-        for : FOR ss '(' for_inits ';' expression ';' for_updates ')' ss '{' stmts  '}' es es
+        for : loop_for ss '(' for_inits ';' expression ';' for_updates ')' ss '{' stmts '}' es es
         """
         expr = p.parser.type_checker.pop()
         if expr != 'int':

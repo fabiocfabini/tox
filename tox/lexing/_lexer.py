@@ -4,21 +4,18 @@ from ply import lex
 
 from tox import find_column, lex_error
 
-COLOR_RED = "\033[1;31m"
-RESET_COLOR = "\033[0;0m"
-
 arithmetics_literals = "[]()+-/*%^!{}&"     # Literals for arithmetics
 general_literals = ",:;"                    # Literals for general use
 
 literals = arithmetics_literals + general_literals
 
-type_tokens = ['INT', 'STRING']                                    # String so far only works in literals
+type_tokens = ['INT', 'STRING']                                                     # String so far only works in literals
 op_tokens = ["ASSIGN", "LTE", "LT", 'EQ', "NEQ", "GT", "GTE", "RETI", 'AND', 'OR']  # Operators
 special_tokens = ['NEWLINE', 'COMMENT', 'MULTICOMMENTS', 'ID', 'RARROW']            # Special tokens
 reserved = {                                                                        # Reserved words
     'print' : 'PRINT',
     'int'   : 'TYPE_INT',
-    'string'   : 'TYPE_STRING',
+    'string': 'TYPE_STRING',
     'if'    : 'IF',
     'else'  : 'ELSE',
     'while' : 'WHILE',
@@ -95,14 +92,3 @@ if __name__ == "__main__":
             print(tok)
         else:
             break
-
-"""
-LexToken(LESSEQ,'<=',1,0)
-LexToken(LESS,'<',1,3)
-LexToken(EQ,'==',1,5)
-LexToken(DIF,'!=',1,8)
-LexToken(GRT,'>',1,11)
-LexToken(GRTEQ,'>=',1,13)
-LexToken(INV,'-',1,16)
-LexToken(NOT,'!',1,18)
-"""

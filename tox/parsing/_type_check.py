@@ -35,6 +35,8 @@ class TypeCheck:
         self.stack.append(type)
 
     def pop(self):
+        if len(self.stack) == 0:
+            return "None"
         return self.stack.pop()
 
     def is_empty(self):
@@ -141,7 +143,7 @@ class TypeCheck:
         """
         right_operand = self.stack.pop()
         left_operand = self.stack.pop()
-        if right_operand == left_operand:
+        if right_operand == left_operand and left_operand != "string":
             self.stack.append("int")
             return p[1] + p[3] + std_message(["INF"])
         else:
@@ -154,7 +156,7 @@ class TypeCheck:
         """
         right_operand = self.stack.pop()
         left_operand = self.stack.pop()
-        if right_operand == left_operand:
+        if right_operand == left_operand and left_operand != "string":
             self.stack.append("int")
             return p[1] + p[3] + std_message(["SUP"])
         else:
@@ -167,7 +169,7 @@ class TypeCheck:
         """
         right_operand = self.stack.pop()
         left_operand = self.stack.pop()
-        if right_operand == left_operand:
+        if right_operand == left_operand and left_operand != "string":
             self.stack.append("int")
             return p[1] + p[3] + std_message(["INFEQ"])
         else:
@@ -180,7 +182,7 @@ class TypeCheck:
         """
         right_operand = self.stack.pop()
         left_operand = self.stack.pop()
-        if right_operand == left_operand:
+        if right_operand == left_operand and left_operand != "string":
             self.stack.append("int")
             return p[1] + p[3] + std_message(["SUPEQ"])
         else:
