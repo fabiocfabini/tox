@@ -1,11 +1,11 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='tox',
+    name='lat',
     version='0.1',
     author='Fábio Carneiro',
     author_email='fabiolucas.carneiro@gmail.com',
-    description='Tox: a ply programming language',
+    description='Lat: a ply programming language',
     packages=find_packages(),
     install_requires=[
         'ply',
@@ -13,7 +13,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'tox = tox.cli:tox_cli'
+            'lat = lat.cli:lat_cli'
         ]
     }
 )

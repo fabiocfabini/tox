@@ -1,6 +1,6 @@
 import sys
 
-from tox import compiler_error, compiler_note, std_message
+from lat import compiler_error, compiler_note, std_message
 
 
 class Primary:

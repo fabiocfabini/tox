@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 
 import sys
 
-from tox import compiler_warning, compiler_error, compiler_note, std_message
+from lat import compiler_warning, compiler_error, compiler_note, std_message
 
 @dataclass
 class FunctionData:

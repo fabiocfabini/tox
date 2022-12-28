@@ -174,4 +174,4 @@ poetry.toml
 *.vms
 *.out
 parsetab.py
-test.tox
+test.lat

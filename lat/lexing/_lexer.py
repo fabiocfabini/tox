@@ -2,7 +2,7 @@ import sys
 
 from ply import lex
 
-from tox import find_column, lex_error
+from lat import find_column, lex_error
 
 arithmetics_literals = "[]()+-/*%^!{}&"     # Literals for arithmetics
 general_literals = ",:;"                    # Literals for general use

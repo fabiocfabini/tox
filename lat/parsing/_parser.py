@@ -2,12 +2,12 @@ import sys
 
 from ply import yacc
 
-from tox.lexing._lexer import *
-from tox import Scope, MetaData
-from tox import Functions, FunctionData
-from tox import TypeCheck
-from tox.utils.errors import syntax_error, compiler_error, compiler_note
-from tox import (
+from lat.lexing._lexer import *
+from lat import Scope, MetaData
+from lat import Functions, FunctionData
+from lat import TypeCheck
+from lat.utils.errors import syntax_error, compiler_error, compiler_note
+from lat import (
     Primary,
     Unary,
     Factor,
@@ -17,7 +17,7 @@ from tox import (
     SubExpression,
     Expression
 )
-from tox import (
+from lat import (
     IO,
     Assignment,
     Declaration,

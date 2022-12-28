@@ -7,7 +7,7 @@ import subprocess
 
 from tqdm import tqdm
 
-from tox.utils.colors import *
+from lat.utils.colors import *
 
 OptArgs = Dict[str, str]
 ReqArgs = Dict[str, Union[str, bool]]
@@ -16,10 +16,10 @@ possible_opt_args = ["-o","--output", "-v", "--verbose", "-rec", "--record", "-c
 recognized_args = possible_exec_modes + possible_opt_args
 
 def print_help():
-    print(f"{COLOR_BLUE}Usage{RESET_COLOR}: tox [EXECUTION MODES] [ARGUMENTS] [OPTIONS]")
+    print(f"{COLOR_BLUE}Usage{RESET_COLOR}: lat [EXECUTION MODES] [ARGUMENTS] [OPTIONS]")
     print()
     print(f"{COLOR_BLUE}ARGUMENTS{RESET_COLOR}:")
-    print(f"  {COLOR_GREEN}input{RESET_COLOR}  The input file. Must be a '.tox' file.")
+    print(f"  {COLOR_GREEN}input{RESET_COLOR}  The input file. Must be a '.lat' file.")
     print()
     print(f"{COLOR_BLUE}EXECUTION MODES{RESET_COLOR}:")
     print(f"  {COLOR_GREEN}run{RESET_COLOR}    Compiles and runs the program.")
@@ -62,7 +62,7 @@ def prepare_cmd_args() -> Tuple[OptArgs, ReqArgs]:
     # Handle Optional Arguments
     input_file = None
     for arg in sys.argv[1:]:
-        if arg.endswith(".tox"):
+        if arg.endswith(".lat"):
             input_file = arg
             continue
         if arg not in recognized_args:
@@ -93,7 +93,7 @@ def prepare_cmd_args() -> Tuple[OptArgs, ReqArgs]:
     return opt_args, req_args
 
 def run_execute(req_args: ReqArgs, opt_args: OptArgs):
-    from tox import parser
+    from lat import parser
 
     if not req_args["input"]: error("No input file specified.")
     if not opt_args["-o"]:
@@ -106,7 +106,7 @@ def run_execute(req_args: ReqArgs, opt_args: OptArgs):
         sys.exit(1)
 
 def build_execute(req_args: ReqArgs, opt_args: OptArgs):
-    from tox import parser
+    from lat import parser
 
     if not req_args["input"]: error("No input file specified.")
     with open(req_args["input"], "r") as f:
@@ -120,7 +120,7 @@ def build_execute(req_args: ReqArgs, opt_args: OptArgs):
             f.write(output)
 
 def test_execute(req_args: ReqArgs, opt_args: OptArgs):
-    input_files = glob.glob("test/*.tox")
+    input_files = glob.glob("test/*.lat")
     output_files = [os.path.splitext(input_file)[0]+".vms" for input_file in input_files]
     num_tests = len(input_files)
     failed_tests: list[Tuple[str, str]] = []
@@ -131,12 +131,12 @@ def test_execute(req_args: ReqArgs, opt_args: OptArgs):
             if opt_args['-v']: print(COLOR_GREEN + "-"*80 + RESET_COLOR)
             req_args["input"] = input_file
             opt_args["-o"] = output_file
-            echo_cmd(f"tox build {input_file} -o {output_file}", verbose=opt_args['-v'])
+            echo_cmd(f"lat build {input_file} -o {output_file}", verbose=opt_args['-v'])
             echo_cmd(f"vms {output_file} > {os.path.splitext(output_file)[0]}.ans", verbose=opt_args['-v'])
     else:
         for input_file, output_file in iterable:
             if opt_args['-v']: print(COLOR_GREEN + "-"*80 + RESET_COLOR)
-            ret = echo_cmd(f"tox build {input_file} -o {output_file}", verbose=opt_args['-v'])
+            ret = echo_cmd(f"lat build {input_file} -o {output_file}", verbose=opt_args['-v'])
             if not ret[0]:
                 num_tests -= 1
                 failed_tests.append((input_file, ret[1]))
@@ -166,7 +166,7 @@ def test_execute(req_args: ReqArgs, opt_args: OptArgs):
         print(f"{COLOR_RED}Failed: {len(failed_tests)}.{RESET_COLOR}")
 
 def euler_execute(req_args: ReqArgs, opt_args: OptArgs):
-    input_files = glob.glob("euler/problem*/*.tox")
+    input_files = glob.glob("euler/problem*/*.lat")
     output_files = [os.path.splitext(input_file)[0]+".vms" for input_file in input_files]
     num_tests = len(input_files)
     failed_tests: list[Tuple[str, str]] = []
@@ -174,7 +174,7 @@ def euler_execute(req_args: ReqArgs, opt_args: OptArgs):
     iterable = tqdm(zip(input_files, output_files), total=len(input_files), desc="Testing", colour="green") if not opt_args["-v"] else zip(input_files, output_files)
     for input_file, output_file in iterable:
         if opt_args['-v']: print(COLOR_GREEN + "-"*80 + RESET_COLOR)
-        ret = echo_cmd(f"tox build {input_file} -o {output_file}", verbose=opt_args['-v'])
+        ret = echo_cmd(f"lat build {input_file} -o {output_file}", verbose=opt_args['-v'])
         if not ret[0]:
             num_tests -= 1
             failed_tests.append((input_file, ret[1]))
@@ -206,6 +206,6 @@ def execute(opt_args: OptArgs, req_args: ReqArgs):
     if req_args["test"] : test_execute(req_args, opt_args)
     if req_args["euler"]: euler_execute(req_args, opt_args)
 
-def tox_cli():
+def lat_cli():
     opt_args, req_args = prepare_cmd_args()
     execute(opt_args, req_args)

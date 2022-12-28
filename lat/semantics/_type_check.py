@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 
 import sys
 
-from tox import compiler_error, std_message
+from lat import compiler_error, std_message
 
 @dataclass
 class TypeCheck:

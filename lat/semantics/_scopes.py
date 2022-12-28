@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Optional, Dict, Tuple
 from dataclasses import dataclass, field
 
-from tox import std_message
+from lat import std_message
 
 
 @dataclass
