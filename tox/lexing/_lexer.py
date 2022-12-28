@@ -13,7 +13,7 @@ type_tokens = ['integer', 'filum', 'FLOAT']                                     
 op_tokens = ["ASSIGN", "LTE", "LT", 'EQ', "NEQ", "GT", "GTE", "RETI", 'AND', 'OR']  # Operators
 special_tokens = ['NEWLINE', 'COMMENT', 'MULTICOMMENTS', 'ID', 'RARROW']            # Special tokens
 reserved = {                                                                        # Reserved words
-    'print' : 'PRINT',
+    'imprimo' : 'PRINT',
     'readi' : 'READ_INT',
     'readf' : 'READ_FLOAT',
     'reads' : 'READ_STRING',

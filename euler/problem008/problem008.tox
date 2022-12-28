@@ -66,5 +66,5 @@ munus main() {
         }
     }
 
-    print(max_mul, "\n")
+    imprimo(max_mul, "\n")
 }

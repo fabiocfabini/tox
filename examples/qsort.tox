@@ -30,12 +30,12 @@ munus quick_sort(v: &float, n: integer) {
 
 munus main() {
     enim(i: integer; i < N; i = i + 1) {
-        print(v[i], " ")
+        imprimo(v[i], " ")
     }
-    print("\n")
+    imprimo("\n")
     quick_sort(v, N)
     enim(i: integer; i < N; i = i + 1) {
-        print(v[i], " ")
+        imprimo(v[i], " ")
     }
-    print("\n")
+    imprimo("\n")
 }

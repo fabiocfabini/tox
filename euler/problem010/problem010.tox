@@ -36,5 +36,5 @@ munus main() {
         i = i + 1
     }
 
-    print(sum, "\n")
+    imprimo(sum, "\n")
 }

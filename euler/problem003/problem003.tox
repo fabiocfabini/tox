@@ -36,5 +36,5 @@ munus main() {
             }
         }
     }
-    print(r, "\n")
+    imprimo(r, "\n")
 }

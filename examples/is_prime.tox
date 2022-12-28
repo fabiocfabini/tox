@@ -13,15 +13,15 @@ munus is_prime(n: integer) -> integer {
 munus main() {
     N: integer = readi("How many numbers? (<0 si enimever) ")
 
-    print("Will check ", N, " numbers\n")
+    imprimo("Will check ", N, " numbers\n")
     si N >= 0 {
         enim(i: integer; i < N; i = i + 1) {
             x: integer = readi("Enter a number: (0 to exit) ")
             si x == 0 { break }
             si(is_prime(x)) {
-                print(x, " is prime\n")
+                imprimo(x, " is prime\n")
             } aliter {
-                print(x, " is not prime\n")
+                imprimo(x, " is not prime\n")
             }
         }
     } aliter {
@@ -29,12 +29,12 @@ munus main() {
             x: integer = readi("Enter a number: (0 to exit) ")
             si x == 0 { break }
             si(is_prime(x)) {
-                print(x, " is prime\n")
+                imprimo(x, " is prime\n")
             } aliter {
-                print(x, " is not prime\n")
+                imprimo(x, " is not prime\n")
             }
         }
     }
 
-    print("Done\n")
+    imprimo("Done\n")
 }

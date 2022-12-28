@@ -1,11 +1,11 @@
 munus main() {
-    print(34 + 35, "\n")
-    print(210 * 2, "\n")
+    imprimo(34 + 35, "\n")
+    imprimo(210 * 2, "\n")
 
     x: integer = 34 + 35
 
-    print("The value of x is: ", x, " followed by a smile :)\n")
-    print("The value of x is: ")
-    print(x)
-    print(" followed by a smile :)\n")
+    imprimo("The value of x is: ", x, " followed by a smile :)\n")
+    imprimo("The value of x is: ")
+    imprimo(x)
+    imprimo(" followed by a smile :)\n")
 }

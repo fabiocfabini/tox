@@ -23,7 +23,7 @@ munus main(){
     }
 
     enim(x: integer; x < 10; x = x + 1) {
-        print(arr[x], "\n")
+        imprimo(arr[x], "\n")
     }
 
     enim(x:integer; x<10; x = x + 1) {
@@ -33,39 +33,39 @@ munus main(){
         }
 
         enim(x_:integer = x; x_<10; x_ = x_ + 1) {
-            print(y[x_], " ")
+            imprimo(y[x_], " ")
         }
-        print("\n")
+        imprimo("\n")
     }
 
     enim(x: integer; x < 2; x = x + 1){
         a: vec<integer> = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-        print(x, ": ")
+        imprimo(x, ": ")
         enim(x: integer; x < 10; x = x + 1){
-            print(a[x], " ")
+            imprimo(a[x], " ")
         }
-        print("\n")
+        imprimo("\n")
     }
 
-    print("First a\n")
+    imprimo("First a\n")
     a: vec<integer> = [5 ... 15]
     enim(q: integer; q < 10; q = q + 1){
-        print(a[q], "\n")
+        imprimo(a[q], "\n")
     }
 
-    print("a is now arr\n")
+    imprimo("a is now arr\n")
     p: &integer = arr
     enim(q: integer; q < 10; q = q + 1){
         si q == 5 {
             continue
         }
-        print(p[q], "\n")
+        imprimo(p[q], "\n")
     }
 
     sm(0,v)
     enim(i: integer; i < 10; i = i + 1){
-        print(v[i], " ")
+        imprimo(v[i], " ")
     }
-    print("\n")
+    imprimo("\n")
 }

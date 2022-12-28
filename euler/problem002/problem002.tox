@@ -18,5 +18,5 @@ munus main() {
         b = temp + b
     }
 
-    print(accum, "\n")
+    imprimo(accum, "\n")
 }

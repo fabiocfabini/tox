@@ -37,7 +37,7 @@ munus main() {
         
         n: integer = numDivisors(triangle)
         si n > 20 {
-            print(triangle, "\n")
+            imprimo(triangle, "\n")
             break
         }
     }

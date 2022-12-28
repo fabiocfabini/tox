@@ -1,34 +1,34 @@
 munus main() {
     x: integer // Declaration, Variables are 0 initialized
 
-    print("Simple Odd or Even\n")
+    imprimo("Simple Odd or Even\n")
     dum x < 10 {
         si x % 2 == 0 {
-            print(x, " is even\n")
+            imprimo(x, " is even\n")
         } aliter {
-            print(x, " is odd\n")
+            imprimo(x, " is odd\n")
         }
         x = x + 1 // Assignment
     }
 
-    print("\nChess Pattern\n")
+    imprimo("\nChess Pattern\n")
     y: integer 
     z: integer 
     dum y < 10 {
         z = 0
         dum z < 10 {
             si (z + y % 2) % 2 == 0 {
-                print("#")
+                imprimo("#")
             } aliter{
-                print(" ")
+                imprimo(" ")
             }
             z = z + 1
         }
-        print("\n")
+        imprimo("\n")
         y = y + 1
     }
 
-    print("\nCircle Pattern\n")
+    imprimo("\nCircle Pattern\n")
     radius: integer = 10 // Declaration and Assignment. Not 0 initialized
     c1: integer = -radius
     c2: integer = -radius
@@ -36,26 +36,26 @@ munus main() {
     dum c1 <= radius {
         dum c2 <= radius {
             si c1*c1 + c2*c2 <= radius*radius {
-                print("#")
+                imprimo("#")
             } aliter{
-                print(" ")
+                imprimo(" ")
             }
             c2 = c2 + 1
         }
-        print("\n")
+        imprimo("\n")
         c1 = c1 + 1
         c2 = -radius
     }
 
 
-    print("\nFibonacci Sequence\n")
+    imprimo("\nFibonacci Sequence\n")
     a: integer
     b: integer = 1
 
-    print(b)
+    imprimo(b)
     dum b < 10000 {
         a = a + b
         b = a - b
-        print(" -> ", a)
-    }print("\n")
+        imprimo(" -> ", a)
+    }imprimo("\n")
 }

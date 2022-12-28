@@ -11,5 +11,5 @@ munus main() {
     }
   }
 
-  print(accum, "\n")
+  imprimo(accum, "\n")
 }

@@ -3,23 +3,23 @@ munus main() {
 
     dum x < 10 {
         si x % 2 == 0 {
-            print(x, " is even\n")
+            imprimo(x, " is even\n")
         } aliter {
-            print(x, " is odd\n")
+            imprimo(x, " is odd\n")
         }
         x = x + 1
     }
 
     y: integer = 0
     z: integer = 0
-    print("\n")
+    imprimo("\n")
     dum y < 10 {
         // z = 0 Having z = 0 here results in a dsiferent output
         dum z < 10 {
-            print("#")
+            imprimo("#")
             z = z + 1
         }
-        print("\n")
+        imprimo("\n")
         y = y + 1
         z = 0
     }

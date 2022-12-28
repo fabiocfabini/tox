@@ -3,5 +3,5 @@ munus main() {
     i: integer = readi("Enter an integer: ")
     s: filum = reads("Enter a filum: ")
 
-    print("You entered: ", f, ", ", i, ", ", s)
+    imprimo("You entered: ", f, ", ", i, ", ", s)
 }

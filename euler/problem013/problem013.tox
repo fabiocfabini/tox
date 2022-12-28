@@ -220,7 +220,7 @@ munus main() {
     }
     
     enim(i: integer; i < 10; i = i + 1) {
-        print(result[i])
+        imprimo(result[i])
     }
-    print("\n")
+    imprimo("\n")
 }

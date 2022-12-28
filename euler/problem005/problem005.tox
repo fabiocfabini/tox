@@ -18,5 +18,5 @@ munus main() {
         }
     }
 
-    print(x, "\n")
+    imprimo(x, "\n")
 }

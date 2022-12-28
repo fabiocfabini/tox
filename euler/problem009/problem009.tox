@@ -27,5 +27,5 @@ munus main() {
         }
     }
 
-    print(a_final*b_final*c_final, "\n")
+    imprimo(a_final*b_final*c_final, "\n")
 }

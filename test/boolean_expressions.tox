@@ -3,10 +3,10 @@ munus main(){
 	y: integer = x + 1
 
 	si (x == 2) && (y != x || x == 1) {
-		print("Unreachable")
+		imprimo("Unreachable")
 	} aliter {
-		print("Correct")
+		imprimo("Correct")
 	}
 
-	print(" my dude!\n")
+	imprimo(" my dude!\n")
 }

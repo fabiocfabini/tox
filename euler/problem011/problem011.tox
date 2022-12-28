@@ -93,5 +93,5 @@ munus main() {
         }
     }
 
-    print(max, "\n")
+    imprimo(max, "\n")
 }

@@ -9,12 +9,12 @@ munus main() {
     enim(i: integer; i < N-2; i = i + 1) {
         enim(j: integer = 0; j < N; j = j + 1) {
             si gen[c_gen*N + j] == 1 {
-                print("#")
+                imprimo("#")
             } aliter {
-                print(" ")
+                imprimo(" ")
             }
         }
-        print("\n")
+        imprimo("\n")
         enim(j: integer = 1; j < N - 1; j = j + 1) {
             pattern: integer = 4*gen[c_gen*N + j - 1] + 2*gen[c_gen*N + j] + 1*gen[c_gen*N + j + 1]
 

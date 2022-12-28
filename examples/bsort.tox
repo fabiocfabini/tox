@@ -19,12 +19,12 @@ munus bubbleSort(v: &integer, N: integer) {
 
 munus main() {
     enim(i: integer; i < N; i = i + 1) {
-        print(v[i], " ")
+        imprimo(v[i], " ")
     }
-    print("\n")
+    imprimo("\n")
     bubbleSort(v, N)
     enim(i: integer; i < N; i = i + 1) {
-        print(v[i], " ")
+        imprimo(v[i], " ")
     }
-    print("\n")
+    imprimo("\n")
 }

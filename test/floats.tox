@@ -2,13 +2,13 @@ munus main() {
     v: vec<float> = [1.1243, 3.141592, 3f, 4f]
 
     enim(i: integer = 0; i < 4; i = i + 1) {
-        print(v[i], "\n")
+        imprimo(v[i], "\n")
     }
 
     v[0] = 3.141592
     v[1] = 1.1243
 
     enim(i: integer = 0; i < 4; i = i + 1) {
-        print(v[i], "\n")
+        imprimo(v[i], "\n")
     }
 }

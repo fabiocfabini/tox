@@ -1,16 +1,16 @@
 munus main(){
     x: integer = 3
-    print("X: ", x, "\n")
+    imprimo("X: ", x, "\n")
     y: integer = 3
-    print("Y: ", x, "\n")
+    imprimo("Y: ", x, "\n")
 
     z: integer = x*x + y*y
-    print("Z: ", z, "\n")
+    imprimo("Z: ", z, "\n")
 
     z = z / 18
-    print("Z: ", z, "\n")
+    imprimo("Z: ", z, "\n")
 
-    print((z + 1) % 2, "\n")
+    imprimo((z + 1) % 2, "\n")
 
-    print(((1 + 2 / 2) * (10 * 2))/13 + 1, "\n")// 4.076923076923077 or 4
+    imprimo(((1 + 2 / 2) * (10 * 2))/13 + 1, "\n")// 4.076923076923077 or 4
 }

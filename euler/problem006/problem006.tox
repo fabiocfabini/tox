@@ -15,5 +15,5 @@ munus main() {
         sums = sums + i
     }
 
-    print(sums * sums - sum_of_squares, "\n")
+    imprimo(sums * sums - sum_of_squares, "\n")
 }

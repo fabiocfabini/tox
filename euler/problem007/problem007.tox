@@ -40,5 +40,5 @@ munus main() {
         n = n + 1
     }
 
-    print(r, "\n")
+    imprimo(r, "\n")
 }

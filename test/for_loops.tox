@@ -1,5 +1,5 @@
 munus main() {
-    print("Circle\n")
+    imprimo("Circle\n")
 
     x: integer 
     y: integer
@@ -8,13 +8,13 @@ munus main() {
     enim(r: integer = 10, y: integer = -r; y <= r; y = y + 1){ // The variables x, y and r are shafaciowed here
         enim(x: integer = -r; x <= r; x = x + 1){
             si(x*x + y*y <= r*r){
-                print("##")
+                imprimo("##")
             } aliter {
-                print("  ")
+                imprimo("  ")
             }
         }
-        print("\n")
+        imprimo("\n")
     }
 
-    print(x, y, r) // x, y and r should print 0, 0, 10
+    imprimo(x, y, r) // x, y and r should imprimo 0, 0, 10
 }

@@ -5,7 +5,7 @@ munus main() {
     facio{
         y: integer
         facio{
-            print(x, ":", y, "\n")
+            imprimo(x, ":", y, "\n")
             y = y + 1
         } dum(y < 10)
         y = 0

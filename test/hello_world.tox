@@ -1,4 +1,4 @@
 munus main() {
-    print("Hello, World!\n")
-    print("Hello, World!\n")
+    imprimo("Hello, World!\n")
+    imprimo("Hello, World!\n")
 }
