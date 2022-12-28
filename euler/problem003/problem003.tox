@@ -2,7 +2,7 @@
 //
 // What is the largest prime factor of the number 131951?
 
-func isPrime(x: integer) -> integer {
+munus isPrime(x: integer) -> integer {
     si x == 1 {
         reditus 0
     }
@@ -26,7 +26,7 @@ func isPrime(x: integer) -> integer {
     reditus 1
 }
 
-func main() {
+munus main() {
     N: integer = 131951
     r: integer = -1
     enim(i: integer = 2; i < N; i = i + 1) {

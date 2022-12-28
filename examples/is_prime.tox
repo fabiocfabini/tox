@@ -1,4 +1,4 @@
-func is_prime(n: integer) -> integer {
+munus is_prime(n: integer) -> integer {
     si n < 2 { reditus 0 }
     si n == 2 { reditus 1 }
     si n % 2 == 0 { reditus 0 }
@@ -10,7 +10,7 @@ func is_prime(n: integer) -> integer {
     reditus 1
 }
 
-func main() {
+munus main() {
     N: integer = readi("How many numbers? (<0 si enimever) ")
 
     print("Will check ", N, " numbers\n")

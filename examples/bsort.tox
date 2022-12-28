@@ -1,13 +1,13 @@
 N: integer = 13
 v: vec<integer> = [6, 1, 2, 6, 3, 6, 2, 7, 4, 7, 2, 1, 1]
 
-func exchange(v: &integer, i: integer, j: integer) {
+munus exchange(v: &integer, i: integer, j: integer) {
     temp: integer = v[i]
     v[i] = v[j]
     v[j] = temp
 }
 
-func bubbleSort(v: &integer, N: integer) {
+munus bubbleSort(v: &integer, N: integer) {
     enim(i: integer; i < N; i = i + 1) {
         enim(j: integer; j < N - 1; j = j + 1) {
             si(v[j] > v[j + 1]) {
@@ -17,7 +17,7 @@ func bubbleSort(v: &integer, N: integer) {
     }
 }
 
-func main() {
+munus main() {
     enim(i: integer; i < N; i = i + 1) {
         print(v[i], " ")
     }

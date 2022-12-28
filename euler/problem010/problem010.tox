@@ -2,7 +2,7 @@
 // 
 // Find the sum of all the primes below two million.
 
-func isPrime(x: integer) -> integer {
+munus isPrime(x: integer) -> integer {
     si x == 1 {
         reditus 0
     }
@@ -26,7 +26,7 @@ func isPrime(x: integer) -> integer {
     reditus 1
 }
 
-func main() {
+munus main() {
     sum: integer = 0
     i: integer = 1
     dum i < 10000 {

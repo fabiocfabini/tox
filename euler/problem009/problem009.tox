@@ -11,7 +11,7 @@ a_final: integer
 b_final: integer
 c_final: integer
 
-func main() {
+munus main() {
     enim(a: integer=1; a < N; a = a + 1){
         enim(b: integer=1; b < N; b = b + 1){
             enim(c: integer=1; c < N; c = c + 1){

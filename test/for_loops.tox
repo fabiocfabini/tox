@@ -1,4 +1,4 @@
-func main() {
+munus main() {
     print("Circle\n")
 
     x: integer 

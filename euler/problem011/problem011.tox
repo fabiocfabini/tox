@@ -49,7 +49,7 @@ grid: vec<integer> = [
 	 1,70,54,71,83,51,54,69,16,92,33,48,61,43,52, 1,89,19,67,48
 ]
 
-func compute(x: integer, y: integer, dx: integer, dy: integer, n: integer) -> integer {
+munus compute(x: integer, y: integer, dx: integer, dy: integer, n: integer) -> integer {
     prod: integer = 1
     enim(j: integer; j < n; j = j + 1){
         prod = prod * grid[(y + j*dy)*20 + x + j*dx]
@@ -57,14 +57,14 @@ func compute(x: integer, y: integer, dx: integer, dy: integer, n: integer) -> in
     reditus prod
 }
 
-func max(x: integer, y: integer) -> integer {
+munus max(x: integer, y: integer) -> integer {
     si x > y {
         reditus x
     }
     reditus y
 }
 
-func main() {
+munus main() {
     max: integer = -1
     width: integer = 20
     height: integer = 20

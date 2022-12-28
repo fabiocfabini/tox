@@ -1,4 +1,4 @@
-func main() {
+munus main() {
     si 34 + 35 == 69 {
         print("You're a genius!\n")
     } aliter {

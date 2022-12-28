@@ -2,7 +2,7 @@
 // 
 // What is the 10 001st prime number?
 
-func isPrime(x: integer) -> integer {
+munus isPrime(x: integer) -> integer {
     si x == 1 {
         reditus 0
     }
@@ -26,7 +26,7 @@ func isPrime(x: integer) -> integer {
     reditus 1
 }
 
-func main() {
+munus main() {
     i: integer
     n: integer
     r: integer

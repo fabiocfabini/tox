@@ -28,7 +28,7 @@ reserved = {                                                                    
     'facio'    : 'DO',
     'break' : 'BREAK',
     'continue' : 'CONTINUE',
-    'func' : 'FUNCTION',
+    'munus' : 'FUNCTION',
     'reditus' : 'RETURN'
 }
 

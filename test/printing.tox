@@ -1,4 +1,4 @@
-func main() {
+munus main() {
     print(34 + 35, "\n")
     print(210 * 2, "\n")
 

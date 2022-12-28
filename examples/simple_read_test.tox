@@ -1,4 +1,4 @@
-func main() {
+munus main() {
     f: float = readf("Enter a float: ")
     i: integer = readi("Enter an integer: ")
     s: filum = reads("Enter a filum: ")

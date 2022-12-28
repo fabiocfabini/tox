@@ -15,7 +15,7 @@
 // 
 // What is the value of the first triangle number to have over five hundred divisors?
 
-func numDivisors(n: integer) -> integer {
+munus numDivisors(n: integer) -> integer {
     num: integer
 
     enim(i:integer = 1; i <= n / 2; i = i + 1) {
@@ -27,7 +27,7 @@ func numDivisors(n: integer) -> integer {
     reditus num + 1
 }
 
-func main() {
+munus main() {
     i: integer = 1
     triangle: integer = 0
     

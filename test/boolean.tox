@@ -1,4 +1,4 @@
-func main() {
+munus main() {
     x: integer = 10 == 2 * 5
     print(x, "-> 10 == 2 * 5\n")
 

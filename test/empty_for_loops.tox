@@ -1,4 +1,4 @@
-func main() {
+munus main() {
     enim(x: integer, z: integer, y: integer; x < 10; x = x + 1) {
     }
 

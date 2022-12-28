@@ -1,6 +1,6 @@
 v: vec<integer>[10]
 
-func sm(x: integer, v: &integer) {
+munus sm(x: integer, v: &integer) {
     v[1-1] = x + 1
     v[2-1] = x + 2
     v[3-1] = x + 3
@@ -15,7 +15,7 @@ func sm(x: integer, v: &integer) {
     reditus;
 }
 
-func main(){
+munus main(){
     arr: vec<integer>[10]
 
     enim(x: integer; x < 10; x = x + 1) {

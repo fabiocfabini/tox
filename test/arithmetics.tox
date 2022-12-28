@@ -1,4 +1,4 @@
-func main(){
+munus main(){
     x: integer = 3
     print("X: ", x, "\n")
     y: integer = 3

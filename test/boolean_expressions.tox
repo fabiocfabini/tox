@@ -1,4 +1,4 @@
-func main(){
+munus main(){
 	x: integer = 1
 	y: integer = x + 1
 

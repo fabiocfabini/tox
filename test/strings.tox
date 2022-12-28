@@ -1,8 +1,8 @@
-func say_hello(name: filum) -> filum{
+munus say_hello(name: filum) -> filum{
     reditus "Hello " + name + "!\n"
 }
 
-func main() {
+munus main() {
     s1: filum = "Hello"
     s2: filum = "World!\n"
 

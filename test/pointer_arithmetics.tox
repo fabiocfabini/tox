@@ -1,4 +1,4 @@
-func main() {
+munus main() {
     print("Add: pointegerer + integer\n")
     v: vec<integer> = [1 ... 5]
     a: &integer = v + 1

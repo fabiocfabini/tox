@@ -1,4 +1,4 @@
-func main() {
+munus main() {
     x: integer // Declaration, Variables are 0 initialized
 
     print("Simple Odd or Even\n")

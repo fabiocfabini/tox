@@ -51,7 +51,7 @@ winfaciow : integer = 4 // 13 gives a big result. larger than the maximum 32 bit
 accum  : integer = 1
 max_mul: integer
 
-func main() {
+munus main() {
     enim(i: integer; i < N; i = i + 1){
         si(i + winfaciow > N){
             i = N + 1

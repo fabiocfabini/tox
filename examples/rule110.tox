@@ -1,6 +1,6 @@
 table: integer = 110
 
-func main() {
+munus main() {
     N: integer = 100
     gen: vec<integer>[200] // 2 * N
     gen[N - 2] = 1
