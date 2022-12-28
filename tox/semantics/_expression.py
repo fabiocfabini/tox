@@ -9,9 +9,9 @@ class Primary:
     """
     def __init__(self):
         self.productions = {    #   Maps production names to their respective functions
-            "int": self._int,
+            "integer": self._int,
             "float": self._float,
-            "string": self._string,
+            "filum": self._string,
             "id": self._id,
             "ref": self._ref,
             "indexing": self._indexing,
@@ -23,9 +23,9 @@ class Primary:
 
     def _int(self, p) -> str: # Handles pushing an integer
         """
-        primary : INT
+        primary : integer
         """
-        p.parser.type_checker.push("int")
+        p.parser.type_checker.push("integer")
         return std_message([f"PUSHI {p[1]}"]) # Return the message
 
     def _float(self, p) -> str: # Handles pushing an integer
@@ -37,9 +37,9 @@ class Primary:
 
     def _string(self, p) -> str: # Handles pushing an integer
         """
-        primary : STRING
+        primary : filum
         """
-        p.parser.type_checker.push("string")
+        p.parser.type_checker.push("filum")
         return std_message([f"PUSHS {p[1]}"]) # Return the message
 
     def _id(self, p) -> str: # Handles pushing the value of a variable
@@ -100,7 +100,7 @@ class Primary:
             compiler_error(p, 1, f"Indexing into non initialized pointer '{p[1]}'")
             compiler_note("Called from Primary._indexing")
             sys.exit(1)
-        if idx != "int": # If the index is not an integer, Throw an error
+        if idx != "integer": # If the index is not an integer, Throw an error
             compiler_error(p, 1, f"Index must be an integer, not {idx}")
             compiler_note("Called from Primary._indexing")
             sys.exit(1)

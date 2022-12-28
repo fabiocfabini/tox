@@ -1,14 +1,14 @@
 func main() {
     v: vec<float> = [1.1243, 3.141592, 3f, 4f]
 
-    for(i: int = 0; i < 4; i = i + 1) {
+    for(i: integer = 0; i < 4; i = i + 1) {
         print(v[i], "\n")
     }
 
     v[0] = 3.141592
     v[1] = 1.1243
 
-    for(i: int = 0; i < 4; i = i + 1) {
+    for(i: integer = 0; i < 4; i = i + 1) {
         print(v[i], "\n")
     }
 }

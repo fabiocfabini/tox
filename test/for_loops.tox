@@ -1,12 +1,12 @@
 func main() {
     print("Circle\n")
 
-    x: int 
-    y: int
-    r: int = 10
+    x: integer 
+    y: integer
+    r: integer = 10
 
-    for(r: int = 10, y: int = -r; y <= r; y = y + 1){ // The variables x, y and r are shadowed here
-        for(x: int = -r; x <= r; x = x + 1){
+    for(r: integer = 10, y: integer = -r; y <= r; y = y + 1){ // The variables x, y and r are shadowed here
+        for(x: integer = -r; x <= r; x = x + 1){
             if(x*x + y*y <= r*r){
                 print("##")
             } else {

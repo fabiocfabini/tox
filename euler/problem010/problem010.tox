@@ -2,7 +2,7 @@
 // 
 // Find the sum of all the primes below two million.
 
-func isPrime(x: int) -> int {
+func isPrime(x: integer) -> integer {
     if x == 1 {
         return 0
     }
@@ -15,7 +15,7 @@ func isPrime(x: int) -> int {
         return 0
     }
 
-    i: int = 3
+    i: integer = 3
     while i * i <= x {
         if x % i == 0 {
             return 0
@@ -27,8 +27,8 @@ func isPrime(x: int) -> int {
 }
 
 func main() {
-    sum: int = 0
-    i: int = 1
+    sum: integer = 0
+    i: integer = 1
     while i < 10000 {
         if isPrime(i) {
             sum = sum + i

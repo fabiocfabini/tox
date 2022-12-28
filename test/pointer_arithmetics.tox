@@ -1,39 +1,39 @@
 func main() {
-    print("Add: pointer + int\n")
-    v: vec<int> = [1 ... 5]
-    a: &int = v + 1
+    print("Add: pointegerer + integer\n")
+    v: vec<integer> = [1 ... 5]
+    a: &integer = v + 1
 
     print(v[1], "\n")
     print(a[0], "\n")
     
-    print("Sub: pointer - int\n")
-    b: &int = a - 1
+    print("Sub: pointegerer - integer\n")
+    b: &integer = a - 1
 
     print(v[0], "\n")
     print(b[0], "\n")
 
-    print("Sub: pointer - pointer\n")
+    print("Sub: pointegerer - pointegerer\n")
 
-    c: int = v - v + 1
+    c: integer = v - v + 1
     print(c, "\n")
 
-    print("Compare: pointer < pointer\n")
-    for(a: &int = v; a < v + 5; a = a + 1) {
+    print("Compare: pointegerer < pointegerer\n")
+    for(a: &integer = v; a < v + 5; a = a + 1) {
         print(a[0], "\n")
     }
 
-    print("Compare: pointer > pointer\n")
-    for(a: &int = v + 4; a > v - 1; a = a - 1) {
+    print("Compare: pointegerer > pointegerer\n")
+    for(a: &integer = v + 4; a > v - 1; a = a - 1) {
         print(a[0], "\n")
     }
 
-    print("Compare: pointer <= pointer\n")
-    for(a: &int = v; a <= v + 4; a = a + 1) {
+    print("Compare: pointegerer <= pointegerer\n")
+    for(a: &integer = v; a <= v + 4; a = a + 1) {
         print(a[0], "\n")
     }
 
-    print("Compare: pointer => pointer\n")
-    for(a: &int = v + 4; a >= v; a = a - 1) {
+    print("Compare: pointegerer => pointegerer\n")
+    for(a: &integer = v + 4; a >= v; a = a - 1) {
         print(a[0], "\n")
     }
 }

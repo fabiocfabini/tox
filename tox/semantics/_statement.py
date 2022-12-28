@@ -31,9 +31,9 @@ class IO:
         multiple_prints : multiple_prints ',' expression
         """
         top = p.parser.type_checker.pop() # Get the top of the stack
-        if top == "string": # If the top is a string, print it
+        if top == "filum": # If the top is a filum, print it
             push_op = std_message(["WRITES"])
-        elif top == "int": # If the top is an expression, print it
+        elif top == "integer": # If the top is an expression, print it
             push_op = std_message(["WRITEI"])
         elif top == "float": # If the top is an expression, print it
             push_op = std_message(["WRITEF"])
@@ -49,9 +49,9 @@ class IO:
         multiple_prints : expression
         """
         top = p.parser.type_checker.pop() # Get the top of the stack<<
-        if top == "string": # If the top is a string, print it
+        if top == "filum": # If the top is a filum, print it
             push_op = std_message(["WRITES"])
-        elif top == "int": # If the top is an expression, print it
+        elif top == "integer": # If the top is an expression, print it
             push_op = std_message(["WRITEI"])
         elif top == "float": # If the top is an expression, print it
             push_op = std_message(["WRITEF"])
@@ -80,13 +80,13 @@ class IO:
                 | READ_STRING
         """
         if p[1][-1] == "i":
-            p.parser.type_checker.push("int")
+            p.parser.type_checker.push("integer")
             push_op = std_message(["ATOI"])
         elif p[1][-1] == "f":
             p.parser.type_checker.push("float")
             push_op = std_message(["ATOF"])
         elif p[1][-1] == "s":
-            p.parser.type_checker.push("string")
+            p.parser.type_checker.push("filum")
             push_op = std_message([""])
         return push_op
 
@@ -119,7 +119,7 @@ class Assignment:
             compiler_error(p, 1, f"Indexing not allowed on variable of type '{id_meta.type}'")
             compiler_note("Called from Assignment._array_index")
             sys.exit(1)
-        if index != 'int':
+        if index != 'integer':
             compiler_error(p, 2, f"Indexing with non-integer type '{index}'")
             compiler_note("Called from Assignment._array_index")
             sys.exit(1)
@@ -190,11 +190,11 @@ class Declaration:
             p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count))
             p.parser.frame_count += 1
 
-        if p[3] == 'int':
+        if p[3] == 'integer':
             return std_message(["PUSHI 0"])
         elif p[3] == 'float':
             return std_message(["PUSHF 0.0"])
-        elif p[3] == 'string':
+        elif p[3] == 'filum':
             return std_message(["PUSHS ''"])
 
     def _pointer_declaration(self, p):
@@ -217,16 +217,16 @@ class Declaration:
             p.parser.frame_count += 1
 
         # Uninitialized pointers point to themselves
-        if p[3] == '&int':
+        if p[3] == '&integer':
             return push_op
         elif p[3] == '&float':
             return push_op
-        elif p[3] == '&string':
+        elif p[3] == '&filum':
             return push_op
 
-    def _array_declaration(self, p) -> str: # Declaring 0 initialized array of size INT
+    def _array_declaration(self, p) -> str: # Declaring 0 initialized array of size integer
         """
-        declaration : ID ':' Vtype '[' INT ']'
+        declaration : ID ':' Vtype '[' integer ']'
         """
         if p[1] in p.parser.current_scope.Table:
             compiler_error(p, 1, f"Variable {p[1]} is already defined")
@@ -241,11 +241,11 @@ class Declaration:
             p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count+int(p[5])-1))
             p.parser.frame_count += int(p[5])
 
-        if p[3] == 'vec<int>':
+        if p[3] == 'vec<integer>':
             return std_message([f"PUSHN {int(p[5])}"])
         elif p[3] == 'vec<float>':
             return std_message([f"PUSHF 0.0" for i in range(int(p[5]))])
-        elif p[3] == 'vec<string>':
+        elif p[3] == 'vec<filum>':
             return std_message([f"PUSHS ''" for i in range(int(p[5]))])
         assert False, "Invalid type in Declaration._array_declaration"
 
@@ -291,15 +291,15 @@ class DeclarationAssignment:
         p.parser.array_assign_items = 0 # Reset the array assign items counter
         return p[6]
 
-    def _array_range_init(self, p) -> str: # Declaring and initializing an array with a range TODO: turn int into expression if possible
+    def _array_range_init(self, p) -> str: # Declaring and initializing an array with a range TODO: turn integer into expression if possible
         """
-        declaration_assignment : ID ':' Ptype ASSIGN '['   INT RETI   INT ']'
+        declaration_assignment : ID ':' Ptype ASSIGN '['   integer RETI   integer ']'
         """
         if p[1] in p.parser.current_scope.Table:    # If the variable already exists in the current scope table, report an error
             compiler_error(p, 1, f"Variable {p[1]} is already defined")
             compiler_note("Called from DeclarationAssignment._array_range_init")
             sys.exit(1)
-        if p[3] != 'vec<int>':    # If the variable is not an integer array, report an error
+        if p[3] != 'vec<integer>':    # If the variable is not an integer array, report an error
             compiler_error(p, 1, f"Array of type '{p[3]}' cannot be initialized with a range")
             compiler_note("Called from DeclarationAssignment._array_range_init")
             sys.exit(1)
@@ -394,8 +394,8 @@ class If:
         if : IF expression ss '{' stmts '}' es else_if
         """
         expr = p.parser.type_checker.pop()
-        if expr != 'int':
-            compiler_error(p, 1, f"Condition type must be 'int', not '{expr}'")
+        if expr != 'integer':
+            compiler_error(p, 1, f"Condition type must be 'integer', not '{expr}'")
             compiler_note("Called from If._if")
             sys.exit(1)
 
@@ -420,8 +420,8 @@ class If:
             return p[1] # There is no else if
 
         expr = p.parser.type_checker.pop()
-        if expr != 'int':
-            compiler_error(p, 2, f"Condition type must be 'int', not '{expr}'")
+        if expr != 'integer':
+            compiler_error(p, 2, f"Condition type must be 'integer', not '{expr}'")
             compiler_note("Called from If._if_else")
             sys.exit(1)
 
@@ -444,7 +444,7 @@ class If:
             |
         """
         p.parser.rel_if_count += 1                                      # Increment the relative if count
-        if len(p) == 1: return std_message([f"FINISHIF{p.parser.rel_if_count}:"])    # If there is no else, return an empty string
+        if len(p) == 1: return std_message([f"FINISHIF{p.parser.rel_if_count}:"])    # If there is no else, return an empty filum
 
         current_if_count = p.parser.if_count                            # Get the current if count
         out = p[4]                                                      # Push the statements
@@ -478,8 +478,8 @@ class Loop:
         while : loop_while expression ss '{' stmts '}' es
         """
         expr = p.parser.type_checker.pop()
-        if expr != 'int':
-            compiler_error(p, 1, f"Condition type must be 'int', not '{expr}'")
+        if expr != 'integer':
+            compiler_error(p, 1, f"Condition type must be 'integer', not '{expr}'")
             compiler_note("Called from Loop._while")
             sys.exit(1)
 
@@ -502,8 +502,8 @@ class Loop:
         do_while : loop_do ss '{' stmts '}' es WHILE '(' expression ')'
         """
         expr = p.parser.type_checker.pop()
-        if expr != 'int':
-            compiler_error(p, 1, f"Condition type must be 'int', not '{expr}'")
+        if expr != 'integer':
+            compiler_error(p, 1, f"Condition type must be 'integer', not '{expr}'")
             compiler_note("Called from Loop._do_while")
             sys.exit(1)
 
@@ -526,8 +526,8 @@ class Loop:
         for : loop_for ss '(' for_inits ';' expression ';' for_updates ')' ss '{' stmts  '}' es es
         """
         expr = p.parser.type_checker.pop()
-        if expr != 'int':
-            compiler_error(p, 1, f"Condition type must be 'int', not '{expr}'")
+        if expr != 'integer':
+            compiler_error(p, 1, f"Condition type must be 'integer', not '{expr}'")
             compiler_note("Called from Loop._for")
             sys.exit(1)
 

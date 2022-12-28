@@ -15,10 +15,10 @@
 // 
 // What is the value of the first triangle number to have over five hundred divisors?
 
-func numDivisors(n: int) -> int {
-    num: int
+func numDivisors(n: integer) -> integer {
+    num: integer
 
-    for(i:int = 1; i <= n / 2; i = i + 1) {
+    for(i:integer = 1; i <= n / 2; i = i + 1) {
         if n % i == 0 {
             num = num + 1
         }
@@ -28,14 +28,14 @@ func numDivisors(n: int) -> int {
 }
 
 func main() {
-    i: int = 1
-    triangle: int = 0
+    i: integer = 1
+    triangle: integer = 0
     
     while 1 {
         triangle = triangle + i
         i = i + 1
         
-        n: int = numDivisors(triangle)
+        n: integer = numDivisors(triangle)
         if n > 20 {
             print(triangle, "\n")
             break

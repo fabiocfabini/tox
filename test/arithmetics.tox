@@ -1,10 +1,10 @@
 func main(){
-    x: int = 3
+    x: integer = 3
     print("X: ", x, "\n")
-    y: int = 3
+    y: integer = 3
     print("Y: ", x, "\n")
 
-    z: int = x*x + y*y
+    z: integer = x*x + y*y
     print("Z: ", z, "\n")
 
     z = z / 18

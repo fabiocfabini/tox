@@ -1,10 +1,10 @@
 func main() {
-    x: int = 2
+    x: integer = 2
 
     if x == 2 {
-        y: int = x + 1
+        y: integer = x + 1
     } else {
-        x: int = x + 1
+        x: integer = x + 1
     }
 
     print(x, "\n")

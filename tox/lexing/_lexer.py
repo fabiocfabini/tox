@@ -9,7 +9,7 @@ general_literals = ",:;"                    # Literals for general use
 
 literals = arithmetics_literals + general_literals
 
-type_tokens = ['INT', 'STRING', 'FLOAT']                                            # String so far only works in literals
+type_tokens = ['integer', 'filum', 'FLOAT']                                            # filum so far only works in literals
 op_tokens = ["ASSIGN", "LTE", "LT", 'EQ', "NEQ", "GT", "GTE", "RETI", 'AND', 'OR']  # Operators
 special_tokens = ['NEWLINE', 'COMMENT', 'MULTICOMMENTS', 'ID', 'RARROW']            # Special tokens
 reserved = {                                                                        # Reserved words
@@ -17,8 +17,8 @@ reserved = {                                                                    
     'readi' : 'READ_INT',
     'readf' : 'READ_FLOAT',
     'reads' : 'READ_STRING',
-    'int'   : 'TYPE_INT',
-    'string': 'TYPE_STRING',
+    'integer'   : 'TYPE_INT',
+    'filum': 'TYPE_STRING',
     'float' : 'TYPE_FLOAT',
     'vec'   : 'TYPE_VEC',
     'if'    : 'IF',
@@ -52,8 +52,8 @@ def t_FLOAT(t):
         t.value += '.0'
     return t
 
-@lex.TOKEN(r'\d+')      # Integer
-def t_INT(t):
+@lex.TOKEN(r'\d+')      # integer
+def t_integer(t):
     return t
 
 @lex.TOKEN(r'\|\|')     # OR
@@ -68,8 +68,8 @@ def t_AND(t):
 def t_PRINT(t):
     return t
 
-@lex.TOKEN(r'\"[^"]*\"')    # String
-def t_STRING(t):
+@lex.TOKEN(r'\"[^"]*\"')    # filum
+def t_filum(t):
     return t
 
 @lex.TOKEN(r'[a-zA-Z_][a-zA-Z0-9_]*')       # ID
@@ -99,7 +99,7 @@ lexer = lex.lex()
 
 if __name__ == "__main__":
     lexer.input("""func main() {
-    f: int = 1
+    f: integer = 1
 
     print("OK\n")
 }""")

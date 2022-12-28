@@ -1,30 +1,30 @@
-Add: pointer + int
+Add: pointegerer + integer
 2
 2
-Sub: pointer - int
+Sub: pointegerer - integer
 1
 1
-Sub: pointer - pointer
+Sub: pointegerer - pointegerer
 1
-Compare: pointer < pointer
-1
-2
-3
-4
-5
-Compare: pointer > pointer
-5
-4
-3
-2
-1
-Compare: pointer <= pointer
+Compare: pointegerer < pointegerer
 1
 2
 3
 4
 5
-Compare: pointer => pointer
+Compare: pointegerer > pointegerer
+5
+4
+3
+2
+1
+Compare: pointegerer <= pointegerer
+1
+2
+3
+4
+5
+Compare: pointegerer => pointegerer
 5
 4
 3

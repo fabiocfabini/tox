@@ -1,5 +1,5 @@
 func main() {
-    x: int = 0
+    x: integer = 0
 
     while x < 10 {
         if x % 2 == 0 {
@@ -10,8 +10,8 @@ func main() {
         x = x + 1
     }
 
-    y: int = 0
-    z: int = 0
+    y: integer = 0
+    z: integer = 0
     print("\n")
     while y < 10 {
         // z = 0 Having z = 0 here results in a different output

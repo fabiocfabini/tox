@@ -11,8 +11,8 @@ func main() {
         print("You're not a genius!\n")
     }
 
-    x: int = 31
-    y: int = 35
+    x: integer = 31
+    y: integer = 35
     print("x = ", x, "\n") 
     print("y = ", y, "\n") 
     if x == 34 {
@@ -29,7 +29,7 @@ func main() {
         }
     }
 
-    z: int = 0
+    z: integer = 0
 
     if z % 2 == 0 {
         print("z is even\n")

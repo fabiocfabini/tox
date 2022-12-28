@@ -1,12 +1,12 @@
 func main() {
-	x: int = 34
-	y: int = 35
+	x: integer = 34
+	y: integer = 35
 
 	print("X: ", x, "\n")
 	print("y: ", y, "\n")
 	print("X + Y: ", x + y, "\n")
 
-	t: int = x
+	t: integer = x
 	x = y
 	y = t
 

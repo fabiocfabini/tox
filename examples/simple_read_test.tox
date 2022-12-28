@@ -1,7 +1,7 @@
 func main() {
     f: float = readf("Enter a float: ")
-    i: int = readi("Enter an int: ")
-    s: string = reads("Enter a string: ")
+    i: integer = readi("Enter an integer: ")
+    s: filum = reads("Enter a filum: ")
 
     print("You entered: ", f, ", ", i, ", ", s)
 }

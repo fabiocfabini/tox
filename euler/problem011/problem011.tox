@@ -25,8 +25,8 @@
 // 
 // What is the greatest product of four adjacent numbers in the same direction (up, down, left, right, or diagonally) in the 20×20 grid?
 
-consecutive: int = 4
-grid: vec<int> = [
+consecutive: integer = 4
+grid: vec<integer> = [
      8, 2,22,97,38,15, 0,40, 0,75, 4, 5, 7,78,52,12,50,77,91, 8,
 	49,49,99,40,17,81,18,57,60,87,17,40,98,43,69,48, 4,56,62, 0,
 	81,49,31,73,55,79,14,29,93,71,40,67,53,88,30, 3,49,13,36,65,
@@ -49,15 +49,15 @@ grid: vec<int> = [
 	 1,70,54,71,83,51,54,69,16,92,33,48,61,43,52, 1,89,19,67,48
 ]
 
-func compute(x: int, y: int, dx: int, dy: int, n: int) -> int {
-    prod: int = 1
-    for(j: int; j < n; j = j + 1){
+func compute(x: integer, y: integer, dx: integer, dy: integer, n: integer) -> integer {
+    prod: integer = 1
+    for(j: integer; j < n; j = j + 1){
         prod = prod * grid[(y + j*dy)*20 + x + j*dx]
     }
     return prod
 }
 
-func max(x: int, y: int) -> int {
+func max(x: integer, y: integer) -> integer {
     if x > y {
         return x
     }
@@ -65,12 +65,12 @@ func max(x: int, y: int) -> int {
 }
 
 func main() {
-    max: int = -1
-    width: int = 20
-    height: int = 20
+    max: integer = -1
+    width: integer = 20
+    height: integer = 20
 
-    for(y: int; y < height; y = y + 1){
-        for(x: int; x < width; x = x + 1){
+    for(y: integer; y < height; y = y + 1){
+        for(x: integer; x < width; x = x + 1){
             // Horizontal
             if x + consecutive < width {
                 max = max(max, compute(x, y, 1, 0, consecutive))

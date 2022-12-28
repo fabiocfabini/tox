@@ -1,10 +1,10 @@
-N: int = 13
+N: integer = 13
 v: vec<float> = [6f, 1f, 2f, 6f, 3f, 6f, 2f, 7f, 4f, 7f, 2f, 1f, 1f]
 
-func partition(v: &float, n: int) -> int {
+func partition(v: &float, n: integer) -> integer {
     pivot: float = v[0]
-    i: int = 0
-    j: int = n - 1
+    i: integer = 0
+    j: integer = n - 1
     while(i < j) {
         while(i < j && v[j] >= pivot) {
             j = j - 1
@@ -19,22 +19,22 @@ func partition(v: &float, n: int) -> int {
     return i
 }
 
-func quick_sort(v: &float, n: int) {
+func quick_sort(v: &float, n: integer) {
     if(n <= 1) {
         return;
     }
-    i: int = partition(v, n)
+    i: integer = partition(v, n)
     quick_sort(v, i)
     quick_sort(v + i + 1, n - i - 1)
 }
 
 func main() {
-    for(i: int; i < N; i = i + 1) {
+    for(i: integer; i < N; i = i + 1) {
         print(v[i], " ")
     }
     print("\n")
     quick_sort(v, N)
-    for(i: int; i < N; i = i + 1) {
+    for(i: integer; i < N; i = i + 1) {
         print(v[i], " ")
     }
     print("\n")

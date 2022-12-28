@@ -1,19 +1,19 @@
-func say_hello(name: string) -> string{
+func say_hello(name: filum) -> filum{
     return "Hello " + name + "!\n"
 }
 
 func main() {
-    s1: string = "Hello"
-    s2: string = "World!\n"
+    s1: filum = "Hello"
+    s2: filum = "World!\n"
 
     print(s1)
     print(" ")
     print(s2)
 
-    s3: string = s1 + " " + s2
+    s3: filum = s1 + " " + s2
 
     print(s3)
 
-    s4: string = say_hello("World")
+    s4: filum = say_hello("World")
     print(s4)
 }

@@ -1,7 +1,7 @@
 func main() {
-    for(x: int, z: int, y: int; x < 10; x = x + 1) {
+    for(x: integer, z: integer, y: integer; x < 10; x = x + 1) {
     }
 
-    for(x: int, z: int, y: int; x < 10; x = x + 1) {
+    for(x: integer, z: integer, y: integer; x < 10; x = x + 1) {
     }
 }

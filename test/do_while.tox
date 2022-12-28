@@ -1,9 +1,9 @@
 func main() {
-    x: int
+    x: integer
 
 
     do{
-        y: int
+        y: integer
         do{
             print(x, ":", y, "\n")
             y = y + 1

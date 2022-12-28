@@ -4,16 +4,16 @@
 //
 // By considering the terms in the Fibonacci sequence whose values do not exceed four million, find the sum of the even-valued terms.
 
-accum: int
-a: int = 1
-b: int = 2
+accum: integer
+a: integer = 1
+b: integer = 2
 
 func main() {
     while(a < 4000000){
         if(a % 2 == 0){
             accum = accum + a
         }
-        temp: int = a
+        temp: integer = a
         a = b
         b = temp + b
     }

@@ -2,7 +2,7 @@ func main() {
     print(34 + 35, "\n")
     print(210 * 2, "\n")
 
-    x: int = 34 + 35
+    x: integer = 34 + 35
 
     print("The value of x is: ", x, " followed by a smile :)\n")
     print("The value of x is: ")

@@ -1,15 +1,15 @@
-N: int = 13
-v: vec<int> = [6, 1, 2, 6, 3, 6, 2, 7, 4, 7, 2, 1, 1]
+N: integer = 13
+v: vec<integer> = [6, 1, 2, 6, 3, 6, 2, 7, 4, 7, 2, 1, 1]
 
-func exchange(v: &int, i: int, j: int) {
-    temp: int = v[i]
+func exchange(v: &integer, i: integer, j: integer) {
+    temp: integer = v[i]
     v[i] = v[j]
     v[j] = temp
 }
 
-func bubbleSort(v: &int, N: int) {
-    for(i: int; i < N; i = i + 1) {
-        for(j: int; j < N - 1; j = j + 1) {
+func bubbleSort(v: &integer, N: integer) {
+    for(i: integer; i < N; i = i + 1) {
+        for(j: integer; j < N - 1; j = j + 1) {
             if(v[j] > v[j + 1]) {
                 exchange(v, j, j + 1)
             }
@@ -18,12 +18,12 @@ func bubbleSort(v: &int, N: int) {
 }
 
 func main() {
-    for(i: int; i < N; i = i + 1) {
+    for(i: integer; i < N; i = i + 1) {
         print(v[i], " ")
     }
     print("\n")
     bubbleSort(v, N)
-    for(i: int; i < N; i = i + 1) {
+    for(i: integer; i < N; i = i + 1) {
         print(v[i], " ")
     }
     print("\n")

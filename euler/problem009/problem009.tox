@@ -6,15 +6,15 @@
 // There exists exactly one Pythagorean triplet for which a + b + c = 1000.
 // Find the product abc.
 
-N: int = 12
-a_final: int
-b_final: int
-c_final: int
+N: integer = 12
+a_final: integer
+b_final: integer
+c_final: integer
 
 func main() {
-    for(a: int=1; a < N; a = a + 1){
-        for(b: int=1; b < N; b = b + 1){
-            for(c: int=1; c < N; c = c + 1){
+    for(a: integer=1; a < N; a = a + 1){
+        for(b: integer=1; b < N; b = b + 1){
+            for(c: integer=1; c < N; c = c + 1){
                 if(a+b+c == N && a*a + b*b == c*c){
                     a_final = a
                     b_final = b

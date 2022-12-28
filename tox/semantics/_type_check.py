@@ -47,7 +47,7 @@ class TypeCheck:
         unary : '!' unary
         """
         right_operand = self.stack.pop()
-        if right_operand in ("int", "float"):
+        if right_operand in ("integer", "float"):
             self.stack.append(right_operand)
             return p[2] + std_message(["NOT"])
         else:
@@ -59,8 +59,8 @@ class TypeCheck:
         unary : '-' unary
         """
         right_operand = self.stack.pop()
-        if right_operand == "int":
-            self.stack.append("int")
+        if right_operand == "integer":
+            self.stack.append("integer")
             return p[2] + std_message(["PUSHI -1", "MUL"])
         elif right_operand == "float":
             self.stack.append("float")
@@ -75,8 +75,8 @@ class TypeCheck:
         """
         right_operand = self.stack.pop()
         left_operand = self.stack.pop()
-        if right_operand == left_operand == "int":
-            self.stack.append("int")
+        if right_operand == left_operand == "integer":
+            self.stack.append("integer")
             return p[1] + p[3] + std_message(["MUL"])
         elif right_operand == left_operand == "float":
             self.stack.append("float")
@@ -91,8 +91,8 @@ class TypeCheck:
         """
         right_operand = self.stack.pop()
         left_operand = self.stack.pop()
-        if right_operand == left_operand == "int":
-            self.stack.append("int")
+        if right_operand == left_operand == "integer":
+            self.stack.append("integer")
             return p[1] + p[3] + std_message(["DIV"])
         elif right_operand == left_operand == "float":
             self.stack.append("float")
@@ -107,8 +107,8 @@ class TypeCheck:
         """
         right_operand = self.stack.pop()
         left_operand = self.stack.pop()
-        if right_operand == left_operand == "int":
-            self.stack.append("int")
+        if right_operand == left_operand == "integer":
+            self.stack.append("integer")
             return p[1] + p[3] + std_message(["MOD"])
         else:
             compiler_error(p, 2, f"Operation 'mod' not supported for types '{left_operand}' and '{right_operand}'")
@@ -121,17 +121,17 @@ class TypeCheck:
         right_operand = self.stack.pop()
         left_operand = self.stack.pop()
         assert not left_operand.startswith("vec"), "vector type cannot appear in this stage"
-        if right_operand == left_operand == "int":
-            self.stack.append("int")
+        if right_operand == left_operand == "integer":
+            self.stack.append("integer")
             return p[1] + p[3] + std_message(["ADD"])
         elif right_operand == left_operand == "float":
             self.stack.append("float")
             return p[1] + p[3] + std_message(["FADD"])
-        elif left_operand.startswith("&") and right_operand == "int":
+        elif left_operand.startswith("&") and right_operand == "integer":
             self.stack.append(left_operand)
             return p[1] + p[3] + std_message(["PADD"])
-        elif right_operand == left_operand == "string":
-            self.stack.append("string")
+        elif right_operand == left_operand == "filum":
+            self.stack.append("filum")
             return p[3] + p[1] + std_message(["CONCAT"])
         else:
             compiler_error(p, 2, f"Operation 'add' not supported for types '{left_operand}' and '{right_operand}'")
@@ -144,13 +144,13 @@ class TypeCheck:
         right_operand = self.stack.pop()
         left_operand = self.stack.pop()
         assert not left_operand.startswith("vec"), "vector type cannot appear in this stage"
-        if (right_operand, left_operand) in [("int", "int"), ("&int", "&int")]:
-            self.stack.append("int")
+        if (right_operand, left_operand) in [("integer", "integer"), ("&integer", "&integer")]:
+            self.stack.append("integer")
             return p[1] + p[3] + std_message(["SUB"])
         elif right_operand == left_operand == "float":
             self.stack.append("float")
             return p[1] + p[3] + std_message(["FSUB"])
-        elif left_operand.startswith("&") and right_operand == "int":
+        elif left_operand.startswith("&") and right_operand == "integer":
             self.stack.append(left_operand)
             return p[1] + p[3] + std_message(["PUSHI -1", "MUL", "PADD"])
         else:
@@ -164,11 +164,11 @@ class TypeCheck:
         right_operand = self.stack.pop()
         left_operand = self.stack.pop()
         assert not left_operand.startswith("vec"), "vector type cannot appear in this stage"
-        if right_operand == left_operand and left_operand not in ("string", "float"):
-            self.stack.append("int")
+        if right_operand == left_operand and left_operand not in ("filum", "float"):
+            self.stack.append("integer")
             return p[1] + p[3] + std_message(["INF"])
         elif right_operand == left_operand == "float":
-            self.stack.append("int")
+            self.stack.append("integer")
             return p[1] + p[3] + std_message(["FINF", "FTOI"])
         else:
             compiler_error(p, 2, f"Operation 'lt' not supported for types '{left_operand}' and '{right_operand}'")
@@ -181,11 +181,11 @@ class TypeCheck:
         right_operand = self.stack.pop()
         left_operand = self.stack.pop()
         assert not left_operand.startswith("vec"), "vector type cannot appear in this stage"
-        if right_operand == left_operand and left_operand not in ("string", "float"):
-            self.stack.append("int")
+        if right_operand == left_operand and left_operand not in ("filum", "float"):
+            self.stack.append("integer")
             return p[1] + p[3] + std_message(["SUP"])
         elif right_operand == left_operand == "float":
-            self.stack.append("int")
+            self.stack.append("integer")
             return p[1] + p[3] + std_message(["FSUP", "FTOI"])
         else:
             compiler_error(p, 2, f"Operation 'gt' not supported for types '{left_operand}' and '{right_operand}'")
@@ -198,11 +198,11 @@ class TypeCheck:
         right_operand = self.stack.pop()
         left_operand = self.stack.pop()
         assert not left_operand.startswith("vec"), "vector type cannot appear in this stage"
-        if right_operand == left_operand and left_operand not in ("string", "float"):
-            self.stack.append("int")
+        if right_operand == left_operand and left_operand not in ("filum", "float"):
+            self.stack.append("integer")
             return p[1] + p[3] + std_message(["INFEQ"])
         elif right_operand == left_operand == "float":
-            self.stack.append("int")
+            self.stack.append("integer")
             return p[1] + p[3] + std_message(["FINFEQ", "FTOI"])
         else:
             compiler_error(p, 2, f"Operation 'lte' not supported for types '{left_operand}' and '{right_operand}'")
@@ -215,11 +215,11 @@ class TypeCheck:
         right_operand = self.stack.pop()
         left_operand = self.stack.pop()
         assert not left_operand.startswith("vec"), "vector type cannot appear in this stage"
-        if right_operand == left_operand and left_operand not in ("string", "float"):
-            self.stack.append("int")
+        if right_operand == left_operand and left_operand not in ("filum", "float"):
+            self.stack.append("integer")
             return p[1] + p[3] + std_message(["SUPEQ"])
         elif right_operand == left_operand == "float":
-            self.stack.append("int")
+            self.stack.append("integer")
             return p[1] + p[3] + std_message(["FSUPEQ", "FTOI"])
         else:
             compiler_error(p, 2, f"Operation 'gte' not supported for types '{left_operand}' and '{right_operand}'")
@@ -232,8 +232,8 @@ class TypeCheck:
         right_operand = self.stack.pop()
         left_operand = self.stack.pop()
         assert not left_operand.startswith("vec"), "vector type cannot appear in this stage"
-        if right_operand == left_operand and left_operand != "string":
-            self.stack.append("int")
+        if right_operand == left_operand and left_operand != "filum":
+            self.stack.append("integer")
             return p[1] + p[3] + std_message(["EQUAL"])
         else:
             compiler_error(p, 2, f"Operation 'eq' not supported for types '{left_operand}' and '{right_operand}'")
@@ -246,8 +246,8 @@ class TypeCheck:
         right_operand = self.stack.pop()
         left_operand = self.stack.pop()
         assert not left_operand.startswith("vec"), "vector type cannot appear in this stage"
-        if right_operand == left_operand and left_operand != "string":
-            self.stack.append("int")
+        if right_operand == left_operand and left_operand != "filum":
+            self.stack.append("integer")
             return p[1] + p[3] + std_message(["EQUAL", "NOT"])
         else:
             compiler_error(p, 2, f"Operation 'neq' not supported for types '{left_operand}' and '{right_operand}'")
@@ -260,8 +260,8 @@ class TypeCheck:
         right_operand = self.stack.pop()
         left_operand = self.stack.pop()
         assert not left_operand.startswith("vec"), "vector type cannot appear in this stage"
-        if right_operand == left_operand == "int":
-            self.stack.append("int")
+        if right_operand == left_operand == "integer":
+            self.stack.append("integer")
             return p[1] + p[3] + std_message(["AND"])
         else:
             compiler_error(p, 2, f"Operation 'and' not supported for types '{left_operand}' and '{right_operand}'")
@@ -271,8 +271,8 @@ class TypeCheck:
         right_operand = self.stack.pop()
         left_operand = self.stack.pop()
         assert not left_operand.startswith("vec"), "vector type cannot appear in this stage"
-        if right_operand == left_operand == "int":
-            self.stack.append("int")
+        if right_operand == left_operand == "integer":
+            self.stack.append("integer")
             return p[1] + p[3] + std_message(["OR"])
         else:
             compiler_error(p, 2, f"Operation 'or' not supported for types '{left_operand}' and '{right_operand}'")
