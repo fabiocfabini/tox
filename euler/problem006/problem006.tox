@@ -10,7 +10,7 @@ sum_of_squares: integer
 sums: integer
 
 func main() {
-    for(i: integer = 1; i < 101; i = i + 1){
+    enim(i: integer = 1; i < 101; i = i + 1){
         sum_of_squares = sum_of_squares + i*i
         sums = sums + i
     }

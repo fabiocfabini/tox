@@ -51,7 +51,7 @@ grid: vec<integer> = [
 
 func compute(x: integer, y: integer, dx: integer, dy: integer, n: integer) -> integer {
     prod: integer = 1
-    for(j: integer; j < n; j = j + 1){
+    enim(j: integer; j < n; j = j + 1){
         prod = prod * grid[(y + j*dy)*20 + x + j*dx]
     }
     return prod
@@ -69,8 +69,8 @@ func main() {
     width: integer = 20
     height: integer = 20
 
-    for(y: integer; y < height; y = y + 1){
-        for(x: integer; x < width; x = x + 1){
+    enim(y: integer; y < height; y = y + 1){
+        enim(x: integer; x < width; x = x + 1){
             // Horizontal
             si x + consecutive < width {
                 max = max(max, compute(x, y, 1, 0, consecutive))

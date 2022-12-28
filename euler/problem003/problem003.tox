@@ -29,7 +29,7 @@ func isPrime(x: integer) -> integer {
 func main() {
     N: integer = 131951
     r: integer = -1
-    for(i: integer = 2; i < N; i = i + 1) {
+    enim(i: integer = 2; i < N; i = i + 1) {
         si N % i == 0 {
             si isPrime(i) {
                 r = i

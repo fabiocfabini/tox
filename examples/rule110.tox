@@ -6,8 +6,8 @@ func main() {
     gen[N - 2] = 1
 
     c_gen: integer = 0
-    for(i: integer; i < N-2; i = i + 1) {
-        for(j: integer = 0; j < N; j = j + 1) {
+    enim(i: integer; i < N-2; i = i + 1) {
+        enim(j: integer = 0; j < N; j = j + 1) {
             si gen[c_gen*N + j] == 1 {
                 print("#")
             } aliter {
@@ -15,11 +15,11 @@ func main() {
             }
         }
         print("\n")
-        for(j: integer = 1; j < N - 1; j = j + 1) {
+        enim(j: integer = 1; j < N - 1; j = j + 1) {
             pattern: integer = 4*gen[c_gen*N + j - 1] + 2*gen[c_gen*N + j] + 1*gen[c_gen*N + j + 1]
 
             new_pattern: integer = table
-            for(k: integer = 0; k < pattern; k = k + 1) {
+            enim(k: integer = 0; k < pattern; k = k + 1) {
                 new_pattern = new_pattern / 2
             }
 

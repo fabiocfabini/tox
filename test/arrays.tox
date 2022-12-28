@@ -18,31 +18,31 @@ func sm(x: integer, v: &integer) {
 func main(){
     arr: vec<integer>[10]
 
-    for(x: integer; x < 10; x = x + 1) {
+    enim(x: integer; x < 10; x = x + 1) {
         arr[x] = x
     }
 
-    for(x: integer; x < 10; x = x + 1) {
+    enim(x: integer; x < 10; x = x + 1) {
         print(arr[x], "\n")
     }
 
-    for(x:integer; x<10; x = x + 1) {
+    enim(x:integer; x<10; x = x + 1) {
         y: vec<integer>[10]
-        for(x_:integer = x; x_<10 && x > 0; x_ = x_ + 1) {
+        enim(x_:integer = x; x_<10 && x > 0; x_ = x_ + 1) {
             y[x_] = x
         }
 
-        for(x_:integer = x; x_<10; x_ = x_ + 1) {
+        enim(x_:integer = x; x_<10; x_ = x_ + 1) {
             print(y[x_], " ")
         }
         print("\n")
     }
 
-    for(x: integer; x < 2; x = x + 1){
+    enim(x: integer; x < 2; x = x + 1){
         a: vec<integer> = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
         print(x, ": ")
-        for(x: integer; x < 10; x = x + 1){
+        enim(x: integer; x < 10; x = x + 1){
             print(a[x], " ")
         }
         print("\n")
@@ -50,13 +50,13 @@ func main(){
 
     print("First a\n")
     a: vec<integer> = [5 ... 15]
-    for(q: integer; q < 10; q = q + 1){
+    enim(q: integer; q < 10; q = q + 1){
         print(a[q], "\n")
     }
 
     print("a is now arr\n")
     p: &integer = arr
-    for(q: integer; q < 10; q = q + 1){
+    enim(q: integer; q < 10; q = q + 1){
         si q == 5 {
             continue
         }
@@ -64,7 +64,7 @@ func main(){
     }
 
     sm(0,v)
-    for(i: integer; i < 10; i = i + 1){
+    enim(i: integer; i < 10; i = i + 1){
         print(v[i], " ")
     }
     print("\n")

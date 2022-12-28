@@ -18,7 +18,7 @@
 func numDivisors(n: integer) -> integer {
     num: integer
 
-    for(i:integer = 1; i <= n / 2; i = i + 1) {
+    enim(i:integer = 1; i <= n / 2; i = i + 1) {
         si n % i == 0 {
             num = num + 1
         }

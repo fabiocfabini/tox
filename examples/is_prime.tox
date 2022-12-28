@@ -3,7 +3,7 @@ func is_prime(n: integer) -> integer {
     si n == 2 { return 1 }
     si n % 2 == 0 { return 0 }
 
-    for(i: integer = 3; i < n; i = i + 1) {
+    enim(i: integer = 3; i < n; i = i + 1) {
         si n % i == 0 { return 0 }
     }
 
@@ -11,11 +11,11 @@ func is_prime(n: integer) -> integer {
 }
 
 func main() {
-    N: integer = readi("How many numbers? (<0 si forever) ")
+    N: integer = readi("How many numbers? (<0 si enimever) ")
 
     print("Will check ", N, " numbers\n")
     si N >= 0 {
-        for(i: integer; i < N; i = i + 1) {
+        enim(i: integer; i < N; i = i + 1) {
             x: integer = readi("Enter a number: (0 to exit) ")
             si x == 0 { break }
             si(is_prime(x)) {

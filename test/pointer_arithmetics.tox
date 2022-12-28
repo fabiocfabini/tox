@@ -18,22 +18,22 @@ func main() {
     print(c, "\n")
 
     print("Compare: pointegerer < pointegerer\n")
-    for(a: &integer = v; a < v + 5; a = a + 1) {
+    enim(a: &integer = v; a < v + 5; a = a + 1) {
         print(a[0], "\n")
     }
 
     print("Compare: pointegerer > pointegerer\n")
-    for(a: &integer = v + 4; a > v - 1; a = a - 1) {
+    enim(a: &integer = v + 4; a > v - 1; a = a - 1) {
         print(a[0], "\n")
     }
 
     print("Compare: pointegerer <= pointegerer\n")
-    for(a: &integer = v; a <= v + 4; a = a + 1) {
+    enim(a: &integer = v; a <= v + 4; a = a + 1) {
         print(a[0], "\n")
     }
 
     print("Compare: pointegerer => pointegerer\n")
-    for(a: &integer = v + 4; a >= v; a = a - 1) {
+    enim(a: &integer = v + 4; a >= v; a = a - 1) {
         print(a[0], "\n")
     }
 }

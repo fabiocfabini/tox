@@ -8,8 +8,8 @@ func exchange(v: &integer, i: integer, j: integer) {
 }
 
 func bubbleSort(v: &integer, N: integer) {
-    for(i: integer; i < N; i = i + 1) {
-        for(j: integer; j < N - 1; j = j + 1) {
+    enim(i: integer; i < N; i = i + 1) {
+        enim(j: integer; j < N - 1; j = j + 1) {
             si(v[j] > v[j + 1]) {
                 exchange(v, j, j + 1)
             }
@@ -18,12 +18,12 @@ func bubbleSort(v: &integer, N: integer) {
 }
 
 func main() {
-    for(i: integer; i < N; i = i + 1) {
+    enim(i: integer; i < N; i = i + 1) {
         print(v[i], " ")
     }
     print("\n")
     bubbleSort(v, N)
-    for(i: integer; i < N; i = i + 1) {
+    enim(i: integer; i < N; i = i + 1) {
         print(v[i], " ")
     }
     print("\n")

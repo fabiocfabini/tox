@@ -52,11 +52,11 @@ accum  : integer = 1
 max_mul: integer
 
 func main() {
-    for(i: integer; i < N; i = i + 1){
+    enim(i: integer; i < N; i = i + 1){
         si(i + winfaciow > N){
             i = N + 1
         } aliter {
-            for(j: integer; j < winfaciow; j = j + 1){
+            enim(j: integer; j < winfaciow; j = j + 1){
                 accum = accum * arr[i+j]
             }
             si(accum > max_mul){

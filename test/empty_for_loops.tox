@@ -1,7 +1,7 @@
 func main() {
-    for(x: integer, z: integer, y: integer; x < 10; x = x + 1) {
+    enim(x: integer, z: integer, y: integer; x < 10; x = x + 1) {
     }
 
-    for(x: integer, z: integer, y: integer; x < 10; x = x + 1) {
+    enim(x: integer, z: integer, y: integer; x < 10; x = x + 1) {
     }
 }

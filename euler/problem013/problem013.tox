@@ -207,7 +207,7 @@ numbers: vec<integer> = [
 
 func sum_mod_10_array(dest: &integer, a: &integer, b: &integer, N: integer) {
     carry: integer = 0
-    for(i: integer = N - 1; i > -1; i = i - 1) {
+    enim(i: integer = N - 1; i > -1; i = i - 1) {
         sum: integer = ((a[i] + b[i]) + carry) % 10
         carry = ((a[i] + b[i]) + carry) / 10
         dest[i] = sum
@@ -215,11 +215,11 @@ func sum_mod_10_array(dest: &integer, a: &integer, b: &integer, N: integer) {
 }
 
 func main() {
-    for(i: integer; i < 100; i = i + 1) {
+    enim(i: integer; i < 100; i = i + 1) {
         sum_mod_10_array(result, result, numbers + i*52, 52)
     }
     
-    for(i: integer; i < 10; i = i + 1) {
+    enim(i: integer; i < 10; i = i + 1) {
         print(result[i])
     }
     print("\n")

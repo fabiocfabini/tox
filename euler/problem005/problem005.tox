@@ -10,7 +10,7 @@ func main() {
         x = x + 1
         is_divisible = 1
 
-        for(i: integer = 1; i <= 10; i = i + 1){
+        enim(i: integer = 1; i <= 10; i = i + 1){
             si(x % i != 0){
                 is_divisible = 0
                 break

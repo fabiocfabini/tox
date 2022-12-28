@@ -29,12 +29,12 @@ func quick_sort(v: &float, n: integer) {
 }
 
 func main() {
-    for(i: integer; i < N; i = i + 1) {
+    enim(i: integer; i < N; i = i + 1) {
         print(v[i], " ")
     }
     print("\n")
     quick_sort(v, N)
-    for(i: integer; i < N; i = i + 1) {
+    enim(i: integer; i < N; i = i + 1) {
         print(v[i], " ")
     }
     print("\n")
