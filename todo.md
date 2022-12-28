@@ -3,7 +3,7 @@
 1. [x] Add support for the 'if-else-if' statement
 2. [x] Add support for array arguments, assignment
 3. [x] Add support for pointer arithmetics
-4. [ ] Add support for stdin readout 
+4. [x] Add support for stdin readout 
 5. [x] Make return statement implicit for void functions and explicit for non-void functions
 6. [x] Extend string operations (CONCAT)
 7. [x] Add floats to the language
