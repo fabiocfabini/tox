@@ -14,9 +14,9 @@ op_tokens = ["ASSIGN", "LTE", "LT", 'EQ', "NEQ", "GT", "GTE", "RETI", 'AND', 'OR
 special_tokens = ['NEWLINE', 'COMMENT', 'MULTICOMMENTS', 'ID', 'RARROW']            # Special tokens
 reserved = {                                                                        # Reserved words
     'imprimo' : 'PRINT',
-    'readi' : 'READ_INT',
-    'readf' : 'READ_FLOAT',
-    'reads' : 'READ_STRING',
+    'legerei' : 'READ_INT',
+    'legeref' : 'READ_FLOAT',
+    'legeres' : 'READ_STRING',
     'integer'   : 'TYPE_INT',
     'filum': 'TYPE_STRING',
     'float' : 'TYPE_FLOAT',

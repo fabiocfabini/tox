@@ -1,7 +1,7 @@
 munus main() {
-    f: float = readf("Enter a float: ")
-    i: integer = readi("Enter an integer: ")
-    s: filum = reads("Enter a filum: ")
+    f: float = legeref("Enter a float: ")
+    i: integer = legerei("Enter an integer: ")
+    s: filum = legeres("Enter a filum: ")
 
     imprimo("You entered: ", f, ", ", i, ", ", s)
 }
