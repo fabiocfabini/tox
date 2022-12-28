@@ -1,7 +1,7 @@
 func main() {
     x: integer = 0
 
-    while x < 10 {
+    dum x < 10 {
         si x % 2 == 0 {
             print(x, " is even\n")
         } aliter {
@@ -13,9 +13,9 @@ func main() {
     y: integer = 0
     z: integer = 0
     print("\n")
-    while y < 10 {
+    dum y < 10 {
         // z = 0 Having z = 0 here results in a dsiferent output
-        while z < 10 {
+        dum z < 10 {
             print("#")
             z = z + 1
         }

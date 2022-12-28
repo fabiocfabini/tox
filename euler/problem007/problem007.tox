@@ -16,7 +16,7 @@ func isPrime(x: integer) -> integer {
     }
 
     i: integer = 3
-    while i * i <= x {
+    dum i * i <= x {
         si x % i == 0 {
             return 0
         }
@@ -32,7 +32,7 @@ func main() {
     r: integer
     N: integer = 1001
 
-    while i < N {
+    dum i < N {
         si isPrime(n) {
             r = n
             i = i + 1

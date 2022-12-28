@@ -9,7 +9,7 @@ a: integer = 1
 b: integer = 2
 
 func main() {
-    while(a < 4000000){
+    dum(a < 4000000){
         si(a % 2 == 0){
             accum = accum + a
         }

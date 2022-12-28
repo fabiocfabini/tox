@@ -5,12 +5,12 @@ func partition(v: &float, n: integer) -> integer {
     pivot: float = v[0]
     i: integer = 0
     j: integer = n - 1
-    while(i < j) {
-        while(i < j && v[j] >= pivot) {
+    dum(i < j) {
+        dum(i < j && v[j] >= pivot) {
             j = j - 1
         }
         v[i] = v[j]
-        while(i < j && v[i] <= pivot) {
+        dum(i < j && v[i] <= pivot) {
             i = i + 1
         }
         v[j] = v[i]

@@ -25,7 +25,7 @@ func main() {
             }
         }
     } aliter {
-        while(1) {
+        dum(1) {
             x: integer = readi("Enter a number: (0 to exit) ")
             si x == 0 { break }
             si(is_prime(x)) {

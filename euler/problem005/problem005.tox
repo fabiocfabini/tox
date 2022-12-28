@@ -6,7 +6,7 @@ is_divisible: integer
 x: integer
 
 func main() {
-    while(!is_divisible){
+    dum(!is_divisible){
         x = x + 1
         is_divisible = 1
 

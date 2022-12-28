@@ -31,7 +31,7 @@ func main() {
     i: integer = 1
     triangle: integer = 0
     
-    while 1 {
+    dum 1 {
         triangle = triangle + i
         i = i + 1
         

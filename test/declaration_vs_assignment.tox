@@ -2,7 +2,7 @@ func main() {
     x: integer // Declaration, Variables are 0 initialized
 
     print("Simple Odd or Even\n")
-    while x < 10 {
+    dum x < 10 {
         si x % 2 == 0 {
             print(x, " is even\n")
         } aliter {
@@ -14,9 +14,9 @@ func main() {
     print("\nChess Pattern\n")
     y: integer 
     z: integer 
-    while y < 10 {
+    dum y < 10 {
         z = 0
-        while z < 10 {
+        dum z < 10 {
             si (z + y % 2) % 2 == 0 {
                 print("#")
             } aliter{
@@ -33,8 +33,8 @@ func main() {
     c1: integer = -radius
     c2: integer = -radius
 
-    while c1 <= radius {
-        while c2 <= radius {
+    dum c1 <= radius {
+        dum c2 <= radius {
             si c1*c1 + c2*c2 <= radius*radius {
                 print("#")
             } aliter{
@@ -53,7 +53,7 @@ func main() {
     b: integer = 1
 
     print(b)
-    while b < 10000 {
+    dum b < 10000 {
         a = a + b
         b = a - b
         print(" -> ", a)

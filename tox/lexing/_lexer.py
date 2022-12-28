@@ -23,7 +23,7 @@ reserved = {                                                                    
     'vec'   : 'TYPE_VEC',
     'si'    : 'IF',
     'aliter'  : 'ELSE',
-    'while' : 'WHILE',
+    'dum' : 'WHILE',
     'for'   : 'FOR',
     'do'    : 'DO',
     'break' : 'BREAK',
