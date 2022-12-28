@@ -82,12 +82,12 @@ munus main() {
             }
 
             // faciown-left
-            si x + consecutive < width && y + consecutive < height {
+            si x + consecutive < width et y + consecutive < height {
                 max = max(max, compute(x, y, -1, 1, consecutive))
             }
 
             // faciown-right
-            si x - consecutive > -1 && y + consecutive < height {
+            si x - consecutive > -1 et y + consecutive < height {
                 max = max(max, compute(x, y, 1, 1, consecutive))
             }
         }

@@ -10,7 +10,10 @@ general_literals = ",:;"                    # Literals for general use
 literals = arithmetics_literals + general_literals
 
 type_tokens = ['integer', 'filum', 'FLOAT']                                            # filum so far only works in literals
-op_tokens = ["ASSIGN", "LTE", "LT", 'EQ', "NEQ", "GT", "GTE", "RETI", 'AND', 'OR']  # Operators
+op_tokens = ["ASSIGN", "LTE", "LT", 'EQ', "NEQ", "GT", "GTE", "RETI", 'OR']  # Operators
+ops_word = {
+    'et' : 'AND'
+}
 special_tokens = ['NEWLINE', 'COMMENT', 'MULTICOMMENTS', 'ID', 'RARROW']            # Special tokens
 reserved = {                                                                        # Reserved words
     'imprimo' : 'PRINT',
@@ -32,7 +35,7 @@ reserved = {                                                                    
     'reditus' : 'RETURN'
 }
 
-tokens = type_tokens + special_tokens + list(reserved.values()) + op_tokens
+tokens = type_tokens + special_tokens + list(reserved.values()) + op_tokens + list(ops_word.values())
 
 t_RARROW = r"->"        # '->' for function declaration
 t_EQ = r"=="            # Double equal
@@ -60,7 +63,7 @@ def t_integer(t):
 def t_OR(t):
     return t
 
-@lex.TOKEN(r'&&')       # AND
+@lex.TOKEN(r'et')       # AND
 def t_AND(t):
     return t
 

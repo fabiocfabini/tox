@@ -28,7 +28,7 @@ munus main(){
 
     enim(x:integer; x<10; x = x + 1) {
         y: vec<integer>[10]
-        enim(x_:integer = x; x_<10 && x > 0; x_ = x_ + 1) {
+        enim(x_:integer = x; x_<10 et x > 0; x_ = x_ + 1) {
             y[x_] = x
         }
 

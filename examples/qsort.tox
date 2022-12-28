@@ -6,11 +6,11 @@ munus partition(v: &float, n: integer) -> integer {
     i: integer = 0
     j: integer = n - 1
     dum(i < j) {
-        dum(i < j && v[j] >= pivot) {
+        dum(i < j et v[j] >= pivot) {
             j = j - 1
         }
         v[i] = v[j]
-        dum(i < j && v[i] <= pivot) {
+        dum(i < j et v[i] <= pivot) {
             i = i + 1
         }
         v[j] = v[i]
