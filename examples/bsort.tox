@@ -5,7 +5,6 @@ func exchange(v: &int, i: int, j: int) {
     temp: int = v[i]
     v[i] = v[j]
     v[j] = temp
-    return
 }
 
 func bubbleSort(v: &int, N: int) {
@@ -16,7 +15,6 @@ func bubbleSort(v: &int, N: int) {
             }
         }
     }
-    return
 }
 
 func main() {

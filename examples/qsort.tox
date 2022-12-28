@@ -21,7 +21,7 @@ func partition(v: &float, n: int) -> int {
 
 func quick_sort(v: &float, n: int) {
     if(n <= 1) {
-        return
+        return;
     }
     i: int = partition(v, n)
     quick_sort(v, i)
