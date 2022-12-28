@@ -58,7 +58,7 @@ munus main(){
     p: &integer = arr
     enim(q: integer; q < 10; q = q + 1){
         si q == 5 {
-            continue
+            pergo
         }
         imprimo(p[q], "\n")
     }

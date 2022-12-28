@@ -27,7 +27,7 @@ reserved = {                                                                    
     'enim'   : 'FOR',
     'facio'    : 'DO',
     'confractus' : 'BREAK',
-    'continue' : 'CONTINUE',
+    'pergo' : 'CONTINUE',
     'munus' : 'FUNCTION',
     'reditus' : 'RETURN'
 }
