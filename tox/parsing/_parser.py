@@ -559,7 +559,7 @@ def p_factor_unary(p):
 
 def p_unary_not(p):
     """
-    unary : '!' unary
+    unary : NOT unary
     """
     p[0] = parser.unary_handler.handle(p, "not")
 def p_unary_neg(p):

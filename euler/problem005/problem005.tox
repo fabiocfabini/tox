@@ -6,7 +6,7 @@ is_divisible: integer
 x: integer
 
 munus main() {
-    dum(!is_divisible){
+    dum(non is_divisible){
         x = x + 1
         is_divisible = 1
 

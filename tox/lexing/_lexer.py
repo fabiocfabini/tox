@@ -10,10 +10,7 @@ general_literals = ",:;"                    # Literals for general use
 literals = arithmetics_literals + general_literals
 
 type_tokens = ['integer', 'filum', 'FLOAT']                                            # filum so far only works in literals
-op_tokens = ["ASSIGN", "LTE", "LT", 'EQ', "NEQ", "GT", "GTE", "RETI", 'OR']  # Operators
-ops_word = {
-    'et' : 'AND'
-}
+op_tokens = ["ASSIGN", "LTE", "LT", 'EQ', "NEQ", "GT", "GTE", "RETI"]  # Operators
 special_tokens = ['NEWLINE', 'COMMENT', 'MULTICOMMENTS', 'ID', 'RARROW']            # Special tokens
 reserved = {                                                                        # Reserved words
     'imprimo' : 'PRINT',
@@ -32,10 +29,13 @@ reserved = {                                                                    
     'confractus' : 'BREAK',
     'pergo' : 'CONTINUE',
     'munus' : 'FUNCTION',
-    'reditus' : 'RETURN'
+    'reditus' : 'RETURN',
+    'et' : 'AND',
+    'aut' : 'OR',
+    'non' : 'NOT'
 }
 
-tokens = type_tokens + special_tokens + list(reserved.values()) + op_tokens + list(ops_word.values())
+tokens = type_tokens + special_tokens + list(reserved.values()) + op_tokens
 
 t_RARROW = r"->"        # '->' for function declaration
 t_EQ = r"=="            # Double equal
@@ -57,14 +57,6 @@ def t_FLOAT(t):
 
 @lex.TOKEN(r'\d+')      # integer
 def t_integer(t):
-    return t
-
-@lex.TOKEN(r'\|\|')     # OR
-def t_OR(t):
-    return t
-
-@lex.TOKEN(r'et')       # AND
-def t_AND(t):
     return t
 
 @lex.TOKEN(r"print")    # Print

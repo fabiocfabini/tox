@@ -11,7 +11,7 @@ munus is_prime(n: integer) -> integer {
 }
 
 munus main() {
-    N: integer = legerei("How many numbers? (<0 si enimever) ")
+    N: integer = legerei("How many numbers? (<0 if forever) ")
 
     imprimo("Will check ", N, " numbers\n")
     si N >= 0 {
