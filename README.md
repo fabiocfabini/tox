@@ -47,9 +47,9 @@ This is a multiline comment
 
 Has of now, the language supports the following data types:
 
-- ```int```, ```float```, ```string```: These are the basic data types of the language;
-- ```&int```, ```&float```, ```&string```: These are the pointer data types of the language;
-- vec```<int>```, vec```<float>```, vec```<string>```: These are the vector data types of the language;
+- ```integer```, ```float```, ```filum```: These are the basic data types of the language;
+- ```&integer```, ```&float```, ```&filum```: These are the pointer data types of the language;
+- vec```<integer>```, vec```<float>```, vec```<filum>```: These are the vector data types of the language;
 
 ### **Arithmetics**
 
@@ -57,8 +57,8 @@ Basic arithmetics are supported by the language. These include:
 
 - the ```+```, ```-```, ```*```, ```/``` operators;
 - the ```==```, ```!=```, ```<```, ```>```, ```<=```, ```>=``` operators;
-- the ```&&```, ```||``` operators;
-- the ```!``` operator;
+- the ```et```, ```aut``` operators;
+- the ```non``` operator;
 
 Tox also supports pointer arithmetics. The following operations are supported:
 
@@ -71,13 +71,13 @@ Tox also supports pointer arithmetics. The following operations are supported:
 To declare a variable, simply type the variable name followed by ```:``` and the variable type. For example:
 
 ```c
-a: int
+a: integer
 ```
 
 Variables declared in this way are initialized with the value ```0```. To declare a variable and initialize it with a value, simply type the variable name followed by ```:``` and the variable type followed by ```=``` and the value. For example:
 
 ```c
-a: int = 10
+a: integer = 10
 ```
 
 To modify the value of a variable, simply type the variable name followed by ```=``` and the value. For example:
@@ -93,19 +93,19 @@ In tox arrays are declared in 3 different ways:
 - Declaring an array of a specific size. This will initialize the array with the value ```0```;
 
 ```c
-a: vec<int>[10]
+a: vec<integer>[10]
 ```
 
 - Declaring an array through a list of values;
 
 ```c
-a: vec<int> = [10, 20, 30, 40, 50]
+a: vec<integer> = [10, 20, 30, 40, 50]
 ```
 
 - Declaring an array with the ```...``` operator;
 
 ```c
-a: vec<int> = [1 ... 10]
+a: vec<integer> = [1 ... 10]
 ```
 
 This will initialize the array with the values ```1, 2, 3, 4, 5, 6, 7, 8, 9, 10```.
@@ -121,52 +121,52 @@ a[0]
 
 The control flow of the language is similar to the control flow of C. These include:
 
-- ```if```, ```if else``` and ```if else if``` statements;
+- ```si```, ```si aliter``` and ```si aliter si``` statements;
 
 ```c
-if expression {
+si expression {
     // code
 }
 
 // or
 
-if expression {
+si expression {
     // code
-} else {
+} aliter {
     // code
 }
 
 // or
 
-if expression {
+si expression {
     // code
-} else if expression {
+} aliter si expression {
     // code
-} else {
-    // code
-}
-```
-
-- ```while``` statements;
-
-```c
-while expression {
+} aliter {
     // code
 }
 ```
 
-- ```do while``` statements;
+- ```dum``` statements;
 
 ```c
-do {
+dum expression {
     // code
-} while(expression)
+}
 ```
 
-- ```for``` statements;
+- ```facio dum``` statements;
 
 ```c
-for(i: int = 0; i < 10; i = i + 1) {
+facio {
+    // code
+} dum(expression)
+```
+
+- ```enim``` statements;
+
+```c
+enim(i: integer = 0; i < 10; i = i + 1) {
     // code
 }
 ```
@@ -174,11 +174,11 @@ for(i: int = 0; i < 10; i = i + 1) {
 
 ### **Functions**
 
-To declare a function start with the key word ```func``` followed by the function name, the function parameters and the function return type. For example:
+To declare a function start with the key word ```munus``` followed by the function name, the function parameters and the function return type. For example:
 
 ```c
-func sum(a: int, b: int) -> int {
-    return a + b
+munus sum(a: integer, b: integer) -> integer {
+    reditus a + b
 }
 ```
 
