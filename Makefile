@@ -1,7 +1,11 @@
 # Set default target
 .DEFAULT_GOAL := help
 
-vm=/home/fabiocfabini/Desktop/UM/tox/vm/vms
+# Get current dir
+dir = $(shell pwd)
+
+# Current vms dir
+vm=$(dir)/vm/vms
 
 install:
 	@echo "Installing..."
