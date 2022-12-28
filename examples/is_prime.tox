@@ -17,7 +17,7 @@ munus main() {
     si N >= 0 {
         enim(i: integer; i < N; i = i + 1) {
             x: integer = readi("Enter a number: (0 to exit) ")
-            si x == 0 { break }
+            si x == 0 { confractus }
             si(is_prime(x)) {
                 imprimo(x, " is prime\n")
             } aliter {
@@ -27,7 +27,7 @@ munus main() {
     } aliter {
         dum(1) {
             x: integer = readi("Enter a number: (0 to exit) ")
-            si x == 0 { break }
+            si x == 0 { confractus }
             si(is_prime(x)) {
                 imprimo(x, " is prime\n")
             } aliter {

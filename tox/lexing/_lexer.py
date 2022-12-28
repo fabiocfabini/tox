@@ -26,7 +26,7 @@ reserved = {                                                                    
     'dum' : 'WHILE',
     'enim'   : 'FOR',
     'facio'    : 'DO',
-    'break' : 'BREAK',
+    'confractus' : 'BREAK',
     'continue' : 'CONTINUE',
     'munus' : 'FUNCTION',
     'reditus' : 'RETURN'

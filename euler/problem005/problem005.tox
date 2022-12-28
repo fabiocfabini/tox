@@ -13,7 +13,7 @@ munus main() {
         enim(i: integer = 1; i <= 10; i = i + 1){
             si(x % i != 0){
                 is_divisible = 0
-                break
+                confractus
             }
         }
     }
