@@ -10,7 +10,7 @@ general_literals = ",:;"                    # Literals for general use
 literals = arithmetics_literals + general_literals
 
 type_tokens = ['INT', 'STRING', 'FLOAT']                                            # String so far only works in literals
-op_tokens = ["ASSIGN", "LTE", "LT", 'EQ', "NEQ", "GT", "GTE", "RETI", 'AND', 'OR']  # Operators
+op_tokens = ["ASSIGN", "LTE", "LT", 'EQ', "NEQ", "GT", "GTE", "RETI", 'AND', 'OR']  # Operator s
 special_tokens = ['NEWLINE', 'COMMENT', 'MULTICOMMENTS', 'ID', 'RARROW']            # Special tokens
 reserved = {                                                                        # Reserved words
     'print' : 'PRINT',
