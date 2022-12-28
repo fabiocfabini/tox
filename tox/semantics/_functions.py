@@ -132,9 +132,9 @@ class Functions:
     def _return(self, p):
         """
         return : RETURN expression
-                | RETURN
+                | RETURN ';'
         """
-        if len(p) == 3:
+        if p[2] != ";":
             expr = p.parser.type_checker.pop()
             if expr != p.parser.functions_handler.current_function.output_type:
                 compiler_error(p, 1, f"Return type '{expr}' doesn't match function output type '{p.parser.functions_handler.current_function.output_type}'")

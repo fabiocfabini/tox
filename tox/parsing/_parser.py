@@ -179,6 +179,7 @@ def p_stmts_empty(p):
 def p_stmt(p):
     """
     stmt : print
+        | function_call
         | declaration_assignment
         | assignment
         | declaration
@@ -188,7 +189,6 @@ def p_stmt(p):
         | do_while
         | break
         | continue
-        | function_call
         | return
     """
     p[0] = p[1]
@@ -215,7 +215,7 @@ def p_end_scope(p):
 def p_return(p):
     """
     return : RETURN expression
-            | RETURN
+            | RETURN ';'
     """
     p[0] = parser.functions_handler.handle(p, 'return')
 
