@@ -57,8 +57,8 @@ Basic arithmetics are supported by the language. These include:
 
 - the ```+```, ```-```, ```*```, ```/``` operators;
 - the ```==```, ```!=```, ```<```, ```>```, ```<=```, ```>=``` operators;
-- the ```&&```, ```||``` operators;
-- the ```!``` operator;
+- the ```et```, ```aut``` operators;
+- the ```non``` operator;
 
 Tox also supports pointer arithmetics. The following operations are supported:
 
