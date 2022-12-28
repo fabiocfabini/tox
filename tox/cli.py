@@ -141,7 +141,10 @@ def test_execute(req_args: ReqArgs, opt_args: OptArgs):
                 num_tests -= 1
                 failed_tests.append((input_file, ret[1]))
                 continue
-            ret = echo_cmd(f"vms {output_file} > {os.path.splitext(output_file)[0]}_com.out", verbose=opt_args['-v'])
+            if input_file.startswith("read"):
+                ret = echo_cmd(f"vms {output_file} < '3.14\n314\n314' > {os.path.splitext(output_file)[0]}_com.out", verbose=opt_args['-v'])
+            else:
+                ret = echo_cmd(f"vms {output_file} > {os.path.splitext(output_file)[0]}_com.out", verbose=opt_args['-v'])
             if not ret[0]:
                 num_tests -= 1
                 failed_tests.append((input_file, ret[1]))

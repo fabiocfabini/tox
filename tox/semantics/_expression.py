@@ -9,17 +9,78 @@ class Primary:
     """
     def __init__(self):
         self.productions = {    #   Maps production names to their respective functions
-            "indexing": self._indexing,
-            "ref": self._ref,
-            "id": self._id,
             "int": self._int,
             "float": self._float,
             "string": self._string,
+            "id": self._id,
+            "ref": self._ref,
+            "indexing": self._indexing,
             "new": self._new
         }
 
     def handle(self, p, production) -> str:     # Calls the function corresponding to the production
         return self.productions[production](p)  # This is the function that is called by the parser
+
+    def _int(self, p) -> str: # Handles pushing an integer
+        """
+        primary : INT
+        """
+        p.parser.type_checker.push("int")
+        return std_message([f"PUSHI {p[1]}"]) # Return the message
+
+    def _float(self, p) -> str: # Handles pushing an integer
+        """
+        primary : FLOAT
+        """
+        p.parser.type_checker.push("float")
+        return std_message([f"PUSHF {p[1]}"]) # Return the message
+
+    def _string(self, p) -> str: # Handles pushing an integer
+        """
+        primary : STRING
+        """
+        p.parser.type_checker.push("string")
+        return std_message([f"PUSHS {p[1]}"]) # Return the message
+
+    def _id(self, p) -> str: # Handles pushing the value of a variable
+        """
+        primary : ID
+        """
+        id_meta, in_function, _ = p.parser.current_scope.get(p[1]) # Get the metadata of the variable
+        if id_meta is None: # If the variable is not declared, Throw an error
+            compiler_error(p, 1, f"Variable {p[1]} not declared")
+            compiler_note("Called from Primary.id")
+            sys.exit(1)
+        if not id_meta.p_init:
+            compiler_error(p, 1, f"Using non initialized pointer '{p[1]}'")
+            compiler_note("Called from Primary.id")
+            sys.exit(1)
+
+        push_op = "PUSHGP" if not in_function else "PUSHFP" # If the variable is in a function, push the frame pointer else push the global pointer
+        if id_meta.type.startswith("vec"):
+            p.parser.type_checker.push(f"&{id_meta.type[4:-1]}")
+            return std_message([push_op, f"PUSHI {id_meta.stack_position[0]}", "PADD"])
+        else:
+            p.parser.type_checker.push(id_meta.type)
+            return std_message([push_op, f"LOAD {id_meta.stack_position[0]}"])  # Return the message
+
+    def _ref(self, p) -> str: # Handles getting the address of a variable
+        """
+        primary : '&' ID
+        """
+        id_meta, in_function, _ = p.parser.current_scope.get(p[2])
+        if id_meta is None: # If the variable is not declared, Throw an error
+            compiler_error(p, 2, f"Variable {p[2]} not declared")
+            compiler_note("Called from Primary._ref")
+            sys.exit(1)
+        if id_meta.type.startswith("&") or id_meta.type.startswith("vec"):
+            compiler_error(p, 1, f"Pointer to pointer not supported")
+            compiler_note("Called from Primary._ref")
+            sys.exit(1)
+        p.parser.type_checker.push(f"&{id_meta.type}")
+
+        push_op = "PUSHGP" if not in_function else "PUSHFP" # If the variable is in a function, push the frame pointer else push the global pointer
+        return std_message([push_op, f"PUSHI {id_meta.stack_position[0]}", "PADD"]) # Return the message
 
     def _indexing(self, p) -> str: # Handles indexing into an array
         """
@@ -51,63 +112,6 @@ class Primary:
         elif id_meta.type.startswith("&"):
             p.parser.type_checker.push(id_meta.type[1:])
             return std_message([push_op, f"LOAD {id_meta.stack_position[0]}", f"{p[3]}PADD", "LOAD 0"]) # Return the message
-
-    def _ref(self, p) -> str: # Handles getting the address of a variable
-        """
-        primary : '&' ID
-        """
-        id_meta, in_function, _ = p.parser.current_scope.get(p[2])
-        if id_meta is None: # If the variable is not declared, Throw an error
-            compiler_error(p, 2, f"Variable {p[2]} not declared")
-            compiler_note("Called from Primary._ref")
-            sys.exit(1)
-        if id_meta.type.startswith("&") or id_meta.type.startswith("vec"):
-            compiler_error(p, 1, f"Pointer to pointer not supported")
-            compiler_note("Called from Primary._ref")
-            sys.exit(1)
-        p.parser.type_checker.push(f"&{id_meta.type}")
-
-        push_op = "PUSHGP" if not in_function else "PUSHFP" # If the variable is in a function, push the frame pointer else push the global pointer
-        return std_message([push_op, f"PUSHI {id_meta.stack_position[0]}", "PADD"]) # Return the message
-
-    def _id(self, p) -> str: # Handles pushing the value of a variable
-        """
-        primary : ID
-        """
-        id_meta, in_function, _ = p.parser.current_scope.get(p[1]) # Get the metadata of the variable
-        if id_meta is None: # If the variable is not declared, Throw an error
-            compiler_error(p, 1, f"Variable {p[1]} not declared")
-            compiler_note("Called from Primary.id")
-            sys.exit(1)
-
-        push_op = "PUSHGP" if not in_function else "PUSHFP" # If the variable is in a function, push the frame pointer else push the global pointer
-        if id_meta.type.startswith("vec"):
-            p.parser.type_checker.push(f"&{id_meta.type[4:-1]}")
-            return std_message([push_op, f"PUSHI {id_meta.stack_position[0]}", "PADD"])
-        else:
-            p.parser.type_checker.push(id_meta.type)
-            return std_message([push_op, f"LOAD {id_meta.stack_position[0]}"])  # Return the message
-
-    def _int(self, p) -> str: # Handles pushing an integer
-        """
-        primary : INT
-        """
-        p.parser.type_checker.push("int")
-        return std_message([f"PUSHI {p[1]}"]) # Return the message
-
-    def _float(self, p) -> str: # Handles pushing an integer
-        """
-        primary : FLOAT
-        """
-        p.parser.type_checker.push("float")
-        return std_message([f"PUSHF {p[1]}"]) # Return the message
-
-    def _string(self, p) -> str: # Handles pushing an integer
-        """
-        primary : STRING
-        """
-        p.parser.type_checker.push("string")
-        return std_message([f"PUSHS {p[1]}"]) # Return the message
 
     def _new(self, p) -> str: # Handles a grouped expression
         """

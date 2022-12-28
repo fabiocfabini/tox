@@ -1,0 +1,7 @@
+func main() {
+    f: float = readf("Enter a float: ")
+    i: int = readi("Enter an int: ")
+    s: string = reads("Enter a string: ")
+
+    print("You entered: ", f, ", ", i, ", ", s)
+}

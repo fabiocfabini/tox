@@ -1,0 +1,40 @@
+func is_prime(n: int) -> int {
+    if n < 2 { return 0 }
+    if n == 2 { return 1 }
+    if n % 2 == 0 { return 0 }
+
+    for(i: int = 3; i < n; i = i + 1) {
+        if n % i == 0 { return 0 }
+    }
+
+    return 1
+}
+
+func main() {
+    N: int = readi("How many numbers? (<0 if forever) ")
+
+    print("Will check ", N, " numbers\n")
+    if N >= 0 {
+        for(i: int; i < N; i = i + 1) {
+            x: int = readi("Enter a number: (0 to exit) ")
+            if x == 0 { break }
+            if(is_prime(x)) {
+                print(x, " is prime\n")
+            } else {
+                print(x, " is not prime\n")
+            }
+        }
+    } else {
+        while(1) {
+            x: int = readi("Enter a number: (0 to exit) ")
+            if x == 0 { break }
+            if(is_prime(x)) {
+                print(x, " is prime\n")
+            } else {
+                print(x, " is not prime\n")
+            }
+        }
+    }
+
+    print("Done\n")
+}

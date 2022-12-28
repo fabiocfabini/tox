@@ -14,7 +14,7 @@ from tox.semantics._expression import (
     Expression,
 )
 from tox.semantics._statement import (
-    Print,
+    IO,
     Assignment,
     Declaration,
     DeclarationAssignment,

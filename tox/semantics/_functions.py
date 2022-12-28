@@ -82,9 +82,9 @@ class Functions:
     def _parameter(self, p):  # Adds a parameter to the function
         """
         param : ID ':' type
-            | ID ':' Vtype
+            | ID ':' Ptype
         """
-        p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count), True)
+        p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count))
         p.parser.functions_handler.current_function.input_types.append(p[3])
         p.parser.frame_count += 1
         p.parser.num_params += 1

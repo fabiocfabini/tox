@@ -18,7 +18,7 @@ from tox import (
     Expression
 )
 from tox import (
-    Print,
+    IO,
     Assignment,
     Declaration,
     DeclarationAssignment,
@@ -105,7 +105,6 @@ def p_function_id(p):
     """
     p[0] = parser.functions_handler.handle(p, 'id')
 def p_function_body(p):
-
     """
     function_body : '{' stmts '}' es
     """
@@ -134,14 +133,15 @@ def p_single_param(p):
 def p_param(p):
     """
     param : ID ':' type
-        | ID ':' Ptype
+        |   ID ':' Ptype
     """
     p[0] = parser.functions_handler.handle(p, 'parameter')
 
 def p_out_type(p):
     """
     out_type : RARROW type
-            | 
+            | RARROW Ptype
+            |
     """
     p[0] = parser.functions_handler.handle(p, 'out_type')
 
@@ -280,24 +280,6 @@ def p_while(p):
     while : loop_while expression ss '{' stmts '}' es
     """
     p[0] = parser.loop_handler.handle(p, "while")
-def p_if(p):
-    """
-    if : IF expression ss '{' stmts '}' es else_if
-    """
-    p[0] = parser.if_handler.handle(p, "if")
-def p_else_if(p):
-    """
-    else_if : ELSE IF expression ss '{' stmts '}' es else_if
-            | else
-    """
-    p[0] = parser.if_handler.handle(p, "else_if")
-def p_else(p):
-    """
-    else : ELSE ss '{' stmts '}' es
-        |
-    """
-    p[0] = parser.if_handler.handle(p, "else")
-
 
 # This functions append the loop type to the loop list
 def p_loop_for(p):
@@ -315,6 +297,28 @@ def p_loop_while(p):
     loop_while : WHILE
     """
     parser.current_loops.append("WHILE")
+
+######################
+##     IF STMT      ##
+######################
+
+def p_if(p):
+    """
+    if : IF expression ss '{' stmts '}' es else_if
+    """
+    p[0] = parser.if_handler.handle(p, "if")
+def p_else_if(p):
+    """
+    else_if : ELSE IF expression ss '{' stmts '}' es else_if
+            | else
+    """
+    p[0] = parser.if_handler.handle(p, "else_if")
+def p_else(p):
+    """
+    else : ELSE ss '{' stmts '}' es
+        |
+    """
+    p[0] = parser.if_handler.handle(p, "else")
 
 ######################
 ##    INIT STMT     ##
@@ -383,6 +387,23 @@ def p_assignment_expression(p):
     p[0] = parser.assignment_handler.handle(p, "variable")
 
 ######################
+##    READ  STMT    ##
+######################
+
+def p_read(p):
+    """
+    read : read_type '(' multiple_prints ')'
+    """
+    p[0] = parser.io_handler.handle(p, "read")
+def p_read_type(p):
+    """
+    read_type : READ_INT
+            | READ_FLOAT
+            | READ_STRING
+    """
+    p[0] = parser.io_handler.handle(p, "read_type")
+
+######################
 ##    PRINT STMT    ##
 ######################
 
@@ -390,22 +411,22 @@ def p_print(p):
     """
     print : PRINT '(' multiple_prints ')'
     """
-    p[0] = parser.print_handler.handle(p, "print")
+    p[0] = parser.io_handler.handle(p, "print")
 def p_print_multiple(p):
     """
     multiple_prints : multiple_prints ',' expression
     """
-    p[0] = parser.print_handler.handle(p, "multiple")
+    p[0] = parser.io_handler.handle(p, "multiple")
 def p_print_single(p):
     """
     multiple_prints : expression
     """
-    p[0] = parser.print_handler.handle(p, "single")
+    p[0] = parser.io_handler.handle(p, "single")
 def p_print_empty(p):
     """
     multiple_prints :
     """
-    p[0] = parser.print_handler.handle(p, "empty")
+    p[0] = parser.io_handler.handle(p, "empty")
 
 ######################
 ## TYPES INITAL IMP ##
@@ -587,6 +608,11 @@ def p_primary_function(p):
     primary : function_call
     """
     p[0] = p[1]
+def p_primary_read(p):
+    """
+    primary : read
+    """
+    p[0] = p[1]
 def p_primary_new(p):
     """
     primary : '(' expression ')'
@@ -608,7 +634,7 @@ parser.condition_handler = Condition()
 parser.subexpression_handler = SubExpression()
 parser.expression_handler = Expression()
 
-parser.print_handler = Print()
+parser.io_handler = IO()
 parser.assignment_handler = Assignment()
 parser.declaration_handler = Declaration()
 parser.declaration_assignment_handler = DeclarationAssignment()
