@@ -2,9 +2,9 @@ func main() {
     x: integer
 
 
-    do{
+    facio{
         y: integer
-        do{
+        facio{
             print(x, ":", y, "\n")
             y = y + 1
         } dum(y < 10)

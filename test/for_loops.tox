@@ -5,7 +5,7 @@ func main() {
     y: integer
     r: integer = 10
 
-    for(r: integer = 10, y: integer = -r; y <= r; y = y + 1){ // The variables x, y and r are shadowed here
+    for(r: integer = 10, y: integer = -r; y <= r; y = y + 1){ // The variables x, y and r are shafaciowed here
         for(x: integer = -r; x <= r; x = x + 1){
             si(x*x + y*y <= r*r){
                 print("##")

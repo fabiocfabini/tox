@@ -25,7 +25,7 @@ reserved = {                                                                    
     'aliter'  : 'ELSE',
     'dum' : 'WHILE',
     'for'   : 'FOR',
-    'do'    : 'DO',
+    'facio'    : 'DO',
     'break' : 'BREAK',
     'continue' : 'CONTINUE',
     'func' : 'FUNCTION',

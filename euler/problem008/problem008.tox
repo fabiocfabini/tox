@@ -47,16 +47,16 @@ arr: vec<integer> = [
 ]
 
 N: integer = 1000
-window : integer = 4 // 13 gives a big result. larger than the maximum 32 bit integereger.
+winfaciow : integer = 4 // 13 gives a big result. larger than the maximum 32 bit integereger.
 accum  : integer = 1
 max_mul: integer
 
 func main() {
     for(i: integer; i < N; i = i + 1){
-        si(i + window > N){
+        si(i + winfaciow > N){
             i = N + 1
         } aliter {
-            for(j: integer; j < window; j = j + 1){
+            for(j: integer; j < winfaciow; j = j + 1){
                 accum = accum * arr[i+j]
             }
             si(accum > max_mul){
