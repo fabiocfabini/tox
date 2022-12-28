@@ -20,17 +20,17 @@ func main() {
             si x == 0 { break }
             si(is_prime(x)) {
                 print(x, " is prime\n")
-            } else {
+            } aliter {
                 print(x, " is not prime\n")
             }
         }
-    } else {
+    } aliter {
         while(1) {
             x: integer = readi("Enter a number: (0 to exit) ")
             si x == 0 { break }
             si(is_prime(x)) {
                 print(x, " is prime\n")
-            } else {
+            } aliter {
                 print(x, " is not prime\n")
             }
         }

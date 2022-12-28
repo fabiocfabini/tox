@@ -3,7 +3,7 @@ func main() {
 
     si x == 2 {
         y: integer = x + 1
-    } else {
+    } aliter {
         x: integer = x + 1
     }
 

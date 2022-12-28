@@ -22,7 +22,7 @@ reserved = {                                                                    
     'float' : 'TYPE_FLOAT',
     'vec'   : 'TYPE_VEC',
     'si'    : 'IF',
-    'else'  : 'ELSE',
+    'aliter'  : 'ELSE',
     'while' : 'WHILE',
     'for'   : 'FOR',
     'do'    : 'DO',

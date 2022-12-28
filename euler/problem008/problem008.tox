@@ -55,7 +55,7 @@ func main() {
     for(i: integer; i < N; i = i + 1){
         si(i + window > N){
             i = N + 1
-        } else {
+        } aliter {
             for(j: integer; j < window; j = j + 1){
                 accum = accum * arr[i+j]
             }

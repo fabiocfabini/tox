@@ -1,13 +1,13 @@
 func main() {
     si 34 + 35 == 69 {
         print("You're a genius!\n")
-    } else {
+    } aliter {
         print("You're not a genius!\n")
     }
 
     si 2 * 210 != 420 {
         print("You're a genius!\n")
-    } else {
+    } aliter {
         print("You're not a genius!\n")
     }
 
@@ -18,13 +18,13 @@ func main() {
     si x == 34 {
         si y == 35 {
             print("x = 34 and y = 35\n")
-        } else {
+        } aliter {
             print("x = 34 and y != 35\n")
         }
-    } else {
+    } aliter {
         si y == 35 {
             print("x != 34 and y = 35\n")
-        } else {
+        } aliter {
             print("x != 34 and y != 35\n")
         }
     }

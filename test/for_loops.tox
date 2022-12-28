@@ -9,7 +9,7 @@ func main() {
         for(x: integer = -r; x <= r; x = x + 1){
             si(x*x + y*y <= r*r){
                 print("##")
-            } else {
+            } aliter {
                 print("  ")
             }
         }

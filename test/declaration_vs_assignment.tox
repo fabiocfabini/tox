@@ -5,7 +5,7 @@ func main() {
     while x < 10 {
         si x % 2 == 0 {
             print(x, " is even\n")
-        } else {
+        } aliter {
             print(x, " is odd\n")
         }
         x = x + 1 // Assignment
@@ -19,7 +19,7 @@ func main() {
         while z < 10 {
             si (z + y % 2) % 2 == 0 {
                 print("#")
-            } else{
+            } aliter{
                 print(" ")
             }
             z = z + 1
@@ -37,7 +37,7 @@ func main() {
         while c2 <= radius {
             si c1*c1 + c2*c2 <= radius*radius {
                 print("#")
-            } else{
+            } aliter{
                 print(" ")
             }
             c2 = c2 + 1

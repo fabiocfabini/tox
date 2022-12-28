@@ -4,7 +4,7 @@ func main() {
     while x < 10 {
         si x % 2 == 0 {
             print(x, " is even\n")
-        } else {
+        } aliter {
             print(x, " is odd\n")
         }
         x = x + 1

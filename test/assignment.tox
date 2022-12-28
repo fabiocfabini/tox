@@ -18,7 +18,7 @@ func main() {
 
 	si 0 {
 		x = 2
-	} else {
+	} aliter {
 		x = 3
 	}
 

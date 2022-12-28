@@ -4,7 +4,7 @@ func main(){
 
 	si (x == 2) && (y != x || x == 1) {
 		print("Unreachable")
-	} else {
+	} aliter {
 		print("Correct")
 	}
 
