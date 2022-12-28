@@ -58,7 +58,7 @@ func compute(x: integer, y: integer, dx: integer, dy: integer, n: integer) -> in
 }
 
 func max(x: integer, y: integer) -> integer {
-    if x > y {
+    si x > y {
         return x
     }
     return y
@@ -72,22 +72,22 @@ func main() {
     for(y: integer; y < height; y = y + 1){
         for(x: integer; x < width; x = x + 1){
             // Horizontal
-            if x + consecutive < width {
+            si x + consecutive < width {
                 max = max(max, compute(x, y, 1, 0, consecutive))
             }
 
             // Vertical
-            if y + consecutive < height {
+            si y + consecutive < height {
                 max = max(max, compute(x, y, 0, 1, consecutive))
             }
 
             // down-left
-            if x + consecutive < width && y + consecutive < height {
+            si x + consecutive < width && y + consecutive < height {
                 max = max(max, compute(x, y, -1, 1, consecutive))
             }
 
             // down-right
-            if x - consecutive > -1 && y + consecutive < height {
+            si x - consecutive > -1 && y + consecutive < height {
                 max = max(max, compute(x, y, 1, 1, consecutive))
             }
         }

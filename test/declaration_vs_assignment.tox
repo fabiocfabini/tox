@@ -3,7 +3,7 @@ func main() {
 
     print("Simple Odd or Even\n")
     while x < 10 {
-        if x % 2 == 0 {
+        si x % 2 == 0 {
             print(x, " is even\n")
         } else {
             print(x, " is odd\n")
@@ -17,7 +17,7 @@ func main() {
     while y < 10 {
         z = 0
         while z < 10 {
-            if (z + y % 2) % 2 == 0 {
+            si (z + y % 2) % 2 == 0 {
                 print("#")
             } else{
                 print(" ")
@@ -35,7 +35,7 @@ func main() {
 
     while c1 <= radius {
         while c2 <= radius {
-            if c1*c1 + c2*c2 <= radius*radius {
+            si c1*c1 + c2*c2 <= radius*radius {
                 print("#")
             } else{
                 print(" ")

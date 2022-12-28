@@ -1,11 +1,11 @@
 func main() {
-    if 34 + 35 == 69 {
+    si 34 + 35 == 69 {
         print("You're a genius!\n")
     } else {
         print("You're not a genius!\n")
     }
 
-    if 2 * 210 != 420 {
+    si 2 * 210 != 420 {
         print("You're a genius!\n")
     } else {
         print("You're not a genius!\n")
@@ -15,14 +15,14 @@ func main() {
     y: integer = 35
     print("x = ", x, "\n") 
     print("y = ", y, "\n") 
-    if x == 34 {
-        if y == 35 {
+    si x == 34 {
+        si y == 35 {
             print("x = 34 and y = 35\n")
         } else {
             print("x = 34 and y != 35\n")
         }
     } else {
-        if y == 35 {
+        si y == 35 {
             print("x != 34 and y = 35\n")
         } else {
             print("x != 34 and y != 35\n")
@@ -31,7 +31,7 @@ func main() {
 
     z: integer = 0
 
-    if z % 2 == 0 {
+    si z % 2 == 0 {
         print("z is even\n")
     }
 }

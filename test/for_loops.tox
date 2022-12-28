@@ -7,7 +7,7 @@ func main() {
 
     for(r: integer = 10, y: integer = -r; y <= r; y = y + 1){ // The variables x, y and r are shadowed here
         for(x: integer = -r; x <= r; x = x + 1){
-            if(x*x + y*y <= r*r){
+            si(x*x + y*y <= r*r){
                 print("##")
             } else {
                 print("  ")

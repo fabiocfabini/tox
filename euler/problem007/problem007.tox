@@ -3,21 +3,21 @@
 // What is the 10 001st prime number?
 
 func isPrime(x: integer) -> integer {
-    if x == 1 {
+    si x == 1 {
         return 0
     }
 
-    if x == 2 {
+    si x == 2 {
         return 1
     }
 
-    if x % 2 == 0 {
+    si x % 2 == 0 {
         return 0
     }
 
     i: integer = 3
     while i * i <= x {
-        if x % i == 0 {
+        si x % i == 0 {
             return 0
         }
         i = i + 2
@@ -33,7 +33,7 @@ func main() {
     N: integer = 1001
 
     while i < N {
-        if isPrime(n) {
+        si isPrime(n) {
             r = n
             i = i + 1
         }

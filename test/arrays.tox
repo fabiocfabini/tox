@@ -57,7 +57,7 @@ func main(){
     print("a is now arr\n")
     p: &integer = arr
     for(q: integer; q < 10; q = q + 1){
-        if q == 5 {
+        si q == 5 {
             continue
         }
         print(p[q], "\n")

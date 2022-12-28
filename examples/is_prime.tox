@@ -1,24 +1,24 @@
 func is_prime(n: integer) -> integer {
-    if n < 2 { return 0 }
-    if n == 2 { return 1 }
-    if n % 2 == 0 { return 0 }
+    si n < 2 { return 0 }
+    si n == 2 { return 1 }
+    si n % 2 == 0 { return 0 }
 
     for(i: integer = 3; i < n; i = i + 1) {
-        if n % i == 0 { return 0 }
+        si n % i == 0 { return 0 }
     }
 
     return 1
 }
 
 func main() {
-    N: integer = readi("How many numbers? (<0 if forever) ")
+    N: integer = readi("How many numbers? (<0 si forever) ")
 
     print("Will check ", N, " numbers\n")
-    if N >= 0 {
+    si N >= 0 {
         for(i: integer; i < N; i = i + 1) {
             x: integer = readi("Enter a number: (0 to exit) ")
-            if x == 0 { break }
-            if(is_prime(x)) {
+            si x == 0 { break }
+            si(is_prime(x)) {
                 print(x, " is prime\n")
             } else {
                 print(x, " is not prime\n")
@@ -27,8 +27,8 @@ func main() {
     } else {
         while(1) {
             x: integer = readi("Enter a number: (0 to exit) ")
-            if x == 0 { break }
-            if(is_prime(x)) {
+            si x == 0 { break }
+            si(is_prime(x)) {
                 print(x, " is prime\n")
             } else {
                 print(x, " is not prime\n")

@@ -10,7 +10,7 @@ func exchange(v: &integer, i: integer, j: integer) {
 func bubbleSort(v: &integer, N: integer) {
     for(i: integer; i < N; i = i + 1) {
         for(j: integer; j < N - 1; j = j + 1) {
-            if(v[j] > v[j + 1]) {
+            si(v[j] > v[j + 1]) {
                 exchange(v, j, j + 1)
             }
         }

@@ -19,7 +19,7 @@ func numDivisors(n: integer) -> integer {
     num: integer
 
     for(i:integer = 1; i <= n / 2; i = i + 1) {
-        if n % i == 0 {
+        si n % i == 0 {
             num = num + 1
         }
     }
@@ -36,7 +36,7 @@ func main() {
         i = i + 1
         
         n: integer = numDivisors(triangle)
-        if n > 20 {
+        si n > 20 {
             print(triangle, "\n")
             break
         }

@@ -53,13 +53,13 @@ max_mul: integer
 
 func main() {
     for(i: integer; i < N; i = i + 1){
-        if(i + window > N){
+        si(i + window > N){
             i = N + 1
         } else {
             for(j: integer; j < window; j = j + 1){
                 accum = accum * arr[i+j]
             }
-            if(accum > max_mul){
+            si(accum > max_mul){
                 max_mul = accum
             }
             accum = 1

@@ -16,7 +16,7 @@ func main() {
 
 	x = 1
 
-	if 0 {
+	si 0 {
 		x = 2
 	} else {
 		x = 3

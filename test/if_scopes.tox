@@ -1,7 +1,7 @@
 func main() {
     x: integer = 2
 
-    if x == 2 {
+    si x == 2 {
         y: integer = x + 1
     } else {
         x: integer = x + 1
@@ -9,5 +9,5 @@ func main() {
 
     print(x, "\n")
     //print(y, "\n")  // If this code is run, the output will be: Compiler Error:10:7: Variable y not declared
-                    // If this code is not run, the output will be: 2. Because line 6 declares a id x at a different scope.
+                    // If this code is not run, the output will be: 2. Because line 6 declares a id x at a dsiferent scope.
 }

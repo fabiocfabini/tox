@@ -6,7 +6,7 @@ accum: integer
 
 func main() {
   for(i: integer; i < 1000; i = i + 1) {
-    if(i % 3 == 0 || i % 5 == 0) {
+    si(i % 3 == 0 || i % 5 == 0) {
       accum = accum + i
     }
   }

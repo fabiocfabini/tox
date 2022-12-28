@@ -21,7 +21,7 @@ reserved = {                                                                    
     'filum': 'TYPE_STRING',
     'float' : 'TYPE_FLOAT',
     'vec'   : 'TYPE_VEC',
-    'if'    : 'IF',
+    'si'    : 'IF',
     'else'  : 'ELSE',
     'while' : 'WHILE',
     'for'   : 'FOR',

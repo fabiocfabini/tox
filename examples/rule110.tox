@@ -8,7 +8,7 @@ func main() {
     c_gen: integer = 0
     for(i: integer; i < N-2; i = i + 1) {
         for(j: integer = 0; j < N; j = j + 1) {
-            if gen[c_gen*N + j] == 1 {
+            si gen[c_gen*N + j] == 1 {
                 print("#")
             } else {
                 print(" ")

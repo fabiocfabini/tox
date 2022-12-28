@@ -15,7 +15,7 @@ func main() {
     for(a: integer=1; a < N; a = a + 1){
         for(b: integer=1; b < N; b = b + 1){
             for(c: integer=1; c < N; c = c + 1){
-                if(a+b+c == N && a*a + b*b == c*c){
+                si(a+b+c == N && a*a + b*b == c*c){
                     a_final = a
                     b_final = b
                     c_final = a
