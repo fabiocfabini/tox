@@ -12,7 +12,7 @@ func sm(x: integer, v: &integer) {
     v[9-1] = x + 9
     v[10-1] = x + 10
 
-    return;
+    reditus;
 }
 
 func main(){

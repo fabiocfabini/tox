@@ -1,13 +1,13 @@
 func is_prime(n: integer) -> integer {
-    si n < 2 { return 0 }
-    si n == 2 { return 1 }
-    si n % 2 == 0 { return 0 }
+    si n < 2 { reditus 0 }
+    si n == 2 { reditus 1 }
+    si n % 2 == 0 { reditus 0 }
 
     enim(i: integer = 3; i < n; i = i + 1) {
-        si n % i == 0 { return 0 }
+        si n % i == 0 { reditus 0 }
     }
 
-    return 1
+    reditus 1
 }
 
 func main() {

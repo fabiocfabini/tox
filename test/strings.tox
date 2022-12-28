@@ -1,5 +1,5 @@
 func say_hello(name: filum) -> filum{
-    return "Hello " + name + "!\n"
+    reditus "Hello " + name + "!\n"
 }
 
 func main() {

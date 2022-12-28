@@ -4,26 +4,26 @@
 
 func isPrime(x: integer) -> integer {
     si x == 1 {
-        return 0
+        reditus 0
     }
 
     si x == 2 {
-        return 1
+        reditus 1
     }
 
     si x % 2 == 0 {
-        return 0
+        reditus 0
     }
 
     i: integer = 3
     dum i * i <= x {
         si x % i == 0 {
-            return 0
+            reditus 0
         }
         i = i + 2
     }
 
-    return 1
+    reditus 1
 }
 
 func main() {

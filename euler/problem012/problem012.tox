@@ -24,7 +24,7 @@ func numDivisors(n: integer) -> integer {
         }
     }
 
-    return num + 1
+    reditus num + 1
 }
 
 func main() {

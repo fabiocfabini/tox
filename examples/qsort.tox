@@ -16,12 +16,12 @@ func partition(v: &float, n: integer) -> integer {
         v[j] = v[i]
     }
     v[i] = pivot
-    return i
+    reditus i
 }
 
 func quick_sort(v: &float, n: integer) {
     si(n <= 1) {
-        return;
+        reditus;
     }
     i: integer = partition(v, n)
     quick_sort(v, i)

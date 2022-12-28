@@ -29,7 +29,7 @@ reserved = {                                                                    
     'break' : 'BREAK',
     'continue' : 'CONTINUE',
     'func' : 'FUNCTION',
-    'return' : 'RETURN'
+    'reditus' : 'RETURN'
 }
 
 tokens = type_tokens + special_tokens + list(reserved.values()) + op_tokens

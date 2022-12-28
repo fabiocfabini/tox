@@ -54,14 +54,14 @@ func compute(x: integer, y: integer, dx: integer, dy: integer, n: integer) -> in
     enim(j: integer; j < n; j = j + 1){
         prod = prod * grid[(y + j*dy)*20 + x + j*dx]
     }
-    return prod
+    reditus prod
 }
 
 func max(x: integer, y: integer) -> integer {
     si x > y {
-        return x
+        reditus x
     }
-    return y
+    reditus y
 }
 
 func main() {
