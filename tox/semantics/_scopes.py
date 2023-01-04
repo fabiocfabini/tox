@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Optional, Dict, Tuple
+from typing import Optional, Dict, Tuple, List
 from dataclasses import dataclass, field
 
 from tox import std_message
@@ -12,6 +12,7 @@ class MetaData:
     """
     type: str
     stack_position: Tuple[int, int]
+    array_shape: Optional[List[int]] = None
     p_init: bool = True
 
     @property
@@ -42,8 +43,8 @@ class Scope:
         return self.productions[production](p)
 
 
-    def add(self, key: str, type: str, stack_position: Tuple[int, int], p_init: bool = True): # Adds a variable to the scope
-        self.Table[key] = MetaData(type, stack_position, p_init)
+    def add(self, key: str, type: str, stack_position: Tuple[int, int], array_shape: Optional[List[int]] = None, p_init: bool = True): # Adds a variable to the scope
+        self.Table[key] = MetaData(type, stack_position, array_shape, p_init)
 
     def get(self, key: str) -> Tuple[Optional[MetaData], bool]:
         """

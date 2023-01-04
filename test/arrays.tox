@@ -68,4 +68,30 @@ func main(){
         print(v[i], " ")
     }
     print("\n")
+
+    r: vec<int>[10][5][5]
+
+    for(i: int; i < 10; i = i + 1) {
+        for(j: int; j < 5; j = j + 1) {
+            for(k: int; k < 5; k = k + 1) {
+                r[i][j][k] = 2*i + 3*j + 4*k
+            }
+        }
+    }
+
+    for(i: int; i < 10; i = i + 1) {
+        for(j: int; j < 5; j = j + 1) {
+            for(k: int; k < 5; k = k + 1) {
+                print("  ", r[i][j][k])
+            }
+            print("\n")
+        }
+        print("\n")
+    }
+
+    rp: &int = r[2][4]
+
+    for(i: int; i < 5; i = i + 1) {
+        print(rp[i], " <--> ", r[2][4][i], "\n")
+    }
 }

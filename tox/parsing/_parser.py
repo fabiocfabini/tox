@@ -367,9 +367,15 @@ def p_pointer_declaration(p):
     p[0] = p.parser.declaration_handler.handle(p, "pointer_declaration")
 def p_array_declaration(p):
     """
-    declaration : ID ':' Vtype '[' INT ']'
+    declaration : ID ':' Vtype ndim
     """
     p[0] = p.parser.declaration_handler.handle(p, "array_declaration")
+def p_array_dimension(p):
+    """
+    ndim : ndim '[' INT ']'
+        | '[' INT ']'
+    """
+    p[0] = p.parser.declaration_handler.handle(p, "array_dimension")
 
 ######################
 ##   ASSIGN STMT    ##
@@ -377,7 +383,7 @@ def p_array_declaration(p):
 
 def p_assignment_indexing(p):
     """
-    assignment : ID '[' expression ']' ASSIGN expression
+    assignment : ID ndepth ASSIGN expression
     """
     p[0] = parser.assignment_handler.handle(p, "indexing")
 def p_assignment_expression(p):
@@ -441,7 +447,7 @@ def p_type(p):
     p[0] = p[1]
 def p_vtype(p):
     """
-    Vtype : TYPE_VEC LT type GT
+    Vtype : TYPE_VEC LT  type GT
     """
     p[0] = p[1] + p[2] + p[3] + p[4]
 def p_ptype(p):
@@ -575,9 +581,15 @@ def p_unary_primary(p):
 
 def p_primary_indexing(p):
     """
-    primary : ID '[' expression ']'
+    primary : ID ndepth
     """
     p[0] = parser.primary_handler.handle(p, "indexing")
+def p_array_indexing_depth(p):
+    """
+    ndepth : ndepth '[' expression ']'
+        | '[' expression ']'
+    """
+    p[0] = p.parser.primary_handler.handle(p, "array_indexing_depth")
 def p_primary_ref(p):
     """
     primary : '&' ID 
@@ -654,8 +666,10 @@ parser.type_checker = TypeCheck()
 parser.if_count = 0
 parser.rel_if_count = 0
 parser.loop_count = 0
-parser.array_assign_items = 0
 parser.current_loops = [] # This is needed for break and continue statements to be checked
+parser.array_assign_items = 0
+parser.indexing_depth = []
+parser.arr_dim = []
 
 if __name__ == "__main__":
     for line in sys.stdin:

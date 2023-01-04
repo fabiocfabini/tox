@@ -6,13 +6,13 @@ func main() {
         print("N must be less than 200\n")
         return;
     }
-    gen: vec<int>[400] // 2 * N
-    gen[N - 2] = 1
+    gen: vec<int>[2][200] // 2 * N
+    gen[0][N - 2] = 1
 
     c_gen: int = 0
     for(i: int; i < N-2; i = i + 1) {
         for(j: int = 0; j < N; j = j + 1) {
-            if gen[c_gen*N + j] == 1 {
+            if gen[c_gen][j] == 1 {
                 print("#")
             } else {
                 print(" ")
@@ -20,14 +20,14 @@ func main() {
         }
         print("\n")
         for(j: int = 1; j < N - 1; j = j + 1) {
-            pattern: int = 4*gen[c_gen*N + j - 1] + 2*gen[c_gen*N + j] + 1*gen[c_gen*N + j + 1]
+            pattern: int = 4*gen[c_gen][j - 1] + 2*gen[c_gen][j] + 1*gen[c_gen][j + 1]
 
             new_pattern: int = table
             for(k: int = 0; k < pattern; k = k + 1) {
                 new_pattern = new_pattern / 2
             }
 
-            gen[(1 - c_gen)*N + j] = new_pattern % 2
+            gen[(1 - c_gen)][j] = new_pattern % 2
         }
         c_gen = 1 - c_gen
     }
