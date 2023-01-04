@@ -1,3 +1,5 @@
+from copy import copy
+
 import sys
 
 from lat import compiler_error, compiler_note,  std_message
@@ -106,10 +108,9 @@ class Assignment:
 
     def _indexing(self, p) -> str: # Assigning to an array or pointer index
         """
-        assignment : ID '[' expression ']' ASSIGN expression
+        assignment : ID ndepth ASSIGN expression
         """
         expr = p.parser.type_checker.pop()
-        index = p.parser.type_checker.pop()
         id_meta, in_function, _ = p.parser.current_scope.get(p[1]) # Get the meta data of the variable
         if id_meta is None: # If the variable doesn't exist, report an error
             compiler_error(p, 1, f"Assignment to undeclared variable {p[1]}")
@@ -119,20 +120,32 @@ class Assignment:
             compiler_error(p, 1, f"Indexing not allowed on variable of type '{id_meta.type}'")
             compiler_note("Called from Assignment._array_index")
             sys.exit(1)
-        if index != 'integer':
-            compiler_error(p, 2, f"Indexing with non-integer type '{index}'")
-            compiler_note("Called from Assignment._array_index")
-            sys.exit(1)
         if id_meta.type[1:] != expr and id_meta.type[4:-1] != expr:
             compiler_error(p, 5, f"Assignment of '{expr}' to variable of type '{id_meta.type}'")
+            compiler_note("Called from Assignment._array_index")
+            sys.exit(1)
+        if len(p.parser.indexing_depth[-1]) > 1 and id_meta.type.startswith("&"):
+            compiler_error(p, 1, f"Can't index pointer with more than one dimension")
+            compiler_note("Called from Primary._indexing")
+            sys.exit(1)
+        if id_meta.array_shape and len(p.parser.indexing_depth[-1]) != len(id_meta.array_shape):
+            compiler_error(p, 1, f"Assignment to arrays only allowed with the same number of dimensions. Expected {len(id_meta.array_shape)} got {len(p.parser.indexing_depth[-1])}")
             compiler_note("Called from Assignment._array_index")
             sys.exit(1)
 
         push_op = "PUSHGP" if not in_function else "PUSHFP" # Get the correct push operation
         if id_meta.type.startswith("vec"):
-            return std_message([push_op, f"PUSHI {id_meta.stack_position[0]}", "PADD", f"{p[3]}PADD", f"{p[6]}STORE 0"])
+            op = [push_op, f"PUSHI {id_meta.stack_position[0]}", "PADD"]
+            for i, expr in enumerate(p.parser.indexing_depth[-1]):
+                factor = ["PUSHI 1"]
+                for dim in id_meta.array_shape[i+1:]:
+                    factor += [f"PUSHI {dim}", "MUL"]
+                op += [expr] + factor + ["MUL", "PADD"]
+            p.parser.indexing_depth.pop()
+            return std_message(op + [f"{p[4]}STORE 0"])
         elif id_meta.type.startswith("&"):
-            return std_message([push_op, f"LOAD {id_meta.stack_position[0]}", f"{p[3]}PADD", f"{p[6]}STORE 0"])
+            expr = p.parser.indexing_depth.pop()
+            return std_message([push_op, f"LOAD {id_meta.stack_position[0]}", f"{expr[0]}PADD", f"{p[4]}STORE 0"])
 
     def _variable(self, p) -> str: # Assigning to a variable
         """
@@ -168,7 +181,8 @@ class Declaration:
             "variable_declaration": self._variable_declaration,
             "pointer_declaration": self._pointer_declaration,
             "array_declaration": self._array_declaration,
-        }
+            "array_dimension": self._array_dimension,
+	}
 
     def handle(self, p, production) -> str:
         return self.productions[production](p)
@@ -226,29 +240,47 @@ class Declaration:
 
     def _array_declaration(self, p) -> str: # Declaring 0 initialized array of size integer
         """
-        declaration : ID ':' Vtype '[' integer ']'
+        declaration : ID ':' Vtype ndim 
         """
         if p[1] in p.parser.current_scope.Table:
             compiler_error(p, 1, f"Variable {p[1]} is already defined")
             compiler_note("Called from Declaration._array_declaration")
-            sys.exit()
+            sys.exit(1)
+        for i, dim in enumerate(p.parser.arr_dim):
+            if dim == 0:
+                compiler_error(p, 1, f"Array {p[1]} initialized with dimension of size 0 in dimension {i+1}")
+                compiler_note("Called from Declaration._array_declaration")
+                sys.exit(1)
 
+        array_size = 1
+        for dim in p.parser.arr_dim:
+            array_size *= dim
         p[3] = p[3].replace(" ", "") # Remove the spaces from the type
         if p.parser.current_scope.level == 0:   # If the variable is declared in the global scope, add it to the global scope
-            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count+int(p[5])-1))
-            p.parser.global_count += int(p[5])
+            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count+array_size-1), array_shape=copy(p.parser.arr_dim))
+            p.parser.global_count += array_size
         else:   # If the variable is declared in a function scope, add it to the function scope
-            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count+int(p[5])-1))
-            p.parser.frame_count += int(p[5])
+            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count+array_size-1), array_shape=copy(p.parser.arr_dim))
+            p.parser.frame_count += array_size
 
+        p.parser.arr_dim = [] # Reset the array dimension
         if p[3] == 'vec<integer>':
-            return std_message([f"PUSHN {int(p[5])}"])
+            return std_message([f"PUSHN {array_size}"])
         elif p[3] == 'vec<float>':
-            return std_message([f"PUSHF 0.0" for i in range(int(p[5]))])
+            return std_message([f"PUSHF 0.0" for i in range(array_size)])
         elif p[3] == 'vec<filum>':
-            return std_message([f"PUSHS ''" for i in range(int(p[5]))])
+            return std_message([f"PUSHS ''" for i in range(array_size)])
         assert False, "Invalid type in Declaration._array_declaration"
 
+    def _array_dimension(self, p) -> str:
+        """
+        ndim : ndim '[' integer ']'
+            | '[' integer ']'
+        """
+        if len(p) == 5:
+            p.parser.arr_dim.append(int(p[3]))
+        else:
+            p.parser.arr_dim.append(int(p[2]))
 
 class DeclarationAssignment:
     """
@@ -283,10 +315,10 @@ class DeclarationAssignment:
 
         p[3] = p[3].replace(" ", "") # Remove the spaces from the type
         if p.parser.current_scope.level == 0:   # If the variable is declared in the global scope, add it to the global scope
-            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count+p.parser.array_assign_items-1))
+            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count+p.parser.array_assign_items-1), array_shape=[p.parser.array_assign_items])
             p.parser.global_count += p.parser.array_assign_items
         else:   # If the variable is declared in a function scope, add it to the function scope
-            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count+p.parser.array_assign_items-1))
+            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count+p.parser.array_assign_items-1), array_shape=[p.parser.array_assign_items])
             p.parser.frame_count += p.parser.array_assign_items
         p.parser.array_assign_items = 0 # Reset the array assign items counter
         return p[6]
@@ -308,10 +340,10 @@ class DeclarationAssignment:
         end = int(p[8])
         p[3] = p[3].replace(" ", "") # Remove the spaces from the type
         if p.parser.current_scope.level == 0:   # If the variable is declared in the global scope, add it to the global scope
-            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count+end-start))
+            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count+end-start), array_shape=[end-start+1])
             p.parser.global_count += end-start + 1
         else:   # If the variable is declared in a function scope, add it to the function scope
-            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count+end-start))
+            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count+end-start), array_shape=[end-start+1])
             p.parser.frame_count += end-start + 1
 
             return std_message([f"PUSHI {i}" for i in range(start, end + 1)])
@@ -527,7 +559,7 @@ class Loop:
         """
         expr = p.parser.type_checker.pop()
         if expr != 'integer':
-            compiler_error(p, 1, f"Condition type must be 'integer', not '{expr}'")
+            compiler_error(p, 5, f"Condition type must be 'integer', not '{expr}'")
             compiler_note("Called from Loop._for")
             sys.exit(1)
 

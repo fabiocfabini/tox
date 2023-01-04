@@ -15,7 +15,8 @@ class Primary:
             "id": self._id,
             "ref": self._ref,
             "indexing": self._indexing,
-            "new": self._new
+            "array_indexing_depth": self._array_indexing_depth,
+	    "new": self._new
         }
 
     def handle(self, p, production) -> str:     # Calls the function corresponding to the production
@@ -84,9 +85,8 @@ class Primary:
 
     def _indexing(self, p) -> str: # Handles indexing into an array
         """
-        primary : ID '[' expression ']'
+        primary : ID ndepth
         """
-        idx = p.parser.type_checker.pop()
         id_meta, in_function, _ = p.parser.current_scope.get(p[1]) # Get the metadata of the variable
         if id_meta is None: # If the variable is not declared, Throw an error
             compiler_error(p, 1, f"Variable {p[1]} not declared")
@@ -100,18 +100,51 @@ class Primary:
             compiler_error(p, 1, f"Indexing into non initialized pointer '{p[1]}'")
             compiler_note("Called from Primary._indexing")
             sys.exit(1)
-        if idx != "integer": # If the index is not an integer, Throw an error
-            compiler_error(p, 1, f"Index must be an integer, not {idx}")
+        if len(p.parser.indexing_depth[-1]) > 1 and id_meta.type.startswith("&"):
+            compiler_error(p, 1, f"Can't index pointer with more than one dimension")
+            compiler_note("Called from Primary._indexing")
+            sys.exit(1)
+        if id_meta.array_shape and len(p.parser.indexing_depth[-1]) > len(id_meta.array_shape):
+            compiler_error(p, 1, f"Indexing into dimension {len(p.parser.indexing_depth[-1])} of array {p[1]} of dimension {len(id_meta.array_shape)}")
             compiler_note("Called from Primary._indexing")
             sys.exit(1)
 
         push_op = "PUSHGP" if not in_function else "PUSHFP" # If the variable is in a function, push the frame pointer else push the global pointer
         if id_meta.type.startswith("vec"):
-            p.parser.type_checker.push(id_meta.type[4:-1])
-            return std_message([push_op, f"PUSHI {id_meta.stack_position[0]}", "PADD", f"{p[3]}PADD", f"LOAD 0"])
+            op = [push_op, f"PUSHI {id_meta.stack_position[0]}", "PADD"]
+            for i, expr in enumerate(p.parser.indexing_depth[-1]):
+                factor = ["PUSHI 1"]
+                for dim in id_meta.array_shape[i+1:]:
+                    factor += [f"PUSHI {dim}", "MUL"]
+                op += [expr] + factor + ["MUL", "PADD"]
+            if len(p.parser.indexing_depth[-1]) < len(id_meta.array_shape):
+                p.parser.indexing_depth.pop()
+                p.parser.type_checker.push("&"+id_meta.type[4:-1])
+                return std_message(op)
+            else:
+                p.parser.indexing_depth.pop()
+                p.parser.type_checker.push(id_meta.type[4:-1])
+                return std_message(op + ["LOAD 0"])
         elif id_meta.type.startswith("&"):
             p.parser.type_checker.push(id_meta.type[1:])
-            return std_message([push_op, f"LOAD {id_meta.stack_position[0]}", f"{p[3]}PADD", "LOAD 0"]) # Return the message
+            expr = p.parser.indexing_depth.pop()
+            return std_message([push_op, f"LOAD {id_meta.stack_position[0]}", f"{expr[0]}PADD", "LOAD 0"]) # Return the message
+
+    def _array_indexing_depth(self, p):
+        """
+        ndepth: ndepth '[' expression ']'
+            | '[' expression ']'
+        """
+        idx = p.parser.type_checker.pop()
+        if idx != "integer":
+            compiler_error(p, 1, f"Index must be an integer, not {idx}")
+            compiler_note("Called from Primary._array_indexing_depth")
+            sys.exit(1)
+
+        if len(p) == 5:
+            p.parser.indexing_depth[-1].append(p[3])
+        else:
+            p.parser.indexing_depth.append([p[2]])
 
     def _new(self, p) -> str: # Handles a grouped expression
         """
