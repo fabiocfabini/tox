@@ -209,7 +209,7 @@ class Declaration:
         elif p[3] == 'float':
             return std_message(["PUSHF 0.0"])
         elif p[3] == 'filum':
-            return std_message(["PUSHS ''"])
+            return std_message(["PUSHS \"\""])
 
     def _pointer_declaration(self, p):
         """
