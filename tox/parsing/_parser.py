@@ -111,9 +111,15 @@ def p_function_body(p):
     p[0] = parser.functions_handler.handle(p, 'body')
 def p_function_call(p):
     """
-    function_call : ID '(' args ')'
+    function_call : f_call '(' args ')'
     """
     p[0] = parser.functions_handler.handle(p, 'call')
+def p_f_call(p):
+    """
+    f_call : ID
+    """
+    p.parser.num_args.append(0)
+    p[0] = p[1]
 
 def p_params(p):
     """
@@ -147,17 +153,21 @@ def p_out_type(p):
 
 def p_args(p):
     """
-    args : args ',' expression
+    args : args ',' arg
     """
     p[0] = p[3] + p[1]
 def p_args_empty(p):
     """
     args :
+        | arg
     """
-    p[0] = ""
+    if len(p) == 1:
+        p[0] = ""
+    else:
+        p[0] = p[1]
 def p_single_arg(p):
     """
-    args : expression
+    arg : expression
     """
     p[0] = parser.functions_handler.handle(p, 'argument')
 
@@ -656,6 +666,7 @@ parser.loop_break_handler = BreakContinue()
 
 parser.functions_handler = Functions()
 parser.num_params = 0
+parser.num_args = []
 
 parser.frame_count = 0
 parser.global_count = 0

@@ -92,8 +92,9 @@ class Functions:
 
     def _argument(self, p):  # Adds an argument to the function
         """
-        args : expression
+        arg : expression
         """
+        p.parser.num_args[-1] += 1
         return p[1]
 
     def _out_type(self, p):  # Adds the output type of a function
@@ -107,10 +108,15 @@ class Functions:
 
     def _call(self, p):  # Calls a function
         """
-        function_call : ID '(' args ')'
+        function_call : f_call '(' args ')'
         """
         if self.get(p[1]) is None:  # If the function doesn't exist, report an error
             compiler_error(p, 1, f"Function {p[1]} not declared")
+            compiler_note(f"Error on Function '{p.parser.functions_handler.current_function.name}'")
+            compiler_note("Called from Functions._call")
+            sys.exit(1)
+        if len(self.get(p[1]).input_types) != p.parser.num_args[-1]:  # If the number of arguments doesn't match the number of parameters, report an error
+            compiler_error(p, 1, f"Function {p[1]} expects {len(self.get(p[1]).input_types)} arguments but got {p.parser.num_args[-1]}")
             compiler_note(f"Error on Function '{p.parser.functions_handler.current_function.name}'")
             compiler_note("Called from Functions._call")
             sys.exit(1)
@@ -123,6 +129,7 @@ class Functions:
         if self.get(p[1]).output_type is not None:
             p.parser.type_checker.push(self.get(p[1]).output_type)
 
+        p.parser.num_args.pop()
         out = ""
         if self.get(p[1]).output_type is not None:
             out = std_message(["PUSHI -69"])
