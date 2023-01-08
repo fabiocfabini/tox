@@ -203,8 +203,16 @@ def p_stmt(p):
         | break
         | continue
         | return
+        | debug
     """
     p[0] = p[1]
+
+def p_debug(p):
+    """
+    debug : DEBUG
+    """
+    p[0] = ""
+    p.parser.current_scope.debug()
 
 ######################
 ##    SCOPE RULE    ##

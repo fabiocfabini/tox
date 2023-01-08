@@ -9,6 +9,7 @@ general_literals = ",:;"                    # Literals for general use
 
 literals = arithmetics_literals + general_literals
 
+debug_tokens = ['DEBUG']
 type_tokens = ['integer', 'filum', 'FLOAT']                                            # filum so far only works in literals
 op_tokens = ["ASSIGN", "LTE", "LT", 'EQ', "NEQ", "GT", "GTE", "RETI"]  # Operators
 special_tokens = ['NEWLINE', 'COMMENT', 'MULTICOMMENTS', 'ID', 'RARROW']            # Special tokens
@@ -37,8 +38,9 @@ reserved = {                                                                    
     'non' : 'NOT'
 }
 
-tokens = type_tokens + special_tokens + list(reserved.values()) + op_tokens
+tokens = type_tokens + special_tokens + list(reserved.values()) + op_tokens + debug_tokens
 
+t_DEBUG = r"\?\?\?"
 t_RARROW = r"->"        # '->' for function declaration
 t_EQ = r"=="            # Double equal
 t_RETI = r"\.\.\."      # '...' for ranged array declaration

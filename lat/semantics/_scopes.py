@@ -39,6 +39,27 @@ class Scope:
             "end_scope": self._end_scope,
         }
 
+    def debug(self):
+        """
+        Pre _degub function. It is used to dashed lines to seperate the information from diferent calls to the function.
+        """
+        print("-" * 50)
+        self._debug()
+        print("-" * 50)
+
+    def _debug(self):
+        """
+        When called it prints the information of all the scopes and variables in the scope starting from the root.
+        The information is printed one after the other with good indentation. The functions is iterative. At the end of the function the
+        current scope is the same as the one before the function was called.
+        """
+        if self.parent is not None:
+            self.parent._debug()
+        print(f"Scope: {self.name} (level: {self.level})")
+        for key, value in self.Table.items():
+            print(f"    name: {key};  type: {value.type};  stack:{value.stack_position};  shape:{value.array_shape};  init:{value.p_init};")
+
+
     def handle(self, p, production: str):
         return self.productions[production](p)
 
