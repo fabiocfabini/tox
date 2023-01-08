@@ -19,6 +19,7 @@ from tox.semantics._statement import (
     Declaration,
     DeclarationAssignment,
     If,
+    Match,
     Loop,
     BreakContinue,
 )

@@ -450,8 +450,7 @@ class If:
         else_if : ELSE IF expression ss '{' stmts '}' es else_if
                 | else
         """
-        if len(p) == 2:
-            return p[1] # There is no else if
+        if len(p) == 2: return p[1] # There are no else if's
 
         expr = p.parser.type_checker.pop()
         if expr != 'int':
@@ -469,7 +468,6 @@ class If:
         out += p[9]                                                         # Push the else if statements
         p.parser.if_count += 1                                              # Increment the if count
 
-
         return out
 
     def _else(self, p) -> str:
@@ -480,14 +478,87 @@ class If:
         p.parser.rel_if_count += 1                                      # Increment the relative if count
         if len(p) == 1: return std_message([f"FINISHIF{p.parser.rel_if_count}:"])    # If there is no else, return an empty string
 
-        current_if_count = p.parser.if_count                            # Get the current if count
         out = p[4]                                                      # Push the statements
         out += p[6]                                                     # Get out of else scope
         out += std_message([f"FINISHIF{p.parser.rel_if_count}:"])       # Add the finish if label
-        p.parser.if_count += 1                                          # Increment the if count
 
         return out
 
+
+class Match:
+    """
+    Handles the match statement.
+    """
+    def __init__(self):
+        self.productions = {    # All the productions that this class handles
+            "match": self._match,
+            "cases": self._cases,
+            "default": self._default,
+        }
+
+    def handle(self, p, production) -> str:
+        return self.productions[production](p)
+
+    def _match(self, p) -> str:
+        """
+        match : match_start expression '{' cases '}'
+        """
+        expr = p.parser.type_checker.pop()
+        if expr == 'string': # Strings cannot be compared
+            compiler_error(p, 3, "Cannot use 'match' with 'string' type")
+            compiler_note("Called from match._match")
+            sys.exit(1)
+        p.parser.type_checker.push(expr)                                # Push the expression type back on the stack
+
+        current_match_count = p.parser.match_count                        # Get the current match count
+        out = p[2]                                                      # Push the expression to the stack
+        out += p[4]                                                     # Push the cases
+        out += std_message(["POP 1"])                                     # Pop the expression off the stack
+        p.parser.match_count += 1                                        # Increment the match count
+
+        p.parser.frame_count -= 1                                      # Decrement the global count
+        p.parser.type_checker.pop()                                     # Pop the case type off the stack
+        return out
+
+    def _cases(self, p) -> str:
+        """
+        cases : expression RARROW ss '{' stmts '}' es cases
+            | default
+        """
+        if len(p) == 2: return p[1] # There are no cases
+
+        expr = p.parser.type_checker.pop()
+        case = p.parser.type_checker.pop()
+        if expr != case:
+            compiler_error(p, 2, f"Incompatible types in 'match' statement. Expected '{case}', got '{expr}'")
+            compiler_note("Called from match._cases")
+            sys.exit(1)
+        p.parser.type_checker.push(case)                                # Push the case type back on the stack
+
+        current_match_count = p.parser.match_count                        # Get the current match count
+        out = std_message(["DUP 1", p[1], "EQUAL"])                     # Compare the case to the expression
+        out += std_message([f"JZ matchLABEL{current_match_count}END"])    # Jump to the end label if the expression is false
+        out += p[5]                                                     # Push the statements
+        out += p[7]                                                     # Get out of match scope
+        out += std_message([f"JUMP FINISHmatch{p.parser.rel_match_count}"])  # Skip all the other cases
+        out += std_message([f"matchLABEL{current_match_count}END:"])      # Add the end label
+        out += p[8]                                                     # Push the other cases
+        p.parser.match_count += 1                                        # Increment the match count
+
+        return out
+
+
+    def _default(self, p) -> str:
+        """
+        default : DEFAULT RARROW ss '{' stmts '}' es
+        """
+        p.parser.rel_match_count += 1                                    # Increment the relative if count
+
+        out = p[5]                                                      # Push the statements
+        out += p[7]                                                     # Get out of else scope
+        out += std_message([f"FINISHmatch{p.parser.rel_match_count}:"])   # Add the finish if label
+
+        return out
 
 class Loop:
     """

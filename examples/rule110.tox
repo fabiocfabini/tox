@@ -20,6 +20,7 @@ func main() {
         }
         print("\n")
         for(j: int = 1; j < N - 1; j = j + 1) {
+            
             pattern: int = 4*gen[c_gen][j - 1] + 2*gen[c_gen][j] + 1*gen[c_gen][j + 1]
 
             new_pattern: int = table

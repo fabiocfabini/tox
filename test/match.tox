@@ -1,0 +1,22 @@
+func main() {
+    x: int = 2
+
+    if x < 3 {
+        x: int = 6
+        match x % 2 {
+            0 -> {
+                match x % 3 {
+                    0 -> {
+                        print("x is divisible by 2 and 3")
+                    }
+                    default -> {
+                        print("x is divisible by 2 but not 3")
+                    }
+                }
+            }
+            default -> {
+                print("x is not divisible by 2")
+            }
+        }
+    }
+}

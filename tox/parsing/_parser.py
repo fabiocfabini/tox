@@ -23,6 +23,7 @@ from tox import (
     Declaration,
     DeclarationAssignment,
     If,
+    Match,
     Loop,
     BreakContinue
 )
@@ -189,11 +190,13 @@ def p_stmts_empty(p):
 def p_stmt(p):
     """
     stmt : print
+        | read
         | function_call
         | declaration_assignment
         | assignment
         | declaration
         | if
+        | match
         | while
         | for
         | do_while
@@ -329,6 +332,32 @@ def p_else(p):
         |
     """
     p[0] = parser.if_handler.handle(p, "else")
+
+######################
+##   SWITCH STMT    ##
+######################
+
+def p_match(p):
+    """
+    match : match_start expression '{' cases '}'
+    """
+    p[0] = parser.match_handler.handle(p, "match")
+def p_match_start(p):
+    """
+    match_start : MATCH
+    """
+    p.parser.frame_count += 1 # Increment the global count aas to prevent shadowing of variables declared in the match statement
+def p_cases(p):
+    """
+    cases : expression RARROW ss '{' stmts '}' es cases
+        | default
+    """
+    p[0] = parser.match_handler.handle(p, "cases")
+def p_default(p):
+    """
+    default : DEFAULT RARROW ss '{' stmts '}' es
+    """
+    p[0] = parser.match_handler.handle(p, "default")
 
 ######################
 ##    INIT STMT     ##
@@ -661,6 +690,7 @@ parser.assignment_handler = Assignment()
 parser.declaration_handler = Declaration()
 parser.declaration_assignment_handler = DeclarationAssignment()
 parser.if_handler = If()
+parser.match_handler = Match()
 parser.loop_handler = Loop()
 parser.loop_break_handler = BreakContinue()
 
@@ -676,6 +706,8 @@ parser.type_checker = TypeCheck()
 
 parser.if_count = 0
 parser.rel_if_count = 0
+parser.match_count = 0
+parser.rel_match_count = 0
 parser.loop_count = 0
 parser.current_loops = [] # This is needed for break and continue statements to be checked
 parser.array_assign_items = 0

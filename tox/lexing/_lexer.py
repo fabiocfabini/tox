@@ -23,13 +23,15 @@ reserved = {                                                                    
     'vec'   : 'TYPE_VEC',
     'if'    : 'IF',
     'else'  : 'ELSE',
+    'match'  : 'MATCH',
+    'default' : 'DEFAULT',
     'while' : 'WHILE',
     'for'   : 'FOR',
     'do'    : 'DO',
     'break' : 'BREAK',
     'continue' : 'CONTINUE',
     'func' : 'FUNCTION',
-    'return' : 'RETURN'
+    'return' : 'RETURN',
 }
 
 tokens = type_tokens + special_tokens + list(reserved.values()) + op_tokens
