@@ -1,0 +1,28 @@
+munus main() {
+    x: integer = 2
+
+    si x < 3 {
+        x: integer = 6
+        par x % 2 {
+            0 -> {
+                par x % 3 {
+                    0 -> {
+                        x: float = 1.0
+                        imprimo(x, "\n")
+                        imprimo("x is divisible by 2 and 3")
+                    }
+                    defectus -> {
+                        x: filum = "Hi"
+                        imprimo(x, "\n")
+                        imprimo("x is divisible by 2 but not 3")
+                    }
+                }
+            }
+            defectus -> {
+                x: integer = 69
+                imprimo(x, "\n")
+                imprimo("x is not divisible by 2")
+            }
+        }
+    }
+}

@@ -23,6 +23,8 @@ reserved = {                                                                    
     'vec'   : 'TYPE_VEC',
     'si'    : 'IF',
     'aliter'  : 'ELSE',
+    'par' : 'MATCH',
+    'defectus' : 'DEFAULT',
     'dum' : 'WHILE',
     'enim'   : 'FOR',
     'facio'    : 'DO',
