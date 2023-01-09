@@ -14,7 +14,6 @@ Installing through pip:
 git clone https://github.com/fabiocfabini/tox.git
 cd tox
 make install
-pip install -e .
 ```
 
 **Note**: Only works on linux.
