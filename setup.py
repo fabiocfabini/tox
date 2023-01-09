@@ -13,7 +13,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'tox = tox.cli:tox_cli'
+            'tox = tox.cli:cli'
         ]
     }
 )

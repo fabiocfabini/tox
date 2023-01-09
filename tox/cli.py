@@ -16,7 +16,7 @@ possible_opt_args = ["-o","--output", "-v", "--verbose", "-rec", "--record", "-c
 recognized_args = possible_exec_modes + possible_opt_args
 
 def print_help():
-    print(f"{COLOR_BLUE}Usage{RESET_COLOR}: tox [EXECUTION MODES] [ARGUMENTS] [OPTIONS]")
+    print(f"{COLOR_BLUE}Usage{RESET_COLOR}: tox [EXECUTION MODE] [ARGUMENTS] [OPTIONS]")
     print()
     print(f"{COLOR_BLUE}ARGUMENTS{RESET_COLOR}:")
     print(f"  {COLOR_GREEN}input{RESET_COLOR}  The input file. Must be a '.tox' file.")
@@ -25,15 +25,15 @@ def print_help():
     print(f"  {COLOR_GREEN}run{RESET_COLOR}        Compiles and runs the program.")
     print(f"  {COLOR_GREEN}build{RESET_COLOR}      Compile the program to EWVM.")
     print(f"  {COLOR_GREEN}euler{RESET_COLOR}      Check the solutions of the Euler problems.")
-    print(f"  {COLOR_GREEN}test{RESET_COLOR}       Compile and simulate the test programs. Compare the outputs with the expected outputs.")
-    print(f"  {COLOR_GREEN}examples{RESET_COLOR}   Compile and simulate the test programs. Compare the outputs with the expected outputs.")
+    print(f"  {COLOR_GREEN}test{RESET_COLOR}       Compile and run the test programs. Compare the outputs with the expected outputs.")
+    print(f"  {COLOR_GREEN}examples{RESET_COLOR}   Compile and run the example programs. Compare the outputs with the expected outputs.")
     print()
     print(f"{COLOR_BLUE}OPTIONS{RESET_COLOR}:")
-    print(f"  {COLOR_GREEN}-h{RESET_COLOR}, {COLOR_GREEN}--help{RESET_COLOR}"       +" "*14 +   "Show this help message and exit.")
-    print(f"  {COLOR_GREEN}-o{RESET_COLOR}, {COLOR_GREEN}--ouput{RESET_COLOR}"      +" "*13 +   "Specify the output file.")
-    print(f"  {COLOR_GREEN}-rec{RESET_COLOR}, {COLOR_GREEN}--record{RESET_COLOR}"       +" "*10 +   "Record the output of the executed programs. (Only for 'test' command)")
-    print(f"  {COLOR_GREEN}-clc{RESET_COLOR}, {COLOR_GREEN}--clean-up{RESET_COLOR}"     +" "*8 +   "Clear the output of the executed programs. (Only for 'test' command)")
-    print(f"  {COLOR_GREEN}-v{RESET_COLOR}, {COLOR_GREEN}--verbose{RESET_COLOR}"        +" "*11 +   "Show verbose output.")
+    print(f"  {COLOR_GREEN}-h{RESET_COLOR}, {COLOR_GREEN}--help{RESET_COLOR}"       +" "*10 +   "Show this help message and exit.")
+    print(f"  {COLOR_GREEN}-o{RESET_COLOR}, {COLOR_GREEN}--ouput{RESET_COLOR}"      +" "*9 +   "Specify the output file.")
+    print(f"  {COLOR_GREEN}-rec{RESET_COLOR}, {COLOR_GREEN}--record{RESET_COLOR}"       +" "*6 +   "Record the output of the executed programs.")
+    print(f"  {COLOR_GREEN}-clc{RESET_COLOR}, {COLOR_GREEN}--clean-up{RESET_COLOR}"     +" "*4 +   "Clear the output of the executed programs.")
+    print(f"  {COLOR_GREEN}-v{RESET_COLOR}, {COLOR_GREEN}--verbose{RESET_COLOR}"        +" "*7 +   "Show verbose output.")
 
 def error(msg: str, verbose: bool = False):
     print(f"{COLOR_RED}[ERROR]{RESET_COLOR}", msg)
@@ -97,8 +97,6 @@ def prepare_cmd_args() -> Tuple[OptArgs, ReqArgs]:
     return opt_args, req_args
 
 def run_execute(req_args: ReqArgs, opt_args: OptArgs):
-    from tox import parser
-
     if not req_args["input"]: error("No input file specified.")
     if not opt_args["-o"]:
         opt_args["-o"] = os.path.splitext(req_args['input'])[0] + ".vms"
@@ -284,6 +282,6 @@ def execute(opt_args: OptArgs, req_args: ReqArgs):
     if req_args["euler"]: euler_execute(req_args, opt_args)
     if req_args["examples"]: examples_execute(req_args, opt_args)
 
-def tox_cli():
+def cli():
     opt_args, req_args = prepare_cmd_args()
     execute(opt_args, req_args)
