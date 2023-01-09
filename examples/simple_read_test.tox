@@ -1,3 +1,5 @@
+//SKIP
+
 func main() {
     f: float = readf("Enter a float: ")
     i: int = readi("Enter an int: ")

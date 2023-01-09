@@ -1,11 +1,7 @@
 table: int = 110
 
 func main() {
-    N: int = readi("Number of rows: ")
-    if N > 200 {
-        print("N must be less than 200\n")
-        return;
-    }
+    N: int = 100
     gen: vec<int>[2][200] // 2 * N
     gen[0][N - 2] = 1
 
