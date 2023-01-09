@@ -375,12 +375,13 @@ def p_pointer_init(p):
     p[0] = parser.declaration_assignment_handler.handle(p, "pointer_init")
 def p_array_literal_init(p):
     """
-    declaration_assignment : ID ':' Vtype ASSIGN '[' arrayitems ']'
+    declaration_assignment : ID ':' Vtype ndim ASSIGN '[' arrayitems ']'
+                        | ID ':' Vtype ASSIGN '[' arrayitems ']'
     """
     p[0] = parser.declaration_assignment_handler.handle(p, "array_literal_init")
 def p_array_range_init(p):
     """
-    declaration_assignment : ID ':' Vtype ASSIGN '['  INT  RETI   INT ']'
+    declaration_assignment : ID ':' Vtype ASSIGN '['  INT  RETI  INT ']'
     """
     p[0] = parser.declaration_assignment_handler.handle(p, "array_range_init")
 def p_array_items(p):

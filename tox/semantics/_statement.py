@@ -302,12 +302,22 @@ class DeclarationAssignment:
 
     def _array_literal_init(self, p) -> str: # Declaring and initializing an array with a literal
         """
-        declaration_assignment : ID ':' Vtype ASSIGN '[' arrayitems ']'
+        declaration_assignment : ID ':' Vtype ndim ASSIGN '[' arrayitems ']'
         """
         if p[1] in p.parser.current_scope.Table:    # If the variable already exists in the current scope table, report an error
             compiler_error(p, 1, f"Variable {p[1]} is already defined")
             compiler_note("Called from DeclarationAssignment._array_literal_init")
             sys.exit(1)
+        array_shape = [p.parser.array_assign_items]
+        if len(p) == 9:
+            array_size = 1
+            array_shape = p.parser.arr_dim
+            for dim in p.parser.arr_dim:
+                array_size *= dim
+            if array_size != p.parser.array_assign_items:
+                compiler_error(p, 1, f"Initialization of array of type '{p[3]}' with {p.parser.array_assign_items} items. Expected {array_size}")
+                compiler_note("Called from DeclarationAssignment._array_literal_init")
+                sys.exit(1)
         for i in range(p.parser.array_assign_items):
             item = p.parser.type_checker.pop()
             if item != p[3][4:-1]:
@@ -317,13 +327,14 @@ class DeclarationAssignment:
 
         p[3] = p[3].replace(" ", "") # Remove the spaces from the type
         if p.parser.current_scope.level == 0:   # If the variable is declared in the global scope, add it to the global scope
-            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count+p.parser.array_assign_items-1), array_shape=[p.parser.array_assign_items])
+            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count+p.parser.array_assign_items-1), array_shape=copy(array_shape))
             p.parser.global_count += p.parser.array_assign_items
         else:   # If the variable is declared in a function scope, add it to the function scope
-            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count+p.parser.array_assign_items-1), array_shape=[p.parser.array_assign_items])
+            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count+p.parser.array_assign_items-1), array_shape=copy(array_shape))
             p.parser.frame_count += p.parser.array_assign_items
+        p.parser.arr_dim = [] # Reset the array dimension
         p.parser.array_assign_items = 0 # Reset the array assign items counter
-        return p[6]
+        return p[len(p)-2]
 
     def _array_range_init(self, p) -> str: # Declaring and initializing an array with a range TODO: turn int into expression if possible
         """
