@@ -8,11 +8,13 @@ dir = $(shell pwd)
 vm=$(dir)/vm/vms
 
 install:
-	@echo "Installing..."
+	@echo "Installing vms..."
 	cp $(vm) /usr/local/bin/vms
+	@echo "Installing package tox..."
+	pip install -e .
 	@echo "Done."
 
 help:
 	@echo "Usage: make [install|help]"
-	@echo "install: install vms in /usr/local/bin"
+	@echo "install: install vms in /usr/local/bin and tox in current python enviroment"
 	@echo "help: 	 show this help"
