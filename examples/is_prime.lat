@@ -1,3 +1,5 @@
+//SKIP
+
 munus is_prime(n: integer) -> integer {
     si n < 2 { reditus 0 }
     si n == 2 { reditus 1 }

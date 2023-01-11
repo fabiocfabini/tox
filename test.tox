@@ -1,0 +1,12 @@
+v: vec<int>[5][2] = [
+    1, 2, 3, 4, 5,
+    5, 4, 3, 2, 1
+]
+
+func say_hello() {
+    print("Hello, World!\n")
+}
+
+func main() {
+    say_hello()
+}

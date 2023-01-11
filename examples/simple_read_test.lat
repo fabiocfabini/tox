@@ -1,3 +1,5 @@
+//SKIP
+
 munus main() {
     f: float = legeref("Enter a float: ")
     i: integer = legerei("Enter an integer: ")

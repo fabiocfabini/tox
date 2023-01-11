@@ -13,7 +13,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'lat = lat.cli:lat_cli'
+            'lat = lat.cli:cli'
         ]
     }
 )
