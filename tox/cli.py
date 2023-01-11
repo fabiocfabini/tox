@@ -29,11 +29,11 @@ def print_help():
     print(f"  {COLOR_GREEN}examples{RESET_COLOR}   Compile and run the example programs. Compare the outputs with the expected outputs.")
     print()
     print(f"{COLOR_BLUE}OPTIONS{RESET_COLOR}:")
-    print(f"  {COLOR_GREEN}-h{RESET_COLOR}, {COLOR_GREEN}--help{RESET_COLOR}"       +" "*10 +   "Show this help message and exit.")
-    print(f"  {COLOR_GREEN}-o{RESET_COLOR}, {COLOR_GREEN}--ouput{RESET_COLOR}"      +" "*9 +   "Specify the output file.")
-    print(f"  {COLOR_GREEN}-rec{RESET_COLOR}, {COLOR_GREEN}--record{RESET_COLOR}"       +" "*6 +   "Record the output of the executed programs.")
-    print(f"  {COLOR_GREEN}-clc{RESET_COLOR}, {COLOR_GREEN}--clean-up{RESET_COLOR}"     +" "*4 +   "Clear the output of the executed programs.")
-    print(f"  {COLOR_GREEN}-v{RESET_COLOR}, {COLOR_GREEN}--verbose{RESET_COLOR}"        +" "*7 +   "Show verbose output.")
+    print(f"  {COLOR_GREEN}-h{RESET_COLOR}     Show this help message and exit.")
+    print(f"  {COLOR_GREEN}-o{RESET_COLOR}     Specify the output file.")
+    print(f"  {COLOR_GREEN}-rec{RESET_COLOR}   Record the output of the executed programs.")
+    print(f"  {COLOR_GREEN}-clc{RESET_COLOR}   Clear the output of the executed programs.")
+    print(f"  {COLOR_GREEN}-v{RESET_COLOR}     Show verbose output.")
 
 def error(msg: str, verbose: bool = False):
     print(f"{COLOR_RED}[ERROR]{RESET_COLOR}", msg)
@@ -136,6 +136,7 @@ def test_execute(req_args: ReqArgs, opt_args: OptArgs):
             if opt_args['-v']: print(COLOR_GREEN + "-"*80 + RESET_COLOR)
             ret = echo_cmd(f"tox build {input_file} -o {output_file}", verbose=opt_args['-v'])
             if ret[0] == 2:
+                info_cmd(f"Skipped {input_file}", verbose=opt_args['-v'])
                 num_tests -= 1
                 skipped_tests.append(input_file)
                 continue
@@ -149,6 +150,7 @@ def test_execute(req_args: ReqArgs, opt_args: OptArgs):
                 failed_tests.append((input_file, ret[1]))
                 continue
             elif ret[0] == 2:
+                info_cmd(f"Skipped {input_file}", verbose=opt_args['-v'])
                 num_tests -= 1
                 skipped_tests.append(input_file)
                 continue
@@ -195,6 +197,7 @@ def euler_execute(req_args: ReqArgs, opt_args: OptArgs):
             failed_tests.append((input_file, ret[1]))
             continue
         elif ret[0] == 2:
+            info_cmd(f"Skipped {input_file}", verbose=opt_args['-v'])
             num_tests -= 1
             skipped_tests.append(input_file)
             continue
@@ -235,6 +238,7 @@ def examples_execute(req_args: ReqArgs, opt_args: OptArgs):
             if opt_args['-v']: print(COLOR_GREEN + "-"*80 + RESET_COLOR)
             ret = echo_cmd(f"tox build {input_file} -o {output_file}", verbose=opt_args['-v'])
             if ret[0] == 2:
+                info_cmd(f"Skipped {input_file}", verbose=opt_args['-v'])
                 num_tests -= 1
                 skipped_tests.append(input_file)
                 continue
@@ -248,6 +252,7 @@ def examples_execute(req_args: ReqArgs, opt_args: OptArgs):
                 failed_tests.append((input_file, ret[1]))
                 continue
             elif ret[0] == 2:
+                info_cmd(f"Skipped {input_file}", verbose=opt_args['-v'])
                 num_tests -= 1
                 skipped_tests.append(input_file)
                 continue
