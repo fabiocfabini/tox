@@ -66,10 +66,11 @@ class Functions:
         function_id : FUNCTION ID
         """
         func = p.parser.functions_handler.get(p[2])
-        if func is not None and func.init:
-            compiler_error(p, 2, f"Redefinition of function {p[2]}")
+        if func is not None and func.init:  # If the function is already defined, report an error
+            compiler_error(p, 2, f"Redefinition of function '{p[2]}'")
             compiler_note("Called from Functions._id")
             sys.exit(1)
+
         p.parser.functions_handler.add(p[2], False)
         p.parser.functions_handler.current_function = p.parser.functions_handler.get(p[2])
         return std_message([f"{p[2].replace('_', '')}:"])

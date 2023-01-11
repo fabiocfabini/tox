@@ -45,6 +45,11 @@ def p_prog(p):
         compiler_note("Called from p_prog.")
         sys.exit(1)
 
+    for function, meta in parser.functions_handler.Table.items():
+        if meta.init is False:
+            compiler_error(p, 0, f"Function '{function}' was declared but not defined")
+            sys.exit(1)
+
     p[0] = p[1]
     p[0] += "start\n"
     p[0] += f"PUSHA main\n"
