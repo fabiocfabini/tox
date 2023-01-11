@@ -13,6 +13,7 @@ class FunctionData:
     Input values and output values are missing but should be added later to provide for a better compiler.
     """
     name: str
+    init: bool
     input_types: Optional[List[str]] = field(default_factory=list)
     output_type: Optional[str] = None
 
@@ -27,11 +28,12 @@ class Functions:
     def __post_init__(self):
         self.productions = {
             "call": self._call,
+            "def": self._def,
             "header": self._header,
             "id": self._id,
-            "body": self._body,
             "parameter": self._parameter,
             "out_type": self._out_type,
+            "body": self._body,
             "argument": self._argument,
             "return": self._return,
         }
@@ -39,11 +41,18 @@ class Functions:
     def handle(self, p, production: str):
         return self.productions[production](p)
 
-    def add(self, name: str) -> None:   # Adds a function to the table
-        self.Table[name] = FunctionData(name)
+    def add(self, name: str, init: bool) -> None:   # Adds a function to the table
+        self.Table[name] = FunctionData(name, init)
 
     def get(self, name: str) -> Optional[FunctionData]:  # Gets a function from the table if it exists
         return self.Table.get(name)
+
+    def _def(self, p):
+        """
+        function_def : function_id ss '(' params ')' out_type es ';'
+        """
+        p.parser.num_params = 0
+        return p[1] + p[4]
 
     def _header(self, p):  # Declares a function
         """
@@ -56,11 +65,12 @@ class Functions:
         """
         function_id : FUNCTION ID
         """
-        if p.parser.functions_handler.get(p[2]) is not None:
+        func = p.parser.functions_handler.get(p[2])
+        if func is not None and func.init:
             compiler_error(p, 2, f"Redefinition of function {p[2]}")
             compiler_note("Called from Functions._id")
             sys.exit(1)
-        p.parser.functions_handler.add(p[2])
+        p.parser.functions_handler.add(p[2], False)
         p.parser.functions_handler.current_function = p.parser.functions_handler.get(p[2])
         return std_message([f"{p[2].replace('_', '')}:"])
 
@@ -68,6 +78,7 @@ class Functions:
         """
         function_body : '{' stmts '}' es
         """
+        p.parser.functions_handler.current_function.init = True
         if not p[2].endswith("RETURN\n"):
             if p.parser.functions_handler.current_function.output_type is not None:
                 compiler_warning(p, 3, f"Reached end of function {p.parser.functions_handler.current_function.name} without an explicit return statement.")
@@ -111,17 +122,17 @@ class Functions:
         function_call : f_call '(' args ')'
         """
         if self.get(p[1]) is None:  # If the function doesn't exist, report an error
-            compiler_error(p, 1, f"Function {p[1]} not declared")
+            compiler_error(p, 2, f"Function '{p[1]}' not declared")
             compiler_note(f"Error on Function '{p.parser.functions_handler.current_function.name}'")
             compiler_note("Called from Functions._call")
             sys.exit(1)
         if len(self.get(p[1]).input_types) != p.parser.num_args[-1]:  # If the number of arguments doesn't match the number of parameters, report an error
-            compiler_error(p, 1, f"Function {p[1]} expects {len(self.get(p[1]).input_types)} arguments but got {p.parser.num_args[-1]}")
+            compiler_error(p, 2, f"Function '{p[1]}' expects {len(self.get(p[1]).input_types)} arguments but got {p.parser.num_args[-1]}")
             compiler_note(f"Error on Function '{p.parser.functions_handler.current_function.name}'")
             compiler_note("Called from Functions._call")
             sys.exit(1)
         if self.get(p[1]).input_types != p.parser.type_checker.stack[-len(self.get(p[1]).input_types):]:
-            compiler_error(p, 1, f"Function {p[1]} expects {self.get(p[1]).input_types} but got {p.parser.type_checker.stack[-len(self.get(p[1]).input_types):]}")
+            compiler_error(p, 2, f"Function '{p[1]}' expects {self.get(p[1]).input_types} but got {p.parser.type_checker.stack[-len(self.get(p[1]).input_types):]}")
             compiler_note("Called from Functions._call")
             sys.exit(1)
         for _ in self.get(p[1]).input_types:

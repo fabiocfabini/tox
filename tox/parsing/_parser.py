@@ -31,7 +31,7 @@ from tox import (
 
 def p_prog(p):
     """
-    prog : global_declarations function_declarations
+    prog : global_declarations functions
     """
     parser.global_count = 0
     parser.loop_count = 0
@@ -79,22 +79,38 @@ def p_global_declaration(p):
 ##   FUNCS RULES    ##
 ######################
 
-def p_function_declarations(p):
+def p_functions(p):
     """
-    function_declarations : function_declaration function_declarations
+    functions : function functions
     """
     p[0] = p[1] + p[2]
 
-def p_function_declarations_empty(p):
+def p_functions_empty(p):
     """
-    function_declarations :
+    functions :
     """
     p[0] = ""
+def p_function(p):
+    """
+    function : function_declaration
+            | function_definition
+    """
+    p[0] = p[1]
 def p_function_declaration(p):
     """
-    function_declaration : function_header function_body
+    function_declaration : function_def
+    """
+    p[0] = p[1]
+def p_function_definition(p):
+    """
+    function_definition : function_header function_body
     """
     p[0] = p[1] + p[2]
+def p_function_def(p):
+    """
+    function_def : function_id ss '(' params ')' out_type es
+    """
+    p[0] = parser.functions_handler.handle(p, 'def')
 def p_function_header(p):
     """
     function_header : function_id ss '(' params ')' out_type
