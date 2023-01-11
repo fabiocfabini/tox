@@ -1,0 +1,23 @@
+// Starting in the top left corner of a 2×2 grid, and only being able to move to the right and down, there are exactly 6 routes to the bottom right corner.
+//       __ __
+//      |__|__| 
+//      |__|__| 
+//
+// How many such routes are there through a 20×20 grid?
+
+
+
+X: int = 9
+Y: int = 9
+
+func num_paths(x: int, y:int) -> int {
+    if (x == X || y == Y) {
+        return 1
+    }
+
+    return num_paths(x+1, y) + num_paths(x, y+1)
+}
+
+func main() {
+    print(num_paths(0, 0), "\n")
+}
