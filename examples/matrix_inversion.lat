@@ -1,0 +1,114 @@
+munus dot(a: &integer, b: &integer, n: integer) -> integer {
+    result: integer
+    enim(i: integer = 0; i < n; i = i + 1) {
+        result = result + a[i] * b[i]
+    }
+    reditus result
+}
+
+munus mat_mul(a: &float, b: &float, c: &float, n: integer) {
+    enim(i: integer = 0; i < n; i = i + 1) {
+        enim(j: integer = 0; j < n; j = j + 1) {
+            c[i*n + j] = 0.0
+        }
+    }
+
+    enim(i: integer = 0; i < n; i = i + 1) {
+        enim(j: integer = 0; j < n; j = j + 1) {
+            enim(k: integer = 0; k < n; k = k + 1) {
+                c[i*n + j] = c[i*n + j] + a[i*n + k] * b[k*n + j]
+            }
+        }
+    }
+}
+
+munus mat_inverse(a: &float, Id: &float, n: integer) {
+    enim(i: integer = 0; i < n; i = i + 1) {
+        enim(j: integer = 0; j < n; j = j + 1) {
+            Id[i*n + j] = 0.0
+        }
+        Id[i*n + i] = 1.0
+    }
+
+    enim(i: integer = 0; i < n; i = i + 1) {
+        enim(j: integer = 0; j < n; j = j + 1) {
+            si i != j {
+                r: float = a[j*n + i] / a[i*n + i]
+                enim(k: integer = 0; k < n; k = k + 1) {
+                    a[j*n + k] = a[j*n + k] - r * a[i*n + k]
+                    Id[j*n + k] = Id[j*n + k] - r * Id[i*n + k]
+                }
+            }
+        }
+    }
+
+    enim(i: integer = 0; i < n; i = i + 1) {
+        enim(j: integer = 0; j < n; j = j + 1) {
+            Id[i*n + j] = Id[i*n + j] / a[i*n + i]
+        }
+    }
+
+    enim(i: integer = 0; i < n; i = i + 1) {
+        enim(j: integer = 0; j < n; j = j + 1) {
+            a[i*n + j] = Id[i*n + j]
+        }
+    }
+}
+
+munus main() {
+    m_1: vec<float>[3][3]
+    m_2: vec<float>[3][3]
+    I: vec<float>[3][3]
+    m_1[0][0] = 1.0
+    m_1[0][1] = 2.0
+    m_1[0][2] = -1.0
+    m_1[1][0] = -2.0
+    m_1[1][1] = 0.0
+    m_1[1][2] = 1.0
+    m_1[2][0] = 1.0
+    m_1[2][1] = -1.0
+    m_1[2][2] = 0.0
+    m_2[0][0] = 1.0
+    m_2[0][1] = 2.0
+    m_2[0][2] = -1.0
+    m_2[1][0] = -2.0
+    m_2[1][1] = 0.0
+    m_2[1][2] = 1.0
+    m_2[2][0] = 1.0
+    m_2[2][1] = -1.0
+    m_2[2][2] = 0.0
+
+    imprimo("Before Invertion:\n")
+    enim(i: integer = 0; i < 3; i = i + 1) {
+        enim(j: integer = 0; j < 3; j = j + 1) {
+            s: filum = " "
+            si m_1[i][j] < 0.0 { s = "" }
+            imprimo(s, m_1[i][j], "  ")
+        }
+        imprimo("\n")
+    }
+
+    mat_inverse(m_1, I, 3)
+
+    imprimo("After Invertion:\n")
+    enim(i: integer = 0; i < 3; i = i + 1) {
+        enim(j: integer = 0; j < 3; j = j + 1) {
+            s: filum = " "
+            si m_1[i][j] < 0.0 { s = "" }
+            imprimo(s, m_1[i][j], "  ")
+        }
+        imprimo("\n")
+    }
+
+    imprimo("Check:\n")
+    mat_mul(m_1, m_2, I, 3)
+    enim(i: integer = 0; i < 3; i = i + 1) {
+        enim(j: integer = 0; j < 3; j = j + 1) {
+            s: filum = " "
+            si I[i][j] < 0.0 { s = "" }
+            imprimo(s, I[i][j], "  ")
+        }
+        imprimo("\n")
+    }
+}
+
