@@ -350,7 +350,7 @@ class DeclarationAssignment:
             p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count+end-start), array_shape=[end-start+1])
             p.parser.frame_count += end-start + 1
 
-            return std_message([f"PUSHI {i}" for i in range(start, end + 1)])
+        return std_message([f"PUSHI {i}" for i in range(start, end + 1)])
 
     def _pointer_init(self, p) -> str: # Declaring and initializing a pointer
         """
