@@ -1,11 +1,11 @@
 // Inicializar array
-array: vec<integer> = [1,2,3]
+v: vec<integer> = [1,2,3]
 
 // Main
 munus main() {
     // Somar 1 a cada elemento
     enim(i: integer; i < 3; i = i + 1) {
-        array[i] = array[i] + 1
+        v[i] = v[i] + 1
     }
 }
 
