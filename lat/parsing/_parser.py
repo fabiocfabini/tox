@@ -388,7 +388,7 @@ def p_array_literal_init(p):
     p[0] = parser.declaration_assignment_handler.handle(p, "array_literal_init")
 def p_array_range_init(p):
     """
-    declaration_assignment : ID ':' Vtype ASSIGN '['  integer  RETI   integer ']'
+    declaration_assignment : ID ':' Vtype ASSIGN '['  INTEGER  RETI   INTEGER ']'
     """
     p[0] = parser.declaration_assignment_handler.handle(p, "array_range_init")
 def p_array_items(p):
@@ -419,8 +419,8 @@ def p_array_declaration(p):
     p[0] = p.parser.declaration_handler.handle(p, "array_declaration")
 def p_array_dimension(p):
     """
-    ndim : ndim '[' integer  ']'
-        | '[' integer ']'
+    ndim : ndim '[' INTEGER  ']'
+        | '[' INTEGER ']'
     """
     p[0] = p.parser.declaration_handler.handle(p, "array_dimension")
 
@@ -644,7 +644,7 @@ def p_primary_ref(p):
     p[0] = parser.primary_handler.handle(p, "ref")
 def p_primary_int(p):
     """
-    primary : integer
+    primary : INTEGER
     """
     p[0] = parser.primary_handler.handle(p, "integer")
 def p_primary_float(p):
@@ -654,7 +654,7 @@ def p_primary_float(p):
     p[0] = parser.primary_handler.handle(p, "float")
 def p_primary_string(p):
     """
-    primary : filum
+    primary : FILUM
     """
     p[0] = parser.primary_handler.handle(p, "filum")
 def p_primary_id(p):

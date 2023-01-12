@@ -10,7 +10,7 @@ general_literals = ",:;"                    # Literals for general use
 literals = arithmetics_literals + general_literals
 
 debug_tokens = ['DEBUG']
-type_tokens = ['integer', 'filum', 'FLOAT']                                            # filum so far only works in literals
+type_tokens = ['INTEGER', 'FILUM', 'FLOAT']                                            # filum so far only works in literals
 op_tokens = ["ASSIGN", "LTE", "LT", 'EQ', "NEQ", "GT", "GTE", "RETI"]  # Operators
 special_tokens = ['NEWLINE', 'COMMENT', 'MULTICOMMENTS', 'ID', 'RARROW']            # Special tokens
 reserved = {                                                                        # Reserved words
@@ -60,7 +60,7 @@ def t_FLOAT(t):
     return t
 
 @lex.TOKEN(r'\d+')      # integer
-def t_integer(t):
+def t_INTEGER(t):
     return t
 
 @lex.TOKEN(r"print")    # Print
@@ -68,7 +68,7 @@ def t_PRINT(t):
     return t
 
 @lex.TOKEN(r'\"[^"]*\"')    # filum
-def t_filum(t):
+def t_FILUM(t):
     return t
 
 @lex.TOKEN(r'[a-zA-Z_][a-zA-Z0-9_]*')       # ID
