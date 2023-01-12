@@ -177,7 +177,7 @@ unary : ! unary
 
 primary : ID ndepth
         | & ID
-        |  INTEGER
+        | INTEGER
         | FLOAT
         | FILUM
         | ID
