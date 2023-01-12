@@ -13,7 +13,5 @@ munus main() {
         si (i == 2) {   // Se i for 2
             confractus  // Break
         }
-
-        i = i + 1   // Incrementar i
     }
 }
