@@ -110,30 +110,31 @@ class Functions:
         """
         function_call : f_call '(' args ')'
         """
-        if self.get(p[1]) is None:  # If the function doesn't exist, report an error
+        func = self.get(p[1])
+        if func is None:  # If the function doesn't exist, report an error
             compiler_error(p, 1, f"Function {p[1]} not declared")
             compiler_note(f"Error on Function '{p.parser.functions_handler.current_function.name}'")
             compiler_note("Called from Functions._call")
             sys.exit(1)
-        if len(self.get(p[1]).input_types) != p.parser.num_args[-1]:  # If the number of arguments doesn't match the number of parameters, report an error
-            compiler_error(p, 1, f"Function {p[1]} expects {len(self.get(p[1]).input_types)} arguments but got {p.parser.num_args[-1]}")
+        if len(func.input_types) != p.parser.num_args[-1]:  # If the number of arguments doesn't match the number of parameters, report an error
+            compiler_error(p, 1, f"Function {p[1]} expects {len(func.input_types)} arguments but got {p.parser.num_args[-1]}")
             compiler_note(f"Error on Function '{p.parser.functions_handler.current_function.name}'")
             compiler_note("Called from Functions._call")
             sys.exit(1)
-        if self.get(p[1]).input_types != p.parser.type_checker.stack[-len(self.get(p[1]).input_types):]:
-            compiler_error(p, 1, f"Function {p[1]} expects {self.get(p[1]).input_types} but got {p.parser.type_checker.stack[-len(self.get(p[1]).input_types):]}")
+        if len(func.input_types) > 0 and func.input_types != p.parser.type_checker.stack[-len(func.input_types):]:
+            compiler_error(p, 1, f"Function {p[1]} expects {func.input_types} but got {p.parser.type_checker.stack[-len(func.input_types):]}")
             compiler_note("Called from Functions._call")
             sys.exit(1)
-        for _ in self.get(p[1]).input_types:
+        for _ in func.input_types:
             p.parser.type_checker.pop()
-        if self.get(p[1]).output_type is not None:
-            p.parser.type_checker.push(self.get(p[1]).output_type)
+        if func.output_type is not None:
+            p.parser.type_checker.push(func.output_type)
 
         p.parser.num_args.pop()
         out = ""
-        if self.get(p[1]).output_type is not None:
+        if func.output_type is not None:
             out = std_message(["PUSHI -69"])
-        out += p[3] + std_message([f"PUSHA {self.get(p[1]).name.replace('_', '')}", "CALL", f"POP {len(self.get(p[1]).input_types)}"])    # If the function exists, return the assembly code
+        out += p[3] + std_message([f"PUSHA {func.name.replace('_', '')}", "CALL", f"POP {len(func.input_types)}"])    # If the function exists, return the assembly code
         return out
 
     def _return(self, p):
