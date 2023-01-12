@@ -1,12 +1,16 @@
-table: integer = 110
+// Regra 110 - Automato celular
+table: integer = 110  // Inicializar a tabela
 
 munus main() {
+    // Inicializar variaveis
     N: integer = 100
     gen: vec<integer>[200] // 2 * N
     gen[N - 2] = 1
-
     c_gen: integer = 0
+
+    // Loop principal - Vai escrever as linhas
     enim(i: integer; i < N-2; i = i + 1) {
+        // Escrever a linha
         enim(j: integer = 0; j < N; j = j + 1) {
             si gen[c_gen*N + j] == 1 {
                 imprimo("#")
@@ -15,6 +19,8 @@ munus main() {
             }
         }
         imprimo("\n")
+        
+        // Calcular a proxima linha
         enim(j: integer = 1; j < N - 1; j = j + 1) {
             pattern: integer = 4*gen[c_gen*N + j - 1] + 2*gen[c_gen*N + j] + 1*gen[c_gen*N + j + 1]
 
