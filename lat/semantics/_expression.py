@@ -16,7 +16,7 @@ class Primary:
             "ref": self._ref,
             "indexing": self._indexing,
             "array_indexing_depth": self._array_indexing_depth,
-	    "new": self._new
+            "new": self._new
         }
 
     def handle(self, p, production) -> str:     # Calls the function corresponding to the production
@@ -24,7 +24,7 @@ class Primary:
 
     def _int(self, p) -> str: # Handles pushing an integer
         """
-        primary : integer
+        primary : INTEGER
         """
         p.parser.type_checker.push("integer")
         return std_message([f"PUSHI {p[1]}"]) # Return the message
@@ -38,7 +38,7 @@ class Primary:
 
     def _string(self, p) -> str: # Handles pushing an integer
         """
-        primary : filum
+        primary : FILUM
         """
         p.parser.type_checker.push("filum")
         return std_message([f"PUSHS {p[1]}"]) # Return the message
@@ -363,6 +363,7 @@ class SubExpression:
         subexpression : condition
         """
         return p[1] # Return the message
+
 
 class Expression:
     """

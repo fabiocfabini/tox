@@ -120,8 +120,12 @@ class Assignment:
             compiler_error(p, 1, f"Indexing not allowed on variable of type '{id_meta.type}'")
             compiler_note("Called from Assignment._array_index")
             sys.exit(1)
-        if id_meta.type[1:] != expr and id_meta.type[4:-1] != expr:
-            compiler_error(p, 5, f"Assignment of '{expr}' to variable of type '{id_meta.type}'")
+        if id_meta.type.startswith("vec") and id_meta.type[4:-1] != expr: 
+            compiler_error(p, 3, f"Assignment of '{expr}' to variable of type '{id_meta.type}'")
+            compiler_note("Called from Assignment._array_index")
+            sys.exit(1)
+        if id_meta.type.startswith("&") and id_meta.type[1:] != expr: 
+            compiler_error(p, 3, f"Assignment of '{expr}' to variable of type '{id_meta.type}'")
             compiler_note("Called from Assignment._array_index")
             sys.exit(1)
         if len(p.parser.indexing_depth[-1]) > 1 and id_meta.type.startswith("&"):
@@ -223,11 +227,11 @@ class Declaration:
         p[3] = p[3].replace(" ", "") # Remove the spaces from the type
         if p.parser.current_scope.level == 0:   # If the variable is declared in the global scope, add it to the global scope
             push_op = std_message(["PUSHGP", f"PUSHI {p.parser.global_count}", "PADD"]) # Get the correct push operation
-            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count), False)
+            p.parser.current_scope.add(p[1], p[3], (p.parser.global_count, p.parser.global_count), p_init=False)
             p.parser.global_count += 1
         else:   # If the variable is declared in a function scope, add it to the function scope
             push_op = std_message(["PUSHFP", f"PUSHI {p.parser.frame_count}", "PADD"]) # Get the correct push operation
-            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count), False)
+            p.parser.current_scope.add(p[1], p[3], (p.parser.frame_count, p.parser.frame_count), p_init=False)
             p.parser.frame_count += 1
 
         # Uninitialized pointers point to themselves
@@ -325,7 +329,7 @@ class DeclarationAssignment:
 
     def _array_range_init(self, p) -> str: # Declaring and initializing an array with a range TODO: turn integer into expression if possible
         """
-        declaration_assignment : ID ':' Ptype ASSIGN '['   integer RETI   integer ']'
+        declaration_assignment : ID ':' Vtype ASSIGN '['   integer RETI   integer ']'
         """
         if p[1] in p.parser.current_scope.Table:    # If the variable already exists in the current scope table, report an error
             compiler_error(p, 1, f"Variable {p[1]} is already defined")
@@ -357,7 +361,7 @@ class DeclarationAssignment:
             compiler_error(p, 1, f"Variable {p[1]} is already defined")
             compiler_note("Called from DeclarationAssignment._pointer_init")
             sys.exit(1)
-        if not expr.startswith("vec") and expr != p[3]: # Cam only assign vectors and pointers to pointer
+        if not expr.startswith("vec") and expr != p[3]: # Can only assign vectors and pointers to pointer
             compiler_error(p, 5, f"Initialization of pointer of type '{p[3]}' with expression of type '{expr}'")
             compiler_note("Called from DeclarationAssignment._pointer_init")
             sys.exit(1)
