@@ -1,0 +1,21 @@
+munus main() {
+    // Ler x do utilizador.
+    x: integer
+    x = legerei("Escreve 1 ou 0: ")
+
+    // Match
+    par x {
+        // Caso seja 0
+        0 -> {
+            imprimo("x é zero\n")
+        }
+        // Caso seja 1
+        1 -> {
+            imprimo("x é um\n")
+        }
+        // Defeito
+        defectus -> {
+            imprimo("x não é nem zero nem um!\n")
+        }
+    }
+}
