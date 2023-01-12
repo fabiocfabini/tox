@@ -7,8 +7,9 @@ class Primary:
     """
     Class that handles the basic building blocks of an expression.
     """
+
     def __init__(self):
-        self.productions = {    #   Maps production names to their respective functions
+        self.productions = {  #   Maps production names to their respective functions
             "integer": self._int,
             "float": self._float,
             "filum": self._string,
@@ -16,39 +17,39 @@ class Primary:
             "ref": self._ref,
             "indexing": self._indexing,
             "array_indexing_depth": self._array_indexing_depth,
-            "new": self._new
+            "new": self._new,
         }
 
-    def handle(self, p, production) -> str:     # Calls the function corresponding to the production
+    def handle(self, p, production) -> str:  # Calls the function corresponding to the production
         return self.productions[production](p)  # This is the function that is called by the parser
 
-    def _int(self, p) -> str: # Handles pushing an integer
+    def _int(self, p) -> str:  # Handles pushing an integer
         """
         primary : INTEGER
         """
         p.parser.type_checker.push("integer")
-        return std_message([f"PUSHI {p[1]}"]) # Return the message
+        return std_message([f"PUSHI {p[1]}"])  # Return the message
 
-    def _float(self, p) -> str: # Handles pushing an integer
+    def _float(self, p) -> str:  # Handles pushing an integer
         """
         primary : FLOAT
         """
         p.parser.type_checker.push("float")
-        return std_message([f"PUSHF {p[1]}"]) # Return the message
+        return std_message([f"PUSHF {p[1]}"])  # Return the message
 
-    def _string(self, p) -> str: # Handles pushing an integer
+    def _string(self, p) -> str:  # Handles pushing an integer
         """
         primary : FILUM
         """
         p.parser.type_checker.push("filum")
-        return std_message([f"PUSHS {p[1]}"]) # Return the message
+        return std_message([f"PUSHS {p[1]}"])  # Return the message
 
-    def _id(self, p) -> str: # Handles pushing the value of a variable
+    def _id(self, p) -> str:  # Handles pushing the value of a variable
         """
         primary : ID
         """
-        id_meta, in_function, _ = p.parser.current_scope.get(p[1]) # Get the metadata of the variable
-        if id_meta is None: # If the variable is not declared, Throw an error
+        id_meta, in_function, _ = p.parser.current_scope.get(p[1])  # Get the metadata of the variable
+        if id_meta is None:  # If the variable is not declared, Throw an error
             compiler_error(p, 1, f"Variable {p[1]} not declared")
             compiler_note("Called from Primary.id")
             sys.exit(1)
@@ -57,7 +58,7 @@ class Primary:
             compiler_note("Called from Primary.id")
             sys.exit(1)
 
-        push_op = "PUSHGP" if not in_function else "PUSHFP" # If the variable is in a function, push the frame pointer else push the global pointer
+        push_op = "PUSHGP" if not in_function else "PUSHFP"  # If the variable is in a function, push the frame pointer else push the global pointer
         if id_meta.type.startswith("vec"):
             p.parser.type_checker.push(f"&{id_meta.type[4:-1]}")
             return std_message([push_op, f"PUSHI {id_meta.stack_position[0]}", "PADD"])
@@ -65,12 +66,12 @@ class Primary:
             p.parser.type_checker.push(id_meta.type)
             return std_message([push_op, f"LOAD {id_meta.stack_position[0]}"])  # Return the message
 
-    def _ref(self, p) -> str: # Handles getting the address of a variable
+    def _ref(self, p) -> str:  # Handles getting the address of a variable
         """
         primary : '&' ID
         """
         id_meta, in_function, _ = p.parser.current_scope.get(p[2])
-        if id_meta is None: # If the variable is not declared, Throw an error
+        if id_meta is None:  # If the variable is not declared, Throw an error
             compiler_error(p, 2, f"Variable {p[2]} not declared")
             compiler_note("Called from Primary._ref")
             sys.exit(1)
@@ -80,15 +81,15 @@ class Primary:
             sys.exit(1)
         p.parser.type_checker.push(f"&{id_meta.type}")
 
-        push_op = "PUSHGP" if not in_function else "PUSHFP" # If the variable is in a function, push the frame pointer else push the global pointer
-        return std_message([push_op, f"PUSHI {id_meta.stack_position[0]}", "PADD"]) # Return the message
+        push_op = "PUSHGP" if not in_function else "PUSHFP"  # If the variable is in a function, push the frame pointer else push the global pointer
+        return std_message([push_op, f"PUSHI {id_meta.stack_position[0]}", "PADD"])  # Return the message
 
-    def _indexing(self, p) -> str: # Handles indexing into an array
+    def _indexing(self, p) -> str:  # Handles indexing into an array
         """
         primary : ID ndepth
         """
-        id_meta, in_function, _ = p.parser.current_scope.get(p[1]) # Get the metadata of the variable
-        if id_meta is None: # If the variable is not declared, Throw an error
+        id_meta, in_function, _ = p.parser.current_scope.get(p[1])  # Get the metadata of the variable
+        if id_meta is None:  # If the variable is not declared, Throw an error
             compiler_error(p, 1, f"Variable {p[1]} not declared")
             compiler_note("Called from Primary._indexing")
             sys.exit(1)
@@ -109,17 +110,17 @@ class Primary:
             compiler_note("Called from Primary._indexing")
             sys.exit(1)
 
-        push_op = "PUSHGP" if not in_function else "PUSHFP" # If the variable is in a function, push the frame pointer else push the global pointer
+        push_op = "PUSHGP" if not in_function else "PUSHFP"  # If the variable is in a function, push the frame pointer else push the global pointer
         if id_meta.type.startswith("vec"):
             op = [push_op, f"PUSHI {id_meta.stack_position[0]}", "PADD"]
             for i, expr in enumerate(p.parser.indexing_depth[-1]):
                 factor = ["PUSHI 1"]
-                for dim in id_meta.array_shape[i+1:]:
+                for dim in id_meta.array_shape[i + 1 :]:
                     factor += [f"PUSHI {dim}", "MUL"]
                 op += [expr] + factor + ["MUL", "PADD"]
             if len(p.parser.indexing_depth[-1]) < len(id_meta.array_shape):
                 p.parser.indexing_depth.pop()
-                p.parser.type_checker.push("&"+id_meta.type[4:-1])
+                p.parser.type_checker.push("&" + id_meta.type[4:-1])
                 return std_message(op)
             else:
                 p.parser.indexing_depth.pop()
@@ -128,7 +129,7 @@ class Primary:
         elif id_meta.type.startswith("&"):
             p.parser.type_checker.push(id_meta.type[1:])
             expr = p.parser.indexing_depth.pop()
-            return std_message([push_op, f"LOAD {id_meta.stack_position[0]}", f"{expr[0]}PADD", "LOAD 0"]) # Return the message
+            return std_message([push_op, f"LOAD {id_meta.stack_position[0]}", f"{expr[0]}PADD", "LOAD 0"])  # Return the message
 
     def _array_indexing_depth(self, p):
         """
@@ -146,246 +147,224 @@ class Primary:
         else:
             p.parser.indexing_depth.append([p[2]])
 
-    def _new(self, p) -> str: # Handles a grouped expression
+    def _new(self, p) -> str:  # Handles a grouped expression
         """
         primary : '(' expression ')'
         """
-        return p[2] # Return the message
+        return p[2]  # Return the message
 
 
 class Unary:
     """
     Class that handles unary operations.
     """
-    def __init__(self):
-        self.productions = {    #   Maps production names to their respective functions
-            "not": self._not,
-            "neg": self._neg,
-            "primary": self._primary
-        }
 
-    def handle(self, p, production) -> str:    # Calls the function corresponding to the production
+    def __init__(self):
+        self.productions = {"not": self._not, "neg": self._neg, "primary": self._primary}  #   Maps production names to their respective functions
+
+    def handle(self, p, production) -> str:  # Calls the function corresponding to the production
         return self.productions[production](p)  # This is the function that is called by the parser
 
-    def _not(self, p) -> str: # Handles a not operation
+    def _not(self, p) -> str:  # Handles a not operation
         """
         unary : '!' unary
         """
         return p.parser.type_checker.handle(p, "not")
 
-    def _neg(self, p) -> str: # Handles a negation operation
+    def _neg(self, p) -> str:  # Handles a negation operation
         """
         unary : '-' unary
         """
         return p.parser.type_checker.handle(p, "neg")
 
-    def _primary(self, p) -> str: # Handles a primary expression
+    def _primary(self, p) -> str:  # Handles a primary expression
         """
         unary : primary
         """
-        return p[1] # Return the message
+        return p[1]  # Return the message
 
 
 class Factor:
     """
     Class that handles factor operations.
     """
-    def __init__(self):
-        self.productions = {   #   Maps production names to their respective functions
-            "mul": self._mul,
-            "div": self._div,
-            "mod": self._mod,
-            "unary": self._unary
-        }
 
-    def handle(self, p, production) -> str:   # Calls the function corresponding to the production
+    def __init__(self):
+        self.productions = {"mul": self._mul, "div": self._div, "mod": self._mod, "unary": self._unary}  #   Maps production names to their respective functions
+
+    def handle(self, p, production) -> str:  # Calls the function corresponding to the production
         return self.productions[production](p)  # This is the function that is called by the parser
 
-    def _mul(self, p) -> str: # Handles a multiplication operation
+    def _mul(self, p) -> str:  # Handles a multiplication operation
         """
         factor : factor '*' unary
         """
         return p.parser.type_checker.handle(p, "mul")
 
-    def _div(self, p) -> str: # Handles a division operation
+    def _div(self, p) -> str:  # Handles a division operation
         """
         factor : factor '/' unary
         """
         return p.parser.type_checker.handle(p, "div")
 
-    def _mod(self, p) -> str: # Handles a modulo operation
+    def _mod(self, p) -> str:  # Handles a modulo operation
         """
         factor : factor '%' unary
         """
         return p.parser.type_checker.handle(p, "mod")
 
-    def _unary(self, p) -> str: # Handles a unary expression
+    def _unary(self, p) -> str:  # Handles a unary expression
         """
         factor : unary
         """
-        return p[1] # Return the message
+        return p[1]  # Return the message
 
 
 class Term:
     """
     Class that handles term operations.
     """
-    def __init__(self):
-        self.productions = {   #   Maps production names to their respective functions
-            "add": self._add,
-            "sub": self._sub,
-            "factor": self._factor
-        }
 
-    def handle(self, p, production) -> str:    # Calls the function corresponding to the production
+    def __init__(self):
+        self.productions = {"add": self._add, "sub": self._sub, "factor": self._factor}  #   Maps production names to their respective functions
+
+    def handle(self, p, production) -> str:  # Calls the function corresponding to the production
         return self.productions[production](p)  # This is the function that is called by the parser
 
-    def _add(self, p) -> str: # Handles an addition operation
+    def _add(self, p) -> str:  # Handles an addition operation
         """
         term : term '+' factor
         """
         return p.parser.type_checker.handle(p, "add")
 
-    def _sub(self, p) -> str: # Handles a subtraction operation
+    def _sub(self, p) -> str:  # Handles a subtraction operation
         """
         term : term '-' factor
         """
         return p.parser.type_checker.handle(p, "sub")
 
-    def _factor(self, p) -> str: # Handles a factor expression
+    def _factor(self, p) -> str:  # Handles a factor expression
         """
         term : factor
         """
-        return p[1] # Return the message
+        return p[1]  # Return the message
 
 
 class Comparison:
     """
     Class that handles comparison operations.
     """
-    def __init__(self):
-        self.productions = {  #   Maps production names to their respective functions
-            "lt": self._lt,
-            "gt": self._gt,
-            "lte": self._lte,
-            "gte": self._gte,
-            "term": self._term
-        }
 
-    def handle(self, p, production) -> str:    # Calls the function corresponding to the production
+    def __init__(self):
+        self.productions = {"lt": self._lt, "gt": self._gt, "lte": self._lte, "gte": self._gte, "term": self._term}  #   Maps production names to their respective functions
+
+    def handle(self, p, production) -> str:  # Calls the function corresponding to the production
         return self.productions[production](p)  # This is the function that is called by the parser
 
-    def _lt(self, p) -> str: # Handles a less than operation
+    def _lt(self, p) -> str:  # Handles a less than operation
         """
         comparison : comparison '<' term
         """
         return p.parser.type_checker.handle(p, "lt")
 
-    def _gt(self, p) -> str: # Handles a greater than operation
+    def _gt(self, p) -> str:  # Handles a greater than operation
         """
         comparison : comparison '>' term
         """
         return p.parser.type_checker.handle(p, "gt")
 
-    def _lte(self, p) -> str: # Handles a less than or equal to operation
+    def _lte(self, p) -> str:  # Handles a less than or equal to operation
         """
         comparison : comparison '<=' term
         """
         return p.parser.type_checker.handle(p, "lte")
 
-    def _gte(self, p) -> str: # Handles a greater than or equal to operation
+    def _gte(self, p) -> str:  # Handles a greater than or equal to operation
         """
         comparison : comparison '>=' term
         """
         return p.parser.type_checker.handle(p, "gte")
 
-    def _term(self, p) -> str: # Handles a term expression
+    def _term(self, p) -> str:  # Handles a term expression
         """
         comparison : term
         """
-        return p[1] # Return the message
+        return p[1]  # Return the message
 
 
 class Condition:
     """
     Class that handles conditions.
     """
-    def __init__(self):
-        self.productions = {    #   Maps production names to their respective functions
-            "eq": self._eq,
-            "neq": self._neq,
-            "comparison": self._comparison
-        }
 
-    def handle(self, p, production) -> str:   # Calls the function corresponding to the production
+    def __init__(self):
+        self.productions = {"eq": self._eq, "neq": self._neq, "comparison": self._comparison}  #   Maps production names to their respective functions
+
+    def handle(self, p, production) -> str:  # Calls the function corresponding to the production
         return self.productions[production](p)  # This is the function that is called by the parser
 
-    def _eq(self, p) -> str: # Handles an equal to operation
+    def _eq(self, p) -> str:  # Handles an equal to operation
         """
         condition : condition EQ comparison
         """
         return p.parser.type_checker.handle(p, "eq")
 
-    def _neq(self, p) -> str: # Handles a not equal to operation
+    def _neq(self, p) -> str:  # Handles a not equal to operation
         """
         condition : condition NEQ comparison
         """
         return p.parser.type_checker.handle(p, "neq")
 
-    def _comparison(self, p) -> str: # Handles a comparison expression
+    def _comparison(self, p) -> str:  # Handles a comparison expression
         """
         condition : comparison
         """
-        return p[1] # Return the message
+        return p[1]  # Return the message
 
 
 class SubExpression:
     """
     Class that handles subexpressions.
     """
+
     def __init__(self):
-        self.productions = {   #   Maps production names to their respective functions
-            "and": self._and,
-            "condition": self._condition
-        }
+        self.productions = {"and": self._and, "condition": self._condition}  #   Maps production names to their respective functions
 
     def handle(self, p, production) -> str:  # Calls the function corresponding to the production
         return self.productions[production](p)  # This is the function that is called by the parser
 
-    def _and(self, p) -> str: # Handles an and operation
+    def _and(self, p) -> str:  # Handles an and operation
         """
         subexpression : subexpression AND condition
         """
         return p.parser.type_checker.handle(p, "and")
 
-    def _condition(self, p) -> str: # Handles a condition expression
+    def _condition(self, p) -> str:  # Handles a condition expression
         """
         subexpression : condition
         """
-        return p[1] # Return the message
+        return p[1]  # Return the message
 
 
 class Expression:
     """
     Class that handles expressions.
     """
+
     def __init__(self):
-        self.productions = {    #   Maps production names to their respective functions
-            "or": self._or,
-            "subexpression": self._subexpression
-        }
+        self.productions = {"or": self._or, "subexpression": self._subexpression}  #   Maps production names to their respective functions
 
     def handle(self, p, production) -> str:  # Calls the function corresponding to the production
         return self.productions[production](p)  # This is the function that is called by the parser
 
-    def _or(self, p) -> str: # Handles an or operation
+    def _or(self, p) -> str:  # Handles an or operation
         """
         expression : expression OR subexpression
         """
         return p.parser.type_checker.handle(p, "or")
 
-    def _subexpression(self, p) -> str: # Handles a subexpression expression
+    def _subexpression(self, p) -> str:  # Handles a subexpression expression
         """
         expression : subexpression
         """
-        return p[1] # Return the message
+        return p[1]  # Return the message

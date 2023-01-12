@@ -5,27 +5,28 @@ import sys
 
 from lat import compiler_error, std_message
 
+
 @dataclass
 class TypeCheck:
     stack: List[str] = field(default_factory=list)
 
     def __post_init__(self):
         self.productions = {
-            "not":  self._not,
+            "not": self._not,
             "neg": self._neg,
-            "mul":  self._mul,
-            "div":  self._div,
-            "mod":  self._mod,
-            "add":  self._add,
-            "sub":  self._sub,
-            "lt":   self._lt,
-            "lte":   self._lte,
-            "gt":   self._gt,
-            "gte":   self._gte,
-            "eq":   self._eq,
-            "neq":   self._neq,
-            "and":  self._and,
-            "or":   self._or,
+            "mul": self._mul,
+            "div": self._div,
+            "mod": self._mod,
+            "add": self._add,
+            "sub": self._sub,
+            "lt": self._lt,
+            "lte": self._lte,
+            "gt": self._gt,
+            "gte": self._gte,
+            "eq": self._eq,
+            "neq": self._neq,
+            "and": self._and,
+            "or": self._or,
         }
 
     def handle(self, p, production: str):

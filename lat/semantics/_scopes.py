@@ -10,6 +10,7 @@ class MetaData:
     """
     Class that represents the metadata of a variable in a given scope.
     """
+
     type: str
     stack_position: Tuple[int, int]
     array_shape: Optional[List[int]] = None
@@ -22,13 +23,15 @@ class MetaData:
         """
         return self.stack_position[1] - self.stack_position[0] + 1
 
+
 @dataclass
 class Scope:
     """
     Class that represents a scope and all the variables in it.
     """
+
     name: str
-    level : int
+    level: int
     parent: Optional[Scope] = None
     in_function: bool = False
     Table: Dict[str, MetaData] = field(default_factory=dict)
@@ -59,12 +62,10 @@ class Scope:
         for key, value in self.Table.items():
             print(f"    name: {key};  type: {value.type};  stack:{value.stack_position};  shape:{value.array_shape};  init:{value.p_init};")
 
-
     def handle(self, p, production: str):
         return self.productions[production](p)
 
-
-    def add(self, key: str, type: str, stack_position: Tuple[int, int], array_shape: Optional[List[int]] = None, p_init: bool = True): # Adds a variable to the scope
+    def add(self, key: str, type: str, stack_position: Tuple[int, int], array_shape: Optional[List[int]] = None, p_init: bool = True):  # Adds a variable to the scope
         self.Table[key] = MetaData(type, stack_position, array_shape, p_init)
 
     def get(self, key: str) -> Tuple[Optional[MetaData], bool]:
@@ -88,10 +89,10 @@ class Scope:
         ss :
         """
         p.parser.current_scope = Scope(
-            name=f"SCOPE_{p.parser.current_scope.level + 1}", 
-            level=p.parser.current_scope.level + 1, 
+            name=f"SCOPE_{p.parser.current_scope.level + 1}",
+            level=p.parser.current_scope.level + 1,
             parent=p.parser.current_scope,
-            in_function=False if p.parser.functions_handler.current_function is None else True
+            in_function=False if p.parser.functions_handler.current_function is None else True,
         )
 
     def _end_scope(self, p):
@@ -99,10 +100,9 @@ class Scope:
         es :
         """
         if p.parser.functions_handler.current_function is not None:
-            p.parser.frame_count -= p.parser.current_scope.num_alloced() 
+            p.parser.frame_count -= p.parser.current_scope.num_alloced()
         else:
             p.parser.global_count -= p.parser.current_scope.num_alloced()
         out = std_message([f"POP {p.parser.current_scope.num_alloced()}"])
         p.parser.current_scope = p.parser.current_scope.parent
         return out
-

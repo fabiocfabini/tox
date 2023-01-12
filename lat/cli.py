@@ -12,8 +12,9 @@ from lat.utils.colors import *
 OptArgs = Dict[str, str]
 ReqArgs = Dict[str, Union[str, bool]]
 possible_exec_modes = ["run", "build", "test", "euler", "examples"]
-possible_opt_args = ["-o","--output", "-v", "--verbose", "-rec", "--record", "-clc", "--clean-up"]
+possible_opt_args = ["-o", "--output", "-v", "--verbose", "-rec", "--record", "-clc", "--clean-up"]
 recognized_args = possible_exec_modes + possible_opt_args
+
 
 def print_help():
     print(f"{COLOR_BLUE}Usage{RESET_COLOR}: lat [EXECUTION MODE] [ARGUMENTS] [OPTIONS]")
@@ -29,18 +30,21 @@ def print_help():
     print(f"  {COLOR_GREEN}examples{RESET_COLOR}   Compile and run the example programs. Compare the outputs with the expected outputs.")
     print()
     print(f"{COLOR_BLUE}OPTIONS{RESET_COLOR}:")
-    print(f"  {COLOR_GREEN}-h{RESET_COLOR}, {COLOR_GREEN}--help{RESET_COLOR}"       +" "*10 +   "Show this help message and exit.")
-    print(f"  {COLOR_GREEN}-o{RESET_COLOR}, {COLOR_GREEN}--ouput{RESET_COLOR}"      +" "*9 +   "Specify the output file.")
-    print(f"  {COLOR_GREEN}-rec{RESET_COLOR}, {COLOR_GREEN}--record{RESET_COLOR}"       +" "*6 +   "Record the output of the executed programs.")
-    print(f"  {COLOR_GREEN}-clc{RESET_COLOR}, {COLOR_GREEN}--clean-up{RESET_COLOR}"     +" "*4 +   "Clear the output of the executed programs.")
-    print(f"  {COLOR_GREEN}-v{RESET_COLOR}, {COLOR_GREEN}--verbose{RESET_COLOR}"        +" "*7 +   "Show verbose output.")
+    print(f"  {COLOR_GREEN}-h{RESET_COLOR}, {COLOR_GREEN}--help{RESET_COLOR}" + " " * 10 + "Show this help message and exit.")
+    print(f"  {COLOR_GREEN}-o{RESET_COLOR}, {COLOR_GREEN}--ouput{RESET_COLOR}" + " " * 9 + "Specify the output file.")
+    print(f"  {COLOR_GREEN}-rec{RESET_COLOR}, {COLOR_GREEN}--record{RESET_COLOR}" + " " * 6 + "Record the output of the executed programs.")
+    print(f"  {COLOR_GREEN}-clc{RESET_COLOR}, {COLOR_GREEN}--clean-up{RESET_COLOR}" + " " * 4 + "Clear the output of the executed programs.")
+    print(f"  {COLOR_GREEN}-v{RESET_COLOR}, {COLOR_GREEN}--verbose{RESET_COLOR}" + " " * 7 + "Show verbose output.")
+
 
 def error(msg: str, verbose: bool = False):
     print(f"{COLOR_RED}[ERROR]{RESET_COLOR}", msg)
     sys.exit(1)
 
+
 def echo_cmd(cmd: str, verbose: bool = False) -> Tuple[bool, str]:
-    if verbose: print(f"{COLOR_BLUE}[CMD]{RESET_COLOR} {cmd}")
+    if verbose:
+        print(f"{COLOR_BLUE}[CMD]{RESET_COLOR} {cmd}")
     if cmd.startswith("diff"):
         output = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode("utf-8")
         if output != "":
@@ -53,14 +57,21 @@ def echo_cmd(cmd: str, verbose: bool = False) -> Tuple[bool, str]:
             return 2, "The program was skipped."
     return 0, ""
 
+
 def warn_cmd(msg: str, verbose: bool = False):
-    if verbose: print(f"{COLOR_YELLOW}[WARN]{RESET_COLOR} {msg}")
+    if verbose:
+        print(f"{COLOR_YELLOW}[WARN]{RESET_COLOR} {msg}")
+
 
 def info_cmd(msg: str, verbose: bool = False):
-    if verbose: print(f"{COLOR_BLUE}[INFO]{RESET_COLOR} {msg}")
+    if verbose:
+        print(f"{COLOR_BLUE}[INFO]{RESET_COLOR} {msg}")
+
 
 def prepare_cmd_args() -> Tuple[OptArgs, ReqArgs]:
-    if "-h" in sys.argv or "--help" in sys.argv: print_help(); sys.exit(0)
+    if "-h" in sys.argv or "--help" in sys.argv:
+        print_help()
+        sys.exit(0)
 
     # Handle Optional Arguments
     input_file = None
@@ -76,30 +87,35 @@ def prepare_cmd_args() -> Tuple[OptArgs, ReqArgs]:
     output_file = sys.argv[sys.argv.index("-o") + 1] if "-o" in sys.argv else None
     rec = True if "-rec" in sys.argv else False
     clc = True if "-clc" in sys.argv else False
-    verbose = True if "-v" in sys.argv else False #TODO: Implement verbose output
+    verbose = True if "-v" in sys.argv else False  # TODO: Implement verbose output
 
-    if verbose: warn_cmd("Verbose output is not implemented yet.")
+    if verbose:
+        warn_cmd("Verbose output is not implemented yet.")
 
     opt_args = {"-o": output_file, "-v": verbose, "-rec": rec, "-clc": clc}
 
     # Handle Required Arguments
-    run   = True if "run"   in sys.argv else False 
-    build = True if "build" in sys.argv else False 
-    test  = True if "test"  in sys.argv else False 
-    euler = True if "euler" in sys.argv else False 
-    examples = True if "examples" in sys.argv else False 
+    run = True if "run" in sys.argv else False
+    build = True if "build" in sys.argv else False
+    test = True if "test" in sys.argv else False
+    euler = True if "euler" in sys.argv else False
+    examples = True if "examples" in sys.argv else False
     modes = [run, build, test, euler, examples]
-    if len(list(filter(bool, modes))) == 0: error(f"No execution mode specified. (run, build, test, euler, examples)")
-    if len(list(filter(bool, modes))) >  1: error("Multiple execution modes specified.")
+    if len(list(filter(bool, modes))) == 0:
+        error(f"No execution mode specified. (run, build, test, euler, examples)")
+    if len(list(filter(bool, modes))) > 1:
+        error("Multiple execution modes specified.")
 
     req_args = {"input": input_file, "run": run, "build": build, "test": test, "euler": euler, "examples": examples}
 
     return opt_args, req_args
 
+
 def run_execute(req_args: ReqArgs, opt_args: OptArgs):
-    if not req_args["input"]: error("No input file specified.")
+    if not req_args["input"]:
+        error("No input file specified.")
     if not opt_args["-o"]:
-        opt_args["-o"] = os.path.splitext(req_args['input'])[0] + ".vms"
+        opt_args["-o"] = os.path.splitext(req_args["input"])[0] + ".vms"
     build_execute(req_args, opt_args)
     info_cmd(f"Running {opt_args['-o']}", verbose=opt_args["-v"])
     ret = echo_cmd(f"vms {opt_args['-o']}", verbose=opt_args["-v"])
@@ -107,10 +123,12 @@ def run_execute(req_args: ReqArgs, opt_args: OptArgs):
         print(ret[1])
         sys.exit(1)
 
+
 def build_execute(req_args: ReqArgs, opt_args: OptArgs):
     from lat import parser
 
-    if not req_args["input"]: error("No input file specified.")
+    if not req_args["input"]:
+        error("No input file specified.")
     with open(req_args["input"], "r") as f:
         info_cmd(f"Compiling {req_args['input']}", verbose=opt_args["-v"])
         content = f.read()
@@ -119,13 +137,14 @@ def build_execute(req_args: ReqArgs, opt_args: OptArgs):
         parser.input = content
         output = parser.parse(content)
         if not opt_args["-o"]:
-            opt_args["-o"] = os.path.splitext(req_args['input'])[0] + ".vms"
+            opt_args["-o"] = os.path.splitext(req_args["input"])[0] + ".vms"
         with open(opt_args["-o"], "w") as f:
             f.write(output)
 
+
 def test_execute(req_args: ReqArgs, opt_args: OptArgs):
     input_files = glob.glob("test/*.lat")
-    output_files = [os.path.splitext(input_file)[0]+".vms" for input_file in input_files]
+    output_files = [os.path.splitext(input_file)[0] + ".vms" for input_file in input_files]
     num_tests = len(input_files)
     failed_tests: list[Tuple[str, str]] = []
     skipped_tests: list[str] = []
@@ -133,17 +152,19 @@ def test_execute(req_args: ReqArgs, opt_args: OptArgs):
     iterable = tqdm(zip(input_files, output_files), total=len(input_files), desc="Testing", colour="green") if not opt_args["-v"] else zip(input_files, output_files)
     if opt_args["-rec"]:
         for input_file, output_file in iterable:
-            if opt_args['-v']: print(COLOR_GREEN + "-"*80 + RESET_COLOR)
-            ret = echo_cmd(f"lat build {input_file} -o {output_file}", verbose=opt_args['-v'])
+            if opt_args["-v"]:
+                print(COLOR_GREEN + "-" * 80 + RESET_COLOR)
+            ret = echo_cmd(f"lat build {input_file} -o {output_file}", verbose=opt_args["-v"])
             if ret[0] == 2:
                 num_tests -= 1
                 skipped_tests.append(input_file)
                 continue
-            echo_cmd(f"vms {output_file} > {os.path.splitext(output_file)[0]}.ans", verbose=opt_args['-v'])
+            echo_cmd(f"vms {output_file} > {os.path.splitext(output_file)[0]}.ans", verbose=opt_args["-v"])
     else:
         for input_file, output_file in iterable:
-            if opt_args['-v']: print(COLOR_GREEN + "-"*80 + RESET_COLOR)
-            ret = echo_cmd(f"lat build {input_file} -o {output_file}", verbose=opt_args['-v'])
+            if opt_args["-v"]:
+                print(COLOR_GREEN + "-" * 80 + RESET_COLOR)
+            ret = echo_cmd(f"lat build {input_file} -o {output_file}", verbose=opt_args["-v"])
             if ret[0] == 1:
                 num_tests -= 1
                 failed_tests.append((input_file, ret[1]))
@@ -153,43 +174,48 @@ def test_execute(req_args: ReqArgs, opt_args: OptArgs):
                 skipped_tests.append(input_file)
                 continue
             if input_file.startswith("read"):
-                ret = echo_cmd(f"vms {output_file} < '3.14\n314\n314' > {os.path.splitext(output_file)[0]}_com.out", verbose=opt_args['-v'])
+                ret = echo_cmd(f"vms {output_file} < '3.14\n314\n314' > {os.path.splitext(output_file)[0]}_com.out", verbose=opt_args["-v"])
             else:
-                ret = echo_cmd(f"vms {output_file} > {os.path.splitext(output_file)[0]}_com.out", verbose=opt_args['-v'])
+                ret = echo_cmd(f"vms {output_file} > {os.path.splitext(output_file)[0]}_com.out", verbose=opt_args["-v"])
             if ret[0] == 1:
                 num_tests -= 1
                 failed_tests.append((input_file, ret[1]))
                 continue
-            ret = echo_cmd(f"diff {os.path.splitext(output_file)[0]}.ans {os.path.splitext(output_file)[0]}_com.out", verbose=opt_args['-v'])
+            ret = echo_cmd(f"diff {os.path.splitext(output_file)[0]}.ans {os.path.splitext(output_file)[0]}_com.out", verbose=opt_args["-v"])
             if ret[0] != 0:
                 num_tests -= 1
                 failed_tests.append((input_file, ret[1]))
-        if opt_args['-clc']:
-            if opt_args['-v']: print(COLOR_GREEN + "-"*80 + RESET_COLOR)
-            echo_cmd("rm test/*.out", verbose=opt_args['-v'])
-            echo_cmd("rm test/*.vms", verbose=opt_args['-v'])
-        if opt_args['-v']: print(COLOR_GREEN + "-"*80 + RESET_COLOR)
+        if opt_args["-clc"]:
+            if opt_args["-v"]:
+                print(COLOR_GREEN + "-" * 80 + RESET_COLOR)
+            echo_cmd("rm test/*.out", verbose=opt_args["-v"])
+            echo_cmd("rm test/*.vms", verbose=opt_args["-v"])
+        if opt_args["-v"]:
+            print(COLOR_GREEN + "-" * 80 + RESET_COLOR)
         for failed_test, error_msg in failed_tests:
             print(f"{COLOR_RED}Failed: {failed_test}.{RESET_COLOR}")
             print(f"{COLOR_RED}{error_msg}{RESET_COLOR}")
         for skipped_test in skipped_tests:
             print(f"{COLOR_YELLOW}Skipped: {skipped_test}.{RESET_COLOR}")
-        if opt_args['-v']: print(COLOR_GREEN + "-"*80 + RESET_COLOR)
+        if opt_args["-v"]:
+            print(COLOR_GREEN + "-" * 80 + RESET_COLOR)
         print(f"{COLOR_GREEN}Passed: {num_tests}.{RESET_COLOR}", end=" ")
         print(f"{COLOR_RED}Failed: {len(failed_tests)}.{RESET_COLOR}", end=" ")
     print(f"{COLOR_YELLOW}Skipped: {len(skipped_tests)}.{RESET_COLOR}")
 
+
 def euler_execute(req_args: ReqArgs, opt_args: OptArgs):
     input_files = glob.glob("euler/problem*/*.lat")
-    output_files = [os.path.splitext(input_file)[0]+".vms" for input_file in input_files]
+    output_files = [os.path.splitext(input_file)[0] + ".vms" for input_file in input_files]
     num_tests = len(input_files)
     failed_tests: list[Tuple[str, str]] = []
     skipped_tests: list[str] = []
 
     iterable = tqdm(zip(input_files, output_files), total=len(input_files), desc="Testing", colour="green") if not opt_args["-v"] else zip(input_files, output_files)
     for input_file, output_file in iterable:
-        if opt_args['-v']: print(COLOR_GREEN + "-"*80 + RESET_COLOR)
-        ret = echo_cmd(f"lat build {input_file} -o {output_file}", verbose=opt_args['-v'])
+        if opt_args["-v"]:
+            print(COLOR_GREEN + "-" * 80 + RESET_COLOR)
+        ret = echo_cmd(f"lat build {input_file} -o {output_file}", verbose=opt_args["-v"])
         if ret[0] == 1:
             num_tests -= 1
             failed_tests.append((input_file, ret[1]))
@@ -198,33 +224,37 @@ def euler_execute(req_args: ReqArgs, opt_args: OptArgs):
             num_tests -= 1
             skipped_tests.append(input_file)
             continue
-        ret = echo_cmd(f"vms {output_file} > {os.path.splitext(output_file)[0]}.out", verbose=opt_args['-v'])
+        ret = echo_cmd(f"vms {output_file} > {os.path.splitext(output_file)[0]}.out", verbose=opt_args["-v"])
         if ret[0] == 1:
             num_tests -= 1
             failed_tests.append((input_file, ret[1]))
             continue
-        ret = echo_cmd(f"diff {os.path.splitext(output_file)[0]}.ans {os.path.splitext(output_file)[0]}.out", verbose=opt_args['-v'])
+        ret = echo_cmd(f"diff {os.path.splitext(output_file)[0]}.ans {os.path.splitext(output_file)[0]}.out", verbose=opt_args["-v"])
         if ret[0] != 0:
             num_tests -= 1
             failed_tests.append((input_file, ret[1]))
-    if opt_args['-clc']:
-        if opt_args['-v']: print(COLOR_GREEN + "-"*80 + RESET_COLOR)
+    if opt_args["-clc"]:
+        if opt_args["-v"]:
+            print(COLOR_GREEN + "-" * 80 + RESET_COLOR)
         echo_cmd("rm euler/problem*/*.out")
         echo_cmd("rm euler/problem*/*.vms")
-    if opt_args['-v']: print(COLOR_GREEN + "-"*80 + RESET_COLOR)
+    if opt_args["-v"]:
+        print(COLOR_GREEN + "-" * 80 + RESET_COLOR)
     for failed_test, error_msg in failed_tests:
         print(f"{COLOR_RED}Failed: {failed_test}.{RESET_COLOR}")
         print(f"{COLOR_RED}{error_msg}{RESET_COLOR}")
     for skipped_test in skipped_tests:
         print(f"{COLOR_YELLOW}Skipped: {skipped_test}.{RESET_COLOR}")
-    if opt_args['-v']: print(COLOR_GREEN + "-"*80 + RESET_COLOR)
+    if opt_args["-v"]:
+        print(COLOR_GREEN + "-" * 80 + RESET_COLOR)
     print(f"{COLOR_GREEN}Passed: {num_tests}{RESET_COLOR}", end=" ")
     print(f"{COLOR_RED}Failed: {len(failed_tests)}.{RESET_COLOR}", end=" ")
     print(f"{COLOR_YELLOW}Skipped: {len(skipped_tests)}.{RESET_COLOR}")
 
+
 def examples_execute(req_args: ReqArgs, opt_args: OptArgs):
     input_files = glob.glob("examples/*.lat")
-    output_files = [os.path.splitext(input_file)[0]+".vms" for input_file in input_files]
+    output_files = [os.path.splitext(input_file)[0] + ".vms" for input_file in input_files]
     num_tests = len(input_files)
     failed_tests: list[Tuple[str, str]] = []
     skipped_tests: list[str] = []
@@ -232,17 +262,19 @@ def examples_execute(req_args: ReqArgs, opt_args: OptArgs):
     iterable = tqdm(zip(input_files, output_files), total=len(input_files), desc="Testing", colour="green") if not opt_args["-v"] else zip(input_files, output_files)
     if opt_args["-rec"]:
         for input_file, output_file in iterable:
-            if opt_args['-v']: print(COLOR_GREEN + "-"*80 + RESET_COLOR)
-            ret = echo_cmd(f"lat build {input_file} -o {output_file}", verbose=opt_args['-v'])
+            if opt_args["-v"]:
+                print(COLOR_GREEN + "-" * 80 + RESET_COLOR)
+            ret = echo_cmd(f"lat build {input_file} -o {output_file}", verbose=opt_args["-v"])
             if ret[0] == 2:
                 num_tests -= 1
                 skipped_tests.append(input_file)
                 continue
-            echo_cmd(f"vms {output_file} > {os.path.splitext(output_file)[0]}.ans", verbose=opt_args['-v'])
+            echo_cmd(f"vms {output_file} > {os.path.splitext(output_file)[0]}.ans", verbose=opt_args["-v"])
     else:
         for input_file, output_file in iterable:
-            if opt_args['-v']: print(COLOR_GREEN + "-"*80 + RESET_COLOR)
-            ret = echo_cmd(f"lat build {input_file} -o {output_file}", verbose=opt_args['-v'])
+            if opt_args["-v"]:
+                print(COLOR_GREEN + "-" * 80 + RESET_COLOR)
+            ret = echo_cmd(f"lat build {input_file} -o {output_file}", verbose=opt_args["-v"])
             if ret[0] == 1:
                 num_tests -= 1
                 failed_tests.append((input_file, ret[1]))
@@ -251,36 +283,46 @@ def examples_execute(req_args: ReqArgs, opt_args: OptArgs):
                 num_tests -= 1
                 skipped_tests.append(input_file)
                 continue
-            ret = echo_cmd(f"vms {output_file} > {os.path.splitext(output_file)[0]}.out", verbose=opt_args['-v'])
+            ret = echo_cmd(f"vms {output_file} > {os.path.splitext(output_file)[0]}.out", verbose=opt_args["-v"])
             if ret[0] == 1:
                 num_tests -= 1
                 failed_tests.append((input_file, ret[1]))
                 continue
-            ret = echo_cmd(f"diff {os.path.splitext(output_file)[0]}.ans {os.path.splitext(output_file)[0]}.out", verbose=opt_args['-v'])
+            ret = echo_cmd(f"diff {os.path.splitext(output_file)[0]}.ans {os.path.splitext(output_file)[0]}.out", verbose=opt_args["-v"])
             if ret[0] != 0:
                 num_tests -= 1
                 failed_tests.append((input_file, ret[1]))
-    if opt_args['-clc']:
-        if opt_args['-v']: print(COLOR_GREEN + "-"*80 + RESET_COLOR)
+    if opt_args["-clc"]:
+        if opt_args["-v"]:
+            print(COLOR_GREEN + "-" * 80 + RESET_COLOR)
         echo_cmd("rm examples/*.out")
         echo_cmd("rm examples/*.vms")
-    if opt_args['-v']: print(COLOR_GREEN + "-"*80 + RESET_COLOR)
+    if opt_args["-v"]:
+        print(COLOR_GREEN + "-" * 80 + RESET_COLOR)
     for failed_test, error_msg in failed_tests:
         print(f"{COLOR_RED}Failed: {failed_test}.{RESET_COLOR}")
         print(f"{COLOR_RED}{error_msg}{RESET_COLOR}")
     for skipped_test in skipped_tests:
         print(f"{COLOR_YELLOW}Skipped: {skipped_test}.{RESET_COLOR}")
-    if opt_args['-v']: print(COLOR_GREEN + "-"*80 + RESET_COLOR)
+    if opt_args["-v"]:
+        print(COLOR_GREEN + "-" * 80 + RESET_COLOR)
     print(f"{COLOR_GREEN}Passed: {num_tests}{RESET_COLOR}", end=" ")
     print(f"{COLOR_RED}Failed: {len(failed_tests)}.{RESET_COLOR}", end=" ")
     print(f"{COLOR_YELLOW}Skipped: {len(skipped_tests)}.{RESET_COLOR}")
 
+
 def execute(opt_args: OptArgs, req_args: ReqArgs):
-    if req_args["run"]  : run_execute(req_args, opt_args)
-    if req_args["build"]: build_execute(req_args, opt_args)
-    if req_args["test"] : test_execute(req_args, opt_args)
-    if req_args["euler"]: euler_execute(req_args, opt_args)
-    if req_args["examples"]: examples_execute(req_args, opt_args)
+    if req_args["run"]:
+        run_execute(req_args, opt_args)
+    if req_args["build"]:
+        build_execute(req_args, opt_args)
+    if req_args["test"]:
+        test_execute(req_args, opt_args)
+    if req_args["euler"]:
+        euler_execute(req_args, opt_args)
+    if req_args["examples"]:
+        examples_execute(req_args, opt_args)
+
 
 def cli():
     opt_args, req_args = prepare_cmd_args()

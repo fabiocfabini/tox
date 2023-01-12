@@ -6,23 +6,27 @@ import sys
 
 from lat import compiler_warning, compiler_error, compiler_note, std_message
 
+
 @dataclass
 class FunctionData:
     """
     Class That represents everything about a function.
     Input values and output values are missing but should be added later to provide for a better compiler.
     """
+
     name: str
     input_types: Optional[List[str]] = field(default_factory=list)
     output_type: Optional[str] = None
+
 
 @dataclass
 class Functions:
     """
     Class that holds all the functions.
     """
-    Table: Dict[str, FunctionData] = field(default_factory=dict)    # Table of functions
-    current_function: Optional[FunctionData] = None                 # Current function
+
+    Table: Dict[str, FunctionData] = field(default_factory=dict)  # Table of functions
+    current_function: Optional[FunctionData] = None  # Current function
 
     def __post_init__(self):
         self.productions = {
@@ -39,7 +43,7 @@ class Functions:
     def handle(self, p, production: str):
         return self.productions[production](p)
 
-    def add(self, name: str) -> None:   # Adds a function to the table
+    def add(self, name: str) -> None:  # Adds a function to the table
         self.Table[name] = FunctionData(name)
 
     def get(self, name: str) -> Optional[FunctionData]:  # Gets a function from the table if it exists
@@ -100,7 +104,7 @@ class Functions:
     def _out_type(self, p):  # Adds the output type of a function
         """
         out_type : RARROW type
-                | 
+                |
         """
         if len(p) == 3:
             p.parser.functions_handler.current_function.output_type = p[2]
@@ -121,7 +125,7 @@ class Functions:
             compiler_note(f"Error on Function '{p.parser.functions_handler.current_function.name}'")
             compiler_note("Called from Functions._call")
             sys.exit(1)
-        if len(func.input_types) > 0 and func.input_types != p.parser.type_checker.stack[-len(func.input_types):]:
+        if len(func.input_types) > 0 and func.input_types != p.parser.type_checker.stack[-len(func.input_types) :]:
             compiler_error(p, 1, f"Function {p[1]} expects {func.input_types} but got {p.parser.type_checker.stack[-len(func.input_types):]}")
             compiler_note("Called from Functions._call")
             sys.exit(1)
@@ -134,7 +138,7 @@ class Functions:
         out = ""
         if func.output_type is not None:
             out = std_message(["PUSHI -69"])
-        out += p[3] + std_message([f"PUSHA {func.name.replace('_', '')}", "CALL", f"POP {len(func.input_types)}"])    # If the function exists, return the assembly code
+        out += p[3] + std_message([f"PUSHA {func.name.replace('_', '')}", "CALL", f"POP {len(func.input_types)}"])  # If the function exists, return the assembly code
         return out
 
     def _return(self, p):
@@ -150,9 +154,7 @@ class Functions:
                 compiler_note("Called from Functions._return")
                 sys.exit(1)
 
-            return p[2] + std_message([
-                f"STOREL {-len(p.parser.functions_handler.current_function.input_types)-1}",
-                "RETURN"])
+            return p[2] + std_message([f"STOREL {-len(p.parser.functions_handler.current_function.input_types)-1}", "RETURN"])
 
         if p.parser.functions_handler.current_function.output_type is not None:
             compiler_error(p, 1, f"Return type '{p.parser.functions_handler.current_function.output_type}' doesn't match function output type 'None'")
