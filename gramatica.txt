@@ -106,7 +106,7 @@ default : DEFAULT RARROW ss { stmts } es
 declaration_assignment : ID : type ASSIGN expression
                        | ID : Ptype ASSIGN expression
                        | ID : Vtype ASSIGN [ arrayitems ]
-                       | ID : Vtype ASSIGN [ INT RETI INT ]
+                       | ID : Vtype ASSIGN [  INTEGER RETI  INTEGER ]
 
 arrayitems : arrayitems , expression
            | expression
@@ -115,8 +115,8 @@ declaration : ID : type
             | ID : Ptype
             | ID : Vtype ndim
 
-ndim : ndim [ INT ]
-     | [ INT ]
+ndim : ndim [  INTEGER ]
+     | [  INTEGER ]
 
 assignment : ID ndepth ASSIGN expression
            | ID ASSIGN expression
@@ -177,9 +177,9 @@ unary : ! unary
 
 primary : ID ndepth
         | & ID
-        | INT
+        |  INTEGER
         | FLOAT
-        | STRING
+        | FILUM
         | ID
         | function_call
         | read
