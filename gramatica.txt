@@ -3,13 +3,14 @@ S' : prog
 prog : global_declarations function_declarations
 
 global_declarations : global_declaration global_declarations
-                    | declaration
-                    | declaration_assignment
-                    | 
+                     |
+
+global_declaration : declaration
+                   | declaration_assignment         
 
 function_declarations : function_declaration function_declarations
-                      | function_header function_body
                       | 
+function_declaration : function_header function_body
 
 function_header : function_id ss ( params ) out_type
 function_id : FUNCTION ID
