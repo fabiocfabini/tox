@@ -1,0 +1,161 @@
+S' : prog
+
+prog : global_declarations function_declarations
+
+global_declarations : global_declaration global_declarations
+                    | <empty>
+                    | declaration_assignment
+                    | declaration
+
+function_declarations : function_declaration function_declarations
+                      | <empty>
+                      | function_header function_body
+
+function_header : function_id ss ( params ) out_type
+function_id : FUNCTION ID
+function_body : { stmts } es
+function_call : f_call ( args )
+f_call : ID
+params : params , param
+       | <empty>
+       | param
+param -> ID : type
+param -> ID : Ptype
+out_type -> RARROW type
+out_type -> RARROW Ptype
+out_type -> <empty>
+args -> args , arg
+args -> <empty>
+args -> arg
+arg -> expression
+
+stmts -> stmt stmts
+stmts -> <empty>
+stmt -> print
+stmt -> read
+stmt -> function_call
+stmt -> declaration_assignment
+stmt -> assignment
+stmt -> declaration
+stmt -> if
+stmt -> match
+stmt -> while
+stmt -> for
+stmt -> do_while
+stmt -> break
+stmt -> continue
+stmt -> return
+
+ss -> <empty>
+es -> <empty>
+
+return -> RETURN expression
+return -> RETURN ;
+
+break -> BREAK
+continue -> CONTINUE
+
+for -> loop_for ss ( for_inits ; expression ; for_updates ) ss { stmts } es es
+for_inits -> for_inits , for_init
+for_inits -> for_init
+for_init -> declaration_assignment
+for_init -> declaration
+for_init -> assignment
+for_init -> <empty>
+for_updates -> for_updates , for_update
+for_updates -> for_update
+for_update -> assignment
+loop_for -> FOR
+
+do_while -> loop_do ss { stmts } es WHILE ( expression )
+loop_do -> DO
+
+while -> loop_while expression ss { stmts } es
+loop_while -> WHILE
+
+
+if -> IF expression ss { stmts } es else_if
+else_if -> ELSE IF expression ss { stmts } es else_if
+else_if -> else
+else -> ELSE ss { stmts } es
+else -> <empty>
+
+match -> match_start expression { cases }
+match_start -> MATCH
+cases -> expression RARROW ss { stmts } es cases
+cases -> default
+default -> DEFAULT RARROW ss { stmts } es
+
+declaration_assignment -> ID : type ASSIGN expression
+declaration_assignment -> ID : Ptype ASSIGN expression
+declaration_assignment -> ID : Vtype ASSIGN [ arrayitems ]
+declaration_assignment -> ID : Vtype ASSIGN [ INT RETI INT ]
+arrayitems -> arrayitems , expression
+arrayitems -> expression
+
+declaration -> ID : type
+declaration -> ID : Ptype
+declaration -> ID : Vtype ndim
+ndim -> ndim [ INT ]
+ndim -> [ INT ]
+
+assignment -> ID ndepth ASSIGN expression
+assignment -> ID ASSIGN expression
+ndepth -> ndepth [ expression ]
+ndepth -> [ expression ]
+
+read -> read_type ( multiple_prints )
+read_type -> READ_INT
+read_type -> READ_FLOAT
+read_type -> READ_STRING
+
+print -> PRINT ( multiple_prints )
+multiple_prints -> multiple_prints , expression
+multiple_prints -> expression
+multiple_prints -> <empty>
+type -> TYPE_INT
+type -> TYPE_STRING
+type -> TYPE_FLOAT
+Vtype -> TYPE_VEC LT type GT
+Ptype -> & TYPE_INT
+Ptype -> & TYPE_STRING
+Ptype -> & TYPE_FLOAT
+
+expression -> expression OR subexpression
+expression -> subexpression
+
+subexpression -> subexpression AND condition
+subexpression -> condition
+
+condition -> condition EQ comparison
+condition -> condition NEQ comparison
+condition -> comparison
+
+comparison -> comparison LT term
+comparison -> comparison GT term
+comparison -> comparison LTE term
+comparison -> comparison GTE term
+comparison -> term
+
+term -> term - factor
+term -> term + factor
+term -> factor
+
+factor -> factor * unary
+factor -> factor / unary
+factor -> factor % unary
+factor -> unary
+
+unary -> ! unary
+unary -> - unary
+unary -> primary
+
+primary -> ID ndepth
+primary -> & ID
+primary -> INT
+primary -> FLOAT
+primary -> STRING
+primary -> ID
+primary -> function_call
+primary -> read
+primary -> ( expression )
