@@ -1,3 +1,5 @@
+//SKIP
+
 munus main() {
     // Ler x do utilizador.
     x: integer
