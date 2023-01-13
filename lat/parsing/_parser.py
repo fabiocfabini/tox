@@ -845,6 +845,8 @@ def p_error(p):
 parser = yacc.yacc()
 
 # Inicializar handlers
+# Cada handler é uma classe que implementa os métodos de cada produção
+# e cria o código de máquina correspondente
 parser.primary_handler = Primary()
 parser.unary_handler = Unary()
 parser.factor_handler = Factor()
@@ -878,7 +880,7 @@ parser.array_assign_items = 0
 parser.indexing_depth = []
 parser.arr_dim = []
 
-# Inicializar scope
+# Inicializar Scope
 parser.current_scope: Scope = Scope(name="Global Scope", level=0, parent=None)
 
 # Inicializar type checker
