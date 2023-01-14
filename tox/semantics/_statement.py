@@ -303,6 +303,7 @@ class DeclarationAssignment:
     def _array_literal_init(self, p) -> str: # Declaring and initializing an array with a literal
         """
         declaration_assignment : ID ':' Vtype ndim ASSIGN '[' arrayitems ']'
+                                | ID ':' Vtype ASSIGN '[' arrayitems ']'
         """
         if p[1] in p.parser.current_scope.Table:    # If the variable already exists in the current scope table, report an error
             compiler_error(p, 1, f"Variable {p[1]} is already defined")
