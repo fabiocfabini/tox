@@ -118,40 +118,40 @@ class Assignment:
             compiler_error(p, 1, f"Assignment to undeclared variable {p[1]}")
             compiler_note("Called from Assignment._array_index")
             sys.exit(1)
-        if not id_meta.type.startswith("vec") and not id_meta.type.startswith("&"):
+        if not id_meta.type.startswith("vec") and not id_meta.type.startswith("&"): # If the variable isn't an array or pointer, report an error
             compiler_error(p, 1, f"Indexing not allowed on variable of type '{id_meta.type}'")
             compiler_note("Called from Assignment._array_index")
             sys.exit(1)
-        if id_meta.type.startswith("vec") and id_meta.type[4:-1] != expr:
+        if id_meta.type.startswith("vec") and id_meta.type[4:-1] != expr: # If the variable is an array and the expression doesn't match the array type, report an error
             compiler_error(p, 3, f"Assignment of '{expr}' to variable of type '{id_meta.type}'")
             compiler_note("Called from Assignment._array_index")
             sys.exit(1)
-        if id_meta.type.startswith("&") and id_meta.type[1:] != expr:
+        if id_meta.type.startswith("&") and id_meta.type[1:] != expr: # If the variable is a pointer and the expression doesn't match the pointer type, report an error
             compiler_error(p, 3, f"Assignment of '{expr}' to variable of type '{id_meta.type}'")
             compiler_note("Called from Assignment._array_index")
             sys.exit(1)
-        if len(p.parser.indexing_depth[-1]) > 1 and id_meta.type.startswith("&"):
+        if len(p.parser.indexing_depth[-1]) > 1 and id_meta.type.startswith("&"): # If the pointer is indexed with more than one dimension, report an error
             compiler_error(p, 1, f"Can't index pointer with more than one dimension")
             compiler_note("Called from Primary._indexing")
             sys.exit(1)
-        if id_meta.array_shape and len(p.parser.indexing_depth[-1]) != len(id_meta.array_shape):
+        if id_meta.array_shape and len(p.parser.indexing_depth[-1]) != len(id_meta.array_shape): # If the number of dimensions doesn't match, report an error
             compiler_error(p, 1, f"Assignment to arrays only allowed with the same number of dimensions. Expected {len(id_meta.array_shape)} got {len(p.parser.indexing_depth[-1])}")
             compiler_note("Called from Assignment._array_index")
             sys.exit(1)
 
         push_op = "PUSHGP" if not in_function else "PUSHFP"  # Get the correct push operation
-        if id_meta.type.startswith("vec"):
-            op = [push_op, f"PUSHI {id_meta.stack_position[0]}", "PADD"]
-            for i, expr in enumerate(p.parser.indexing_depth[-1]):
-                factor = ["PUSHI 1"]
-                for dim in id_meta.array_shape[i + 1 :]:
-                    factor += [f"PUSHI {dim}", "MUL"]
-                op += [expr] + factor + ["MUL", "PADD"]
-            p.parser.indexing_depth.pop()
-            return std_message(op + [f"{p[4]}STORE 0"])
-        elif id_meta.type.startswith("&"):
-            expr = p.parser.indexing_depth.pop()
-            return std_message([push_op, f"LOAD {id_meta.stack_position[0]}", f"{expr[0]}PADD", f"{p[4]}STORE 0"])
+        if id_meta.type.startswith("vec"): # If the variable is an array
+            op = [push_op, f"PUSHI {id_meta.stack_position[0]}", "PADD"] # Push the array base address
+            for i, expr in enumerate(p.parser.indexing_depth[-1]): # For each dimension
+                factor = ["PUSHI 1"]                        #
+                for dim in id_meta.array_shape[i + 1 :]:    # Calculate the factor for the current dimension
+                    factor += [f"PUSHI {dim}", "MUL"]       #
+                op += [expr] + factor + ["MUL", "PADD"]     # Add the expression, the factor and the multiplication to the operation
+            p.parser.indexing_depth.pop() # Remove the shape of the calculated index
+            return std_message(op + [f"{p[4]}STORE 0"]) # Store the value at the calculated index
+        elif id_meta.type.startswith("&"): # If the variable is a pointer
+            expr = p.parser.indexing_depth.pop() # Get the expression
+            return std_message([push_op, f"LOAD {id_meta.stack_position[0]}", f"{expr[0]}PADD", f"{p[4]}STORE 0"]) # Store the value at the calculated index
 
     def _variable(self, p) -> str:  # Assigning to a variable
         """

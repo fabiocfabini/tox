@@ -111,25 +111,25 @@ class Primary:
             sys.exit(1)
 
         push_op = "PUSHGP" if not in_function else "PUSHFP"  # If the variable is in a function, push the frame pointer else push the global pointer
-        if id_meta.type.startswith("vec"):
-            op = [push_op, f"PUSHI {id_meta.stack_position[0]}", "PADD"]
-            for i, expr in enumerate(p.parser.indexing_depth[-1]):
-                factor = ["PUSHI 1"]
-                for dim in id_meta.array_shape[i + 1 :]:
-                    factor += [f"PUSHI {dim}", "MUL"]
-                op += [expr] + factor + ["MUL", "PADD"]
-            if len(p.parser.indexing_depth[-1]) < len(id_meta.array_shape):
-                p.parser.indexing_depth.pop()
-                p.parser.type_checker.push("&" + id_meta.type[4:-1])
-                return std_message(op)
-            else:
-                p.parser.indexing_depth.pop()
-                p.parser.type_checker.push(id_meta.type[4:-1])
-                return std_message(op + ["LOAD 0"])
-        elif id_meta.type.startswith("&"):
-            p.parser.type_checker.push(id_meta.type[1:])
-            expr = p.parser.indexing_depth.pop()
-            return std_message([push_op, f"LOAD {id_meta.stack_position[0]}", f"{expr[0]}PADD", "LOAD 0"])  # Return the message
+        if id_meta.type.startswith("vec"): # If the variable is an array
+            op = [push_op, f"PUSHI {id_meta.stack_position[0]}", "PADD"] # Push the array base address
+            for i, expr in enumerate(p.parser.indexing_depth[-1]): # For each index
+                factor = ["PUSHI 1"]                        #
+                for dim in id_meta.array_shape[i + 1 :]:    # Calculate the factor for indexing
+                    factor += [f"PUSHI {dim}", "MUL"]       #
+                op += [expr] + factor + ["MUL", "PADD"]     # Add the offset to the base address
+            if len(p.parser.indexing_depth[-1]) < len(id_meta.array_shape): # If the indexing is not complete
+                p.parser.indexing_depth.pop()              # Pop the indexing depth
+                p.parser.type_checker.push("&" + id_meta.type[4:-1]) # Push a pointer to the correct type
+                return std_message(op)                   # Push the op pointer
+            else:                                       # If the indexing is complete
+                p.parser.indexing_depth.pop()           # Pop the indexing depth
+                p.parser.type_checker.push(id_meta.type[4:-1]) # Push the correct type
+                return std_message(op + ["LOAD 0"])    # Push the op pointer and load the value
+        elif id_meta.type.startswith("&"):  # If the variable is a pointer
+            p.parser.type_checker.push(id_meta.type[1:])    # Push the correct type
+            expr = p.parser.indexing_depth.pop()        # Pop the indexing depth
+            return std_message([push_op, f"LOAD {id_meta.stack_position[0]}", f"{expr[0]}PADD", "LOAD 0"])  # Push the pointer and load the value
 
     def _array_indexing_depth(self, p):
         """
