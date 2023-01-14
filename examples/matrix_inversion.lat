@@ -1,18 +1,12 @@
-munus dot(a: &integer, b: &integer, n: integer) -> integer {
-    result: integer
-    enim(i: integer = 0; i < n; i = i + 1) {
-        result = result + a[i] * b[i]
-    }
-    reditus result
-}
-
 munus mat_mul(a: &float, b: &float, c: &float, n: integer) {
+    // Definir c como a matriz nula
     enim(i: integer = 0; i < n; i = i + 1) {
         enim(j: integer = 0; j < n; j = j + 1) {
             c[i*n + j] = 0.0
         }
     }
 
+    // Calcular a multiplicação de matrizes
     enim(i: integer = 0; i < n; i = i + 1) {
         enim(j: integer = 0; j < n; j = j + 1) {
             enim(k: integer = 0; k < n; k = k + 1) {
@@ -23,6 +17,7 @@ munus mat_mul(a: &float, b: &float, c: &float, n: integer) {
 }
 
 munus mat_inverse(a: &float, Id: &float, n: integer) {
+    // Definir I como a matriz identidade
     enim(i: integer = 0; i < n; i = i + 1) {
         enim(j: integer = 0; j < n; j = j + 1) {
             Id[i*n + j] = 0.0
@@ -30,6 +25,7 @@ munus mat_inverse(a: &float, Id: &float, n: integer) {
         Id[i*n + i] = 1.0
     }
 
+    // Obter a matriz Inversa a menos de uns fatores
     enim(i: integer = 0; i < n; i = i + 1) {
         enim(j: integer = 0; j < n; j = j + 1) {
             si i != j {
@@ -42,16 +38,29 @@ munus mat_inverse(a: &float, Id: &float, n: integer) {
         }
     }
 
+    // Dividir cada linha por a[i][i]
     enim(i: integer = 0; i < n; i = i + 1) {
         enim(j: integer = 0; j < n; j = j + 1) {
             Id[i*n + j] = Id[i*n + j] / a[i*n + i]
         }
     }
 
+    // Copiar a matriz inversa para a
     enim(i: integer = 0; i < n; i = i + 1) {
         enim(j: integer = 0; j < n; j = j + 1) {
             a[i*n + j] = Id[i*n + j]
         }
+    }
+}
+
+munus escrever_matrix(a: &float, n: integer) {
+    enim(i: integer = 0; i < n; i = i + 1) {
+        enim(j: integer = 0; j < n; j = j + 1) {
+            s: filum = " "
+            si a[i*n + j] < 0.0 { s = "" }
+            imprimo(s, a[i*n + j], "  ")
+        }
+        imprimo("\n")
     }
 }
 
@@ -78,37 +87,16 @@ munus main() {
     m_2[2][1] = -1.0
     m_2[2][2] = 0.0
 
-    imprimo("Before Invertion:\n")
-    enim(i: integer = 0; i < 3; i = i + 1) {
-        enim(j: integer = 0; j < 3; j = j + 1) {
-            s: filum = " "
-            si m_1[i][j] < 0.0 { s = "" }
-            imprimo(s, m_1[i][j], "  ")
-        }
-        imprimo("\n")
-    }
+    imprimo("Antes de Inverter:\n")
+    escrever_matrix(m_1, 3)
 
     mat_inverse(m_1, I, 3)
 
-    imprimo("After Invertion:\n")
-    enim(i: integer = 0; i < 3; i = i + 1) {
-        enim(j: integer = 0; j < 3; j = j + 1) {
-            s: filum = " "
-            si m_1[i][j] < 0.0 { s = "" }
-            imprimo(s, m_1[i][j], "  ")
-        }
-        imprimo("\n")
-    }
+    imprimo("Depois de Inverter:\n")
+    escrever_matrix(m_1, 3)
 
     imprimo("Check:\n")
     mat_mul(m_1, m_2, I, 3)
-    enim(i: integer = 0; i < 3; i = i + 1) {
-        enim(j: integer = 0; j < 3; j = j + 1) {
-            s: filum = " "
-            si I[i][j] < 0.0 { s = "" }
-            imprimo(s, I[i][j], "  ")
-        }
-        imprimo("\n")
-    }
+    escrever_matrix(I, 3)
 }
 
