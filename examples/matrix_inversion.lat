@@ -17,14 +17,6 @@ munus mat_mul(a: &float, b: &float, c: &float, n: integer) {
 }
 
 munus mat_inverse(a: &float, Id: &float, n: integer) {
-    // Definir I como a matriz identidade
-    enim(i: integer = 0; i < n; i = i + 1) {
-        enim(j: integer = 0; j < n; j = j + 1) {
-            Id[i*n + j] = 0.0
-        }
-        Id[i*n + i] = 1.0
-    }
-
     // Obter a matriz Inversa a menos de uns fatores
     enim(i: integer = 0; i < n; i = i + 1) {
         enim(j: integer = 0; j < n; j = j + 1) {
@@ -65,27 +57,21 @@ munus escrever_matrix(a: &float, n: integer) {
 }
 
 munus main() {
-    m_1: vec<float>[3][3]
-    m_2: vec<float>[3][3]
-    I: vec<float>[3][3]
-    m_1[0][0] = 1.0
-    m_1[0][1] = 2.0
-    m_1[0][2] = -1.0
-    m_1[1][0] = -2.0
-    m_1[1][1] = 0.0
-    m_1[1][2] = 1.0
-    m_1[2][0] = 1.0
-    m_1[2][1] = -1.0
-    m_1[2][2] = 0.0
-    m_2[0][0] = 1.0
-    m_2[0][1] = 2.0
-    m_2[0][2] = -1.0
-    m_2[1][0] = -2.0
-    m_2[1][1] = 0.0
-    m_2[1][2] = 1.0
-    m_2[2][0] = 1.0
-    m_2[2][1] = -1.0
-    m_2[2][2] = 0.0
+    m_1: vec<float>[3][3] = [
+        1.0, 2.0, -1.0,
+        -2.0, 0.0, 1.0,
+        1.0, -1.0, 0.0
+    ]
+    m_2: vec<float>[3][3] = [
+        1.0, 2.0, -1.0,
+        -2.0, 0.0, 1.0,
+        1.0, -1.0, 0.0
+    ]
+    I: vec<float>[3][3] = [
+        1.0, 0.0, 0.0,
+        0.0, 1.0, 0.0,
+        0.0, 0.0, 1.0
+    ]
 
     imprimo("Antes de Inverter:\n")
     escrever_matrix(m_1, 3)

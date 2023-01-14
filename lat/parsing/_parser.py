@@ -449,7 +449,8 @@ def p_pointer_init(p):
 
 def p_array_literal_init(p):
     """
-    declaration_assignment : ID ':' Vtype ASSIGN '[' arrayitems ']'
+    declaration_assignment : ID ':' Vtype ndim ASSIGN '[' arrayitems ']'
+                            | ID ':' Vtype ASSIGN '[' arrayitems ']'
     """
     p[0] = parser.declaration_assignment_handler.handle(p, "array_literal_init")
 
