@@ -1,0 +1,11 @@
+v: vec<integer> = [1 ... 10]
+
+munus main() {
+    vi: &integer = v
+    vf: &integer = v + 9
+
+    dum vi <= vf {
+        imprimo(vi[0], "\n")
+        vi = vi + 1
+    }
+}

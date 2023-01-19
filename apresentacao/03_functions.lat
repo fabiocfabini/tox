@@ -1,0 +1,10 @@
+i: integer 
+
+munus imprimeDobro(n: integer) {
+    print(2 * n, "\n")
+}
+
+munus main() {
+    i = 5
+    imprimeDobro(5)
+}

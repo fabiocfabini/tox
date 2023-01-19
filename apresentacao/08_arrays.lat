@@ -1,0 +1,18 @@
+munus max(v: &integer, n: integer) -> integer {
+    max: integer = v[0]
+
+    enim(i: integer = 1; i < n; i = i + 1){
+        si v[i] > max {
+            max = v[i]
+        }
+    }
+
+    reditus max
+}
+
+munus main() {
+    v: vec<integer> = [1 ... 10]
+    n: integer = 10
+
+    imprimo(max(v, n), "\n")
+}

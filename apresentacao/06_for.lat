@@ -1,0 +1,16 @@
+munus main() {
+    x: integer 
+    y: integer
+    r: integer = 10
+
+    enim(r: integer = 10, y: integer = -r; y <= r; y = y + 1){ // The variables x, y and r are shafaciowed here
+        enim(x: integer = -r; x <= r; x = x + 1){
+            si(x*x + y*y <= r*r){
+                imprimo("##")
+            } aliter {
+                imprimo("  ")
+            }
+        }
+        imprimo("\n")
+    }
+}

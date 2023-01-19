@@ -1,9 +1,7 @@
-//SKIP
-
 munus main() {
     f: float = legeref("Enter a float: ")
     i: integer = legerei("Enter an integer: ")
     s: filum = legeres("Enter a filum: ")
 
-    imprimo("You entered: ", f, ",\n", i, ",\n", s)
+    imprimo("You entered: ", f, ",\n", i, ",\n", s, "\n")
 }

@@ -1,0 +1,11 @@
+N: integer = 10
+
+munus main() {
+    i: integer
+    dum i < 10 {
+        si i % 2 == 0 {
+            imprimo(i, " is even!\n")
+        }
+        i = i + 1
+    }
+}

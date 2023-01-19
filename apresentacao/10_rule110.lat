@@ -1,0 +1,36 @@
+// Regra 110 - Automato celular
+table: integer = 110  // Inicializar a tabela
+
+munus main() {
+    // Inicializar variaveis
+    N: integer = 100
+    gen: vec<integer>[2][100] // 2 * N
+    gen[0][N - 2] = 1
+    c_gen: integer = 0
+
+    // Loop principal - Vai escrever as linhas
+    enim(i: integer; i < N-2; i = i + 1) {
+        // Escrever a linha
+        enim(j: integer = 0; j < N; j = j + 1) {
+            si gen[c_gen][j] == 1 {
+                imprimo("#")
+            } aliter {
+                imprimo(" ")
+            }
+        }
+        imprimo("\n")
+        
+        // Calcular a proxima linha
+        enim(j: integer = 1; j < N - 1; j = j + 1) {
+            pattern: integer = 4*gen[c_gen][j - 1] + 2*gen[c_gen][j] + 1*gen[c_gen][j + 1]
+
+            new_pattern: integer = table
+            enim(k: integer = 0; k < pattern; k = k + 1) {
+                new_pattern = new_pattern / 2
+            }
+
+            gen[(1 - c_gen)][j] = new_pattern % 2
+        }
+        c_gen = 1 - c_gen
+    }
+}

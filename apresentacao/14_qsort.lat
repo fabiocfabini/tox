@@ -1,0 +1,41 @@
+N: integer = 13
+v: vec<float> = [6f, 1f, 2f, 6f, 3f, 6f, 2f, 7f, 4f, 7f, 2f, 1f, 1f]
+
+munus partition(v: &float, n: integer) -> integer {
+    pivot: float = v[0]
+    i: integer = 0
+    j: integer = n - 1
+    dum(i < j) {
+        dum(i < j et v[j] >= pivot) {
+            j = j - 1
+        }
+        v[i] = v[j]
+        dum(i < j et v[i] <= pivot) {
+            i = i + 1
+        }
+        v[j] = v[i]
+    }
+    v[i] = pivot
+    reditus i
+}
+
+munus quick_sort(v: &float, n: integer) {
+    si(n <= 1) {
+        reditus;
+    }
+    i: integer = partition(v, n)
+    quick_sort(v, i)
+    quick_sort(v + i + 1, n - i - 1)
+}
+
+munus main() {
+    enim(i: integer; i < N; i = i + 1) {
+        imprimo(v[i], " ")
+    }
+    imprimo("\n")
+    quick_sort(v, N)
+    enim(i: integer; i < N; i = i + 1) {
+        imprimo(v[i], " ")
+    }
+    imprimo("\n")
+}

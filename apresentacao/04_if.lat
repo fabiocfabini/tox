@@ -1,11 +1,16 @@
+
+
 munus main() {
     x: integer = 2
-
+    // ???
     si x == 2 {
         y: integer = x + 1
+        // ???
     } aliter {
         x: integer = x + 1
+        // ???
     }
+    // ???
 
     imprimo(x, "\n")
     imprimo(y, "\n")
