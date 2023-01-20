@@ -1,0 +1,95 @@
+N: integer = 9
+board: vec<integer>[9][9] = [
+    5,3,0,0,7,0,0,0,0,
+    6,0,0,1,9,5,0,0,0,
+    0,9,8,0,0,0,0,6,0,
+    8,0,0,0,6,0,0,0,3,
+    4,0,0,8,0,3,0,0,1,
+    7,0,0,0,2,0,0,0,6,
+    0,6,0,0,0,0,2,8,0,
+    0,0,0,4,1,9,0,0,5,
+    0,0,0,0,8,0,0,7,9
+]
+
+munus chec_row(row: integer, num: integer) -> integer {
+    enim(i: integer = 0; i < N; i = i + 1) {
+        si board[row][i] == num {
+            reditus 0
+        }
+    }
+    reditus 1
+}
+
+munus chec_col(col: integer, num: integer) -> integer {
+    enim(i: integer = 0; i < N; i = i + 1) {
+        si board[i][col] == num {
+            reditus 0
+        }
+    }
+    reditus 1
+}
+
+munus chec_box(row: integer, col: integer, num: integer) -> integer {
+    r: integer = row - row % 3
+    c: integer = col - col % 3
+
+    enim(i: integer = 0; i < 3; i = i + 1) {
+        enim(j: integer = 0; j < 3; j = j + 1) {
+            si board[i + r][j + c] == num {
+                reditus 0
+            }
+        }
+    }
+    reditus 1
+}
+
+munus is_valid(row: integer, col: integer, num: integer) -> integer {
+    reditus chec_row(row, num) et chec_col(col, num) et chec_box(row, col, num)
+}
+
+munus sudoku_solver() -> integer {
+    enim(i: integer = 0; i < N; i = i + 1) {
+        enim(j: integer = 0; j < N; j = j + 1) {
+            si board[i][j] == 0 {
+                enim(k: integer = 1; k <= N; k = k + 1) {
+                    si is_valid(i, j, k) {
+                        board[i][j] = k
+                        si sudoku_solver() {
+                            reditus 1
+                        }
+                        board[i][j] = 0
+                    }
+                }
+                reditus 0
+            }
+        }
+    }
+    reditus 1
+}
+
+munus show_board() {
+    enim(i: integer = 0; i < N; i = i + 1) {
+        enim(j: integer = 0; j < N; j = j + 1) {
+            imprimo(board[i][j], " ")
+            si j % 3 == 2 et j != 8{
+                imprimo("| ")
+            }
+        }
+        imprimo("\n")
+        si i % 3 == 2 et i != 8{
+            imprimo("------+-------+------\n")
+        }
+    }
+}
+
+
+
+munus main() {
+    si sudoku_solver() {
+        imprimo("Solvable!\n")
+    } aliter {
+        imprimo("Unsolvable!\n")
+    }
+
+    show_board()
+}
