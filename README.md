@@ -10,7 +10,7 @@
 
 Installing through pip:
 
-```console
+```rustonsole
 git clone https://github.com/fabiocfabini/tox.git
 cd tox
 make install
@@ -21,7 +21,7 @@ pip install -e .
 
 ## **Quick Start**
 
-```console
+```rustonsole
 tox run examples/hello_world.tox
 ```
 
@@ -31,13 +31,13 @@ tox run examples/hello_world.tox
 
 To add one line comments, simply type ```//``` followed by the comment. For example:
 
-```c
+```rust
 // This is a comment
 ```
 
 Multiline comments can be added by typing ```/*``` followed by the comment and ```*/``` at the end. For example:
 
-```c
+```rust
 /*
 This is a multiline comment
 */
@@ -70,19 +70,19 @@ Tox also supports pointer arithmetics. The following operations are supported:
 
 To declare a variable, simply type the variable name followed by ```:``` and the variable type. For example:
 
-```c
+```rust
 a: integer
 ```
 
 Variables declared in this way are initialized with the value ```0```. To declare a variable and initialize it with a value, simply type the variable name followed by ```:``` and the variable type followed by ```=``` and the value. For example:
 
-```c
+```rust
 a: integer = 10
 ```
 
 To modify the value of a variable, simply type the variable name followed by ```=``` and the value. For example:
 
-```c
+```rust
 a = 20
 ```
 
@@ -92,19 +92,19 @@ In tox arrays are declared in 3 different ways:
 
 - Declaring an array of a specific size. This will initialize the array with the value ```0```;
 
-```c
+```rust
 a: vec<integer>[10]
 ```
 
 - Declaring an array through a list of values;
 
-```c
+```rust
 a: vec<integer> = [10, 20, 30, 40, 50]
 ```
 
 - Declaring an array with the ```...``` operator;
 
-```c
+```rust
 a: vec<integer> = [1 ... 10]
 ```
 
@@ -112,7 +112,7 @@ This will initialize the array with the values ```1, 2, 3, 4, 5, 6, 7, 8, 9, 10`
 
 To access an array element, simply type the array name followed by ```[``` and the index of the element followed by ```]```. For example:
 
-```c
+```rust
 a[0]
 ```
 
@@ -123,7 +123,7 @@ The control flow of the language is similar to the control flow of C. These incl
 
 - ```si```, ```si aliter``` and ```si aliter si``` statements;
 
-```c
+```rust
 si expression {
     // code
 }
@@ -147,9 +147,23 @@ si expression {
 }
 ```
 
+- ```par``` statements;
+
+```rust
+par expression {
+    expression -> {
+        // code
+    }
+    ...
+    default -> {
+        // code
+    }
+}
+```
+
 - ```dum``` statements;
 
-```c
+```rust
 dum expression {
     // code
 }
@@ -157,7 +171,7 @@ dum expression {
 
 - ```facio dum``` statements;
 
-```c
+```rust
 facio {
     // code
 } dum(expression)
@@ -165,7 +179,7 @@ facio {
 
 - ```enim``` statements;
 
-```c
+```rust
 enim(i: integer = 0; i < 10; i = i + 1) {
     // code
 }
@@ -176,7 +190,7 @@ enim(i: integer = 0; i < 10; i = i + 1) {
 
 To declare a function start with the key word ```munus``` followed by the function name, the function parameters and the function return type. For example:
 
-```c
+```rust
 munus sum(a: integer, b: integer) -> integer {
     reditus a + b
 }
@@ -184,6 +198,6 @@ munus sum(a: integer, b: integer) -> integer {
 
 To call a function, simply type the function name followed by the function parameters. For example:
 
-```c
+```rust
 sum(10, 20)
 ```
