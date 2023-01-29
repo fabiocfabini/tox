@@ -1,12 +1,15 @@
+x: integer = 10
+
 munus main() {
     x: integer = 2
-
+???
     si x < 3 {
         x: integer = 20
         par x % 2 {
             0 -> {
                 par x % 3 {
                     0 -> {
+                        ???
                         x: float = 20f
                         imprimo(x, "\n")
                         imprimo("x is divisible by 2 and 3")
@@ -25,4 +28,5 @@ munus main() {
             }
         }
     }
+    ???
 }
