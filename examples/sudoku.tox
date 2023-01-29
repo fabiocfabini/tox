@@ -1,0 +1,100 @@
+N: int = 9
+board: vec<int>[9][9] = [
+    7,3,0,9,0,0,0,0,0,
+    0,0,0,0,1,2,0,0,0,
+    0,0,0,0,0,4,5,8,0,
+    0,0,0,4,3,9,0,0,2,
+    9,0,6,7,0,0,0,0,0,
+    0,7,0,0,0,6,0,0,9,
+    5,0,8,2,0,0,9,0,0,
+    3,0,0,1,0,0,6,0,0,
+    1,0,0,8,6,0,0,4,5
+]
+
+func chec_row(row: int, num: int) -> int
+func chec_col(col: int, num: int) -> int
+func chec_box(row: int, col: int, num: int) -> int
+func is_valid(row: int, col: int, num: int) -> int
+func sudoku_solver() -> int
+func show_board()
+
+func main() {
+    if sudoku_solver() {
+        print("Solvable!\n")
+    } else {
+        print("Unsolvable!\n")
+    }
+
+    show_board()
+}
+
+func chec_row(row: int, num: int) -> int {
+    for(i: int = 0; i < N; i = i + 1) {
+        if board[row][i] == num {
+            return 0
+        }
+    }
+    return 1
+}
+
+func chec_col(col: int, num: int) -> int {
+    for(i: int = 0; i < N; i = i + 1) {
+        if board[i][col] == num {
+            return 0
+        }
+    }
+    return 1
+}
+
+func chec_box(row: int, col: int, num: int) -> int {
+    r: int = row - row % 3
+    c: int = col - col % 3
+
+    for(i: int = 0; i < 3; i = i + 1) {
+        for(j: int = 0; j < 3; j = j + 1) {
+            if board[i + r][j + c] == num {
+                return 0
+            }
+        }
+    }
+    return 1
+}
+
+func is_valid(row: int, col: int, num: int) -> int {
+    return chec_row(row, num) && chec_col(col, num) && chec_box(row, col, num)
+}
+
+func sudoku_solver() -> int {
+    for(i: int = 0; i < N; i = i + 1) {
+        for(j: int = 0; j < N; j = j + 1) {
+            if board[i][j] == 0 {
+                for(k: int = 1; k <= N; k = k + 1) {
+                    if is_valid(i, j, k) {
+                        board[i][j] = k
+                        if sudoku_solver() {
+                            return 1
+                        }
+                        board[i][j] = 0
+                    }
+                }
+                return 0
+            }
+        }
+    }
+    return 1
+}
+
+func show_board() {
+    for(i: int = 0; i < N; i = i + 1) {
+        for(j: int = 0; j < N; j = j + 1) {
+            print(board[i][j], " ")
+            if j % 3 == 2 && j != 8{
+                print("| ")
+            }
+        }
+        print("\n")
+        if i % 3 == 2 && i != 8{
+            print("------+-------+------\n")
+        }
+    }
+}

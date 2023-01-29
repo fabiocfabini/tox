@@ -1,16 +1,3 @@
-x: int
-y: int
-
-func say_hello() {
-    y: vec<float>[10]
-    x: string
-}
-
 func main() {
-    x: float
-    if x {
-        say_hello()
-        x: vec<string>[10]
-        ???
-    }
+    print("Hello, world!\n")
 }
