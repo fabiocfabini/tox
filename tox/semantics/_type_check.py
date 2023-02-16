@@ -26,6 +26,7 @@ class TypeCheck:
             "neq":   self._neq,
             "and":  self._and,
             "or":   self._or,
+            "cast": self._cast,
         }
 
     def handle(self, p, production: str):
@@ -277,3 +278,36 @@ class TypeCheck:
         else:
             compiler_error(p, 2, f"Operation 'or' not supported for types '{left_operand}' and '{right_operand}'")
             sys.exit(1)
+
+    @staticmethod
+    def _get_first_part_of_casting(type: str):
+        if type == "int":
+            return "ITO"
+        elif type == "float":
+            return "FTO"
+        elif type == "string":
+            return "ATO"
+
+    @staticmethod
+    def _get_second_part_of_casting(type: str):
+        if type == "int":
+            return "I"
+        elif type == "float":
+            return "F"
+        elif type == "string":
+            return "A"
+
+    def _cast(self, p):
+        """
+        unary : '(' type ')' unary
+        """
+        expr_type = self.stack.pop()
+
+        if expr_type == p[2]:
+            self.stack.append(expr_type)
+            return p[4]
+
+        cast_expr = self._get_first_part_of_casting(expr_type) + self._get_second_part_of_casting(p[2])
+
+        self.stack.append(p[2])
+        return p[4] + std_message([cast_expr])

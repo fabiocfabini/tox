@@ -624,6 +624,11 @@ def p_factor_unary(p):
     """
     p[0] = parser.factor_handler.handle(p, "unary")
 
+def p_unary_cast(p):
+    """
+    unary : '(' type ')' unary
+    """
+    p[0] = parser.unary_handler.handle(p, "cast")
 def p_unary_not(p):
     """
     unary : '!' unary

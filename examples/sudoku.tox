@@ -19,6 +19,8 @@ func sudoku_solver() -> int
 func show_board()
 
 func main() {
+    show_board()
+
     if sudoku_solver() {
         print("Solvable!\n")
     } else {

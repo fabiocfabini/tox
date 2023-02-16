@@ -161,6 +161,7 @@ class Unary:
         self.productions = {    #   Maps production names to their respective functions
             "not": self._not,
             "neg": self._neg,
+            "cast": self._cast,
             "primary": self._primary
         }
 
@@ -178,6 +179,12 @@ class Unary:
         unary : '-' unary
         """
         return p.parser.type_checker.handle(p, "neg")
+
+    def _cast(self, p) -> str: # Handles a cast operation
+        """
+        unary : '(' type ')' unary
+        """
+        return p.parser.type_checker.handle(p, "cast")
 
     def _primary(self, p) -> str: # Handles a primary expression
         """
