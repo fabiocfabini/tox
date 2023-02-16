@@ -85,6 +85,13 @@ To modify the value of a variable, simply type the variable name followed by ```
 a = 20
 ```
 
+To typecast a variable, simply prefix the variable name with the type you want to typecast it to. For example:
+
+```c
+a: int = 10
+b: float = (float) a
+```
+
 ### **Arrays**
 
 In tox arrays are declared in 3 different ways:
