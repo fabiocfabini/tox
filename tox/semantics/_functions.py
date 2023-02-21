@@ -133,14 +133,14 @@ class Functions:
             compiler_note(f"Error on Function '{p.parser.functions_handler.current_function.name}'")
             compiler_note("Called from Functions._call")
             sys.exit(1)
-        if len(func.input_types) > 0 and func.input_types != p.parser.type_checker.stack[-len(func.input_types):]:
-            compiler_error(p, 2, f"Function '{p[1]}' expects {func.input_types} but got {p.parser.type_checker.stack[-len(func.input_types):]}")
+        if len(func.input_types) > 0 and func.input_types != p.parser.type_checker[-len(func.input_types):]:
+            compiler_error(p, 2, f"Function '{p[1]}' expects {func.input_types} but got {p.parser.type_checker[-len(func.input_types):]}")
             compiler_note("Called from Functions._call")
             sys.exit(1)
         for _ in func.input_types:
             p.parser.type_checker.pop()
         if func.output_type is not None:
-            p.parser.type_checker.push(func.output_type)
+            p.parser.type_checker.push((func.output_type, p.lexer.lineno))
 
         p.parser.num_args.pop()
         out = ""

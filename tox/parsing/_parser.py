@@ -2,11 +2,12 @@ import sys
 
 from ply import yacc
 
+import tox
 from tox.lexing._lexer import *
 from tox import Scope, MetaData
 from tox import Functions, FunctionData
 from tox import TypeCheck
-from tox.utils.errors import syntax_error, compiler_error, compiler_note
+from tox.utils.errors import syntax_error, compiler_error, compiler_note, compiler_warning
 from tox import (
     Primary,
     Unary,
@@ -37,8 +38,9 @@ def p_prog(p):
     parser.loop_count = 0
     parser.if_count = 0
     if not parser.type_checker.is_empty():
-        compiler_error(p, 1, f"Leftover types in type checker. {p.parser.type_checker}")
-        sys.exit(1)
+        for type, line in parser.type_checker.stack:
+            compiler_warning(p, line, f"Unused return value of type '{type}'")
+            compiler_note(f"Value was return here: \n{p.lexer.lexdata.splitlines()[line-3]}\n{p.lexer.lexdata.splitlines()[line-2]}  {tox.COLOR_BLUE}<-{tox.RESET_COLOR}\n{p.lexer.lexdata.splitlines()[line-1]}")
 
     if parser.functions_handler.get("main") is None:
         compiler_error(p, 0, "Did not find main function")

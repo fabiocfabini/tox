@@ -82,13 +82,13 @@ class IO:
                 | READ_STRING
         """
         if p[1][-1] == "i":
-            p.parser.type_checker.push("int")
+            p.parser.type_checker.push(("int", p.lexer.lineno))
             push_op = std_message(["ATOI"])
         elif p[1][-1] == "f":
-            p.parser.type_checker.push("float")
+            p.parser.type_checker.push(("float", p.lexer.lineno))
             push_op = std_message(["ATOF"])
         elif p[1][-1] == "s":
-            p.parser.type_checker.push("string")
+            p.parser.type_checker.push(("string", p.lexer.lineno))
             push_op = std_message([""])
         return push_op
 
@@ -520,7 +520,7 @@ class Match:
             compiler_error(p, 3, "Cannot use 'match' with 'string' type")
             compiler_note("Called from match._match")
             sys.exit(1)
-        p.parser.type_checker.push(expr)                                # Push the expression type back on the stack
+        p.parser.type_checker.push((expr, p.lexer.lineno))                # Push the expression type back on the stack
 
         current_match_count = p.parser.match_count                        # Get the current match count
         out = p[2]                                                      # Push the expression to the stack
@@ -545,7 +545,7 @@ class Match:
             compiler_error(p, 2, f"Incompatible types in 'match' statement. Expected '{case}', got '{expr}'")
             compiler_note("Called from match._cases")
             sys.exit(1)
-        p.parser.type_checker.push(case)                                # Push the case type back on the stack
+        p.parser.type_checker.push((case, p.lexer.lineno))                # Push the case type back on the stack
 
         current_match_count = p.parser.match_count                        # Get the current match count
         out = std_message(["DUP 1", p[1], "EQUAL"])                     # Compare the case to the expression

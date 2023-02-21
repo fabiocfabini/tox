@@ -15,8 +15,11 @@ def find_column_comp(input, token, n):
     """
     Compute the column of a given token.
     """
-    last_cr = input.rfind('\n', 0, token.lexpos(n)) + 1
-    return (token.lexpos(n) - last_cr) + 1
+    try:
+        last_cr = input.rfind('\n', 0, token.lexpos(n)) + 1
+        return (token.lexpos(n) - last_cr) + 1
+    except Exception:
+        return -1
 
 def lex_error(p, msg: str):
     """
@@ -40,7 +43,11 @@ def compiler_warning(p, n: int, msg: str):
     """
     Report a compiler warning.
     """
-    sys.stderr.write(f"{tox.COLOR_YELLOW}Compiler Warning:{tox.COLOR_YELLOW}{p.lineno(n)}:{tox.COLOR_GREEN}{find_column_comp(p.parser.input, p, n)}:{tox.RESET_COLOR} {msg}\n")
+    try:
+        line = p.lineno(n)
+    except IndexError:
+        line = n
+    sys.stderr.write(f"{tox.COLOR_YELLOW}Compiler Warning:{tox.COLOR_YELLOW}{n}:{tox.COLOR_GREEN}{find_column_comp(p.parser.input, p, n)}:{tox.RESET_COLOR} {msg}\n")
 
 def compiler_note(msg):
     """

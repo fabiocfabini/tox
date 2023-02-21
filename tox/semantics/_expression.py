@@ -26,21 +26,21 @@ class Primary:
         """
         primary : INT
         """
-        p.parser.type_checker.push("int")
+        p.parser.type_checker.push(("int", p.lexer.lineno))
         return std_message([f"PUSHI {p[1]}"]) # Return the message
 
     def _float(self, p) -> str: # Handles pushing an integer
         """
         primary : FLOAT
         """
-        p.parser.type_checker.push("float")
+        p.parser.type_checker.push(("float", p.lexer.lineno))
         return std_message([f"PUSHF {p[1]}"]) # Return the message
 
     def _string(self, p) -> str: # Handles pushing an integer
         """
         primary : STRING
         """
-        p.parser.type_checker.push("string")
+        p.parser.type_checker.push(("string", p.lexer.lineno))
         return std_message([f"PUSHS {p[1]}"]) # Return the message
 
     def _id(self, p) -> str: # Handles pushing the value of a variable
@@ -59,10 +59,10 @@ class Primary:
 
         push_op = "PUSHGP" if not in_function else "PUSHFP" # If the variable is in a function, push the frame pointer else push the global pointer
         if id_meta.type.startswith("vec"):
-            p.parser.type_checker.push(f"&{id_meta.type[4:-1]}")
+            p.parser.type_checker.push((f"&{id_meta.type[4:-1]}", p.lexer.lineno))
             return std_message([push_op, f"PUSHI {id_meta.stack_position[0]}", "PADD"])
         else:
-            p.parser.type_checker.push(id_meta.type)
+            p.parser.type_checker.push((id_meta.type, p.lexer.lineno))
             return std_message([push_op, f"LOAD {id_meta.stack_position[0]}"])  # Return the message
 
     def _ref(self, p) -> str: # Handles getting the address of a variable
@@ -78,7 +78,7 @@ class Primary:
             compiler_error(p, 1, f"Pointer to pointer not supported")
             compiler_note("Called from Primary._ref")
             sys.exit(1)
-        p.parser.type_checker.push(f"&{id_meta.type}")
+        p.parser.type_checker.push((f"&{id_meta.type}", p.lexer.lineno))
 
         push_op = "PUSHGP" if not in_function else "PUSHFP" # If the variable is in a function, push the frame pointer else push the global pointer
         return std_message([push_op, f"PUSHI {id_meta.stack_position[0]}", "PADD"]) # Return the message
@@ -119,14 +119,14 @@ class Primary:
                 op += [expr] + factor + ["MUL", "PADD"]
             if len(p.parser.indexing_depth[-1]) < len(id_meta.array_shape):
                 p.parser.indexing_depth.pop()
-                p.parser.type_checker.push("&"+id_meta.type[4:-1])
+                p.parser.type_checker.push(("&"+id_meta.type[4:-1], p.lexer.lineno))
                 return std_message(op)
             else:
                 p.parser.indexing_depth.pop()
-                p.parser.type_checker.push(id_meta.type[4:-1])
+                p.parser.type_checker.push((id_meta.type[4:-1], p.lexer.lineno))
                 return std_message(op + ["LOAD 0"])
         elif id_meta.type.startswith("&"):
-            p.parser.type_checker.push(id_meta.type[1:])
+            p.parser.type_checker.push((id_meta.type[1:], p.lexer.lineno))
             expr = p.parser.indexing_depth.pop()
             return std_message([push_op, f"LOAD {id_meta.stack_position[0]}", f"{expr[0]}PADD", "LOAD 0"]) # Return the message
 
