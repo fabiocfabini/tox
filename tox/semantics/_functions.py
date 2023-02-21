@@ -140,7 +140,7 @@ class Functions:
         for _ in func.input_types:
             p.parser.type_checker.pop()
         if func.output_type is not None:
-            p.parser.type_checker.push((func.output_type, p.lexer.lineno))
+            p.parser.type_checker.push((func.output_type, p.lexer.lineno-1))
 
         p.parser.num_args.pop()
         out = ""

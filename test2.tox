@@ -1,12 +1,13 @@
 func name() -> string
 func number() -> int
 
-
 func main() {
     name()
 }
 
+
 func name() -> string {
+    readi("Enter your age: ")
     number()
     return "Hello, World!\n"
 }
