@@ -40,7 +40,7 @@ def p_prog(p):
     if not parser.type_checker.is_empty():
         for type, line in parser.type_checker.stack:
             compiler_warning(p, line, f"Unused return value of type '{type}'")
-            compiler_note(f"\n{line-2:5}:  {p.lexer.lexdata.splitlines()[line-2]}\n{line-1:5}:  {p.lexer.lexdata.splitlines()[line-1]}  {tox.COLOR_BLUE}<- Value was return here{tox.RESET_COLOR}\n{line:5}:  {p.lexer.lexdata.splitlines()[line]}")
+            compiler_note(f"\n{line-2:5}|  {p.lexer.lexdata.splitlines()[line-2]}\n{line-1:5}|  {p.lexer.lexdata.splitlines()[line-1]}  {tox.COLOR_BLUE}<- Value was return here{tox.RESET_COLOR}\n{line:5}|  {p.lexer.lexdata.splitlines()[line]}")
 
     if parser.functions_handler.get("main") is None:
         compiler_error(p, 0, "Did not find main function")

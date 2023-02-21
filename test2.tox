@@ -7,7 +7,7 @@ func main() {
 
 
 func name() -> string {
-    readi("Enter your age: ")
+    readf("Enter your age: ")
     number()
     return "Hello, World!\n"
 }
