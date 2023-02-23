@@ -49,7 +49,7 @@ def p_prog(p):
 
     for function, meta in parser.functions_handler.Table.items():
         if meta.init is False:
-            compiler_error(p, 0, f"Function '{function}' was declared but not defined")
+            compiler_warning(p, 0, f"Function '{function}' was declared but not defined")
             sys.exit(1)
 
     p[0] = p[1]
