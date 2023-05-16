@@ -7,15 +7,21 @@
 
 
 
-X: int = 9
-Y: int = 9
+X: int = 15
+Y: int = 15
 
+cache: vec<int>[15][15]
 func num_paths(x: int, y:int) -> int {
     if (x == X || y == Y) {
         return 1
     }
 
-    return num_paths(x+1, y) + num_paths(x, y+1)
+    if (cache[x][y]) {
+        return cache[x][y]
+    }
+
+    cache[x][y] = num_paths(x+1, y) + num_paths(x, y+1)
+    return cache[x][y]
 }
 
 func main() {
